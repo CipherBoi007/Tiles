@@ -1,14 +1,50 @@
 version: '3.8'
 
 services:
+  frontend:
+    build: 
+      context: ./SL-Tiles-Showroom
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - app_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    # Port 5000 is intentionally NOT mapped to the host to prevent public access.
+    # It is only accessible to the frontend container over the internal network.
+    expose:
+      - "5000"
+    env_file:
+      - ./backend/.env
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/tilesdb?schema=public
+      - NODE_ENV=production
+      - PORT=5000
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - app_network
+    volumes:
+      # Mount a local uploads directory if your backend uses local diskStorage for file uploads
+      - backend_uploads:/app/uploads
+
   db:
     image: postgres:15-alpine
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: tilesdb
-    ports:
-      - "5432:5432"
+    # Removing ports: "5432:5432" ensures the database cannot be accessed publicly
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -16,19 +52,14 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
+    networks:
+      - app_network
 
-  app:
-    build: .
-    ports:
-      - "80:80"
-      - "5000:5000"
-    environment:
-      - DATABASE_URL=postgresql://postgres:password@db:5432/tilesdb
-      - PORT=5000
-      - NODE_ENV=production
-    depends_on:
-      db:
-        condition: service_healthy
+networks:
+  app_network:
+    driver: bridge
 
 volumes:
   pgdata:
+  backend_uploads:

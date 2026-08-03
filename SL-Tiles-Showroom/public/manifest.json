@@ -1,0 +1,21 @@
+{
+  "name": "Sri Lakshmi Tiles Showroom",
+  "short_name": "Sri Lakshmi Tiles",
+  "description": "Premium tiles, granites, and sanitaryware showroom in Ramanathapuram.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#8c7028",
+  "icons": [
+    {
+      "src": "/SL_LOGO.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/SL_LOGO.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

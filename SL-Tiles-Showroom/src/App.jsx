@@ -16,8 +16,11 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 import { LeadCaptureProvider } from './context/LeadCaptureContext';
 
+import { HelmetProvider } from 'react-helmet-async';
+
 function App() {
   return (
+    <HelmetProvider>
     <BrowserRouter>
       <ErrorBoundary>
         <LeadCaptureProvider>
@@ -56,6 +59,7 @@ function App() {
         </LeadCaptureProvider>
       </ErrorBoundary>
     </BrowserRouter>
+    </HelmetProvider>
   );
 }
 
