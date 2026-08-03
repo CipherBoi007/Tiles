@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Admin User
+model AdminUser {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String // Hashed
+}
+
+// Collections
+model Collection {
+  id    Int    @id @default(autoincrement())
+  name  String
+  desc  String
+  image String
+  tiles Tile[]
+}
+
+// Tiles
+model Tile {
+  id           Int         @id @default(autoincrement())
+  name         String
+  image        String
+  category     String
+  size         String
+  finish       String
+  collectionId Int?
+  collection   Collection? @relation(fields: [collectionId], references: [id])
+
+  @@index([category])
+  @@index([collectionId])
+}
+
+// Catalogues
+model Catalogue {
+  id      Int      @id @default(autoincrement())
+  title   String
+  desc    String
+  fileUrl String
+  date    DateTime @default(now())
+}
+
+// Enquiries
+model Enquiry {
+  id          Int      @id @default(autoincrement())
+  customer    String
+  phone       String
+  email       String?
+  description String?
+  source      String?
+  status      String   @default("New") // "New", "Contacted", "Resolved"
+  date        DateTime @default(now())
+
+  @@index([status])
+  @@index([date])
+}
+
+// Showroom Settings
+model Setting {
+  id             Int    @id @default(autoincrement())
+  showroomName   String
+  logoUrl        String
+  whatsappNumber String
+  emailAddress   String
+  address        String
+}
+
+// Activity Log
+model Activity {
+  id    Int      @id @default(autoincrement())
+  type  String
+  title String
+  desc  String
+  time  DateTime @default(now())
+
+  @@index([time])
+}
