@@ -33,7 +33,7 @@ const Topbar = ({ onMenuClick }) => {
         </button>
 
         <div className="flex items-center gap-3 pl-3 sm:pl-4 border-l border-gray-200">
-          <div className="w-9 h-9 bg-brand-black rounded-full flex items-center justify-center text-brand-gold shadow-sm">
+          <div className="w-9 h-9 bg-brand-white rounded-full flex items-center justify-center text-brand-gold shadow-sm border border-gray-100">
             <User className="w-5 h-5" />
           </div>
           <div className="hidden md:block">

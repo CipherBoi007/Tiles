@@ -15,7 +15,9 @@ export const LeadCaptureProvider = ({ children }) => {
 
   useEffect(() => {
     const captured = localStorage.getItem('luxetiles_lead_captured');
-    if (captured) {
+    const isAdmin = window.location.pathname.startsWith('/admin');
+    
+    if (captured || isAdmin) {
       setHasCapturedLead(true);
     } else {
       // Auto open on initial load with a slight delay

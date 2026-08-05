@@ -150,7 +150,7 @@ const Collections = () => {
                     required
                   >
                     <option value="" disabled>Select a category</option>
-                    {globalCollections.map(cat => (
+                    {(globalCollections || []).map(cat => (
                       <option key={cat.id} value={cat.id}>{cat.name}</option>
                     ))}
                   </select>
@@ -225,7 +225,7 @@ const Collections = () => {
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {tiles.map(tile => (
+          {(tiles || []).map(tile => (
             <div key={tile.id} className="bg-brand-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow group flex flex-col">
               <div className="aspect-[4/3] overflow-hidden relative">
                 <SafeImage src={tile.image} alt={tile.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
@@ -267,14 +267,14 @@ const Collections = () => {
               </div>
             </div>
           ))}
-          {tiles.length === 0 && (
+          {(tiles || []).length === 0 && (
             <div className="col-span-full text-center py-12 text-brand-textMuted bg-brand-white rounded-2xl border border-dashed border-gray-200">
               No products found. Create one above!
             </div>
           )}
         </div>
 
-        {tiles.length > 0 && (
+        {(tiles || []).length > 0 && (
           <Pagination 
             currentPage={pagination.currentPage} 
             totalPages={pagination.totalPages} 

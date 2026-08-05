@@ -141,7 +141,7 @@ const ManageTiles = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {collections.map(cat => (
+          {(collections || []).map(cat => (
             <div key={cat.id} className="bg-brand-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow group flex flex-col">
               <div className="aspect-[4/3] overflow-hidden relative">
                 <SafeImage src={cat.image} alt={cat.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
@@ -168,14 +168,14 @@ const ManageTiles = () => {
               </div>
             </div>
           ))}
-          {collections.length === 0 && (
+          {(collections || []).length === 0 && (
             <div className="col-span-full text-center py-12 text-brand-textMuted bg-brand-white rounded-2xl border border-dashed border-gray-200">
               No categories found. Create one above!
             </div>
           )}
         </div>
 
-        {collections.length > 0 && (
+        {(collections || []).length > 0 && (
           <Pagination 
             currentPage={pagination.currentPage} 
             totalPages={pagination.totalPages} 
