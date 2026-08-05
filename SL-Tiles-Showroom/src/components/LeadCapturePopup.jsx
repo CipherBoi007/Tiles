@@ -61,7 +61,7 @@ const LeadCapturePopup = ({ source, onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-4">
+    <div className="fixed inset-0 z-[100] h-[100dvh] w-screen flex flex-col justify-end sm:justify-center items-center sm:p-4 overflow-hidden">
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-brand-black/60 backdrop-blur-sm transition-opacity"
@@ -70,7 +70,7 @@ const LeadCapturePopup = ({ source, onClose, onSuccess }) => {
       
       {/* Modal / Bottom Sheet */}
       <div 
-        className="relative w-full max-w-md max-h-[90vh] flex flex-col bg-brand-white rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-8 sm:slide-in-from-bottom-0 sm:zoom-in duration-300"
+        className="relative w-full max-w-md max-h-[85dvh] flex flex-col bg-brand-white rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-8 sm:slide-in-from-bottom-0 sm:zoom-in duration-300 z-10"
       >
         {canClose && (
           <button 
