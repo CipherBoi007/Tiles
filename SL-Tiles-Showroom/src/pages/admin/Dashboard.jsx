@@ -11,11 +11,34 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const dbStats = await mockDb.getDashboardStats();
-      const dbActivity = await mockDb.getRecentActivity();
-      setStats(dbStats);
-      setActivity(dbActivity);
-      setLoading(false);
+      try {
+        const dbStats = await mockDb.getDashboardStats();
+        const dbActivity = await mockDb.getRecentActivity();
+        setStats(dbStats?.totalTiles !== undefined ? dbStats : {
+          totalTiles: 0,
+          tilesAddedThisWeek: 0,
+          collections: 0,
+          collectionsAddedThisMonth: 0,
+          newEnquiries: 0,
+          catalogues: 0,
+          latestCatalogue: 'N/A'
+        });
+        setActivity(Array.isArray(dbActivity) ? dbActivity : []);
+      } catch (err) {
+        console.error("Failed to load dashboard data:", err);
+        setStats({
+          totalTiles: 0,
+          tilesAddedThisWeek: 0,
+          collections: 0,
+          collectionsAddedThisMonth: 0,
+          newEnquiries: 0,
+          catalogues: 0,
+          latestCatalogue: 'N/A'
+        });
+        setActivity([]);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchData();
   }, []);
