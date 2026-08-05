@@ -61,16 +61,16 @@ const LeadCapturePopup = ({ source, onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] h-[100dvh] w-screen flex flex-col justify-end sm:justify-center items-center sm:p-4 overflow-hidden">
+    <div className="fixed inset-0 z-[100] h-[100dvh] w-screen flex flex-col justify-center items-center p-4 sm:p-4 overflow-hidden">
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-brand-black/60 backdrop-blur-sm transition-opacity"
         onClick={() => canClose && onClose()}
       />
       
-      {/* Modal / Bottom Sheet */}
+      {/* Modal - Compact Floating */}
       <div 
-        className="relative w-full max-w-md max-h-[85dvh] flex flex-col bg-brand-white rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-8 sm:slide-in-from-bottom-0 sm:zoom-in duration-300 z-10"
+        className="relative w-full max-w-sm sm:max-w-md max-h-[85dvh] flex flex-col bg-brand-white rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 sm:zoom-in duration-300 z-10"
       >
         {canClose && (
           <button 
@@ -81,12 +81,10 @@ const LeadCapturePopup = ({ source, onClose, onSuccess }) => {
           </button>
         )}
         
-        <div className="bg-brand-lightBg p-6 sm:p-8 text-center relative overflow-hidden border-b border-brand-gold/10 shrink-0">
+        <div className="bg-brand-lightBg p-5 sm:p-8 text-center relative overflow-hidden border-b border-brand-gold/10 shrink-0">
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-brand-gold/5 to-transparent pointer-events-none"></div>
-          {/* Mobile Handle */}
-          <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-4 sm:hidden"></div>
           
-          <h2 className="text-xl sm:text-2xl font-luxury font-bold text-brand-black mb-2 relative z-10">
+          <h2 className="text-xl sm:text-2xl font-luxury font-bold text-brand-black mb-2 relative z-10 mt-2 sm:mt-0">
             Welcome to SriLakshmi Tiles and Granites
           </h2>
           <p className="text-brand-textMuted text-xs sm:text-sm relative z-10 px-2">
