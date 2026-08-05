@@ -18,13 +18,6 @@ const logger = pino({ level: process.env.LOG_LEVEL || 'info' });
 app.use(pinoHttp({ logger }));
 app.use(helmet());
 
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again after 15 minutes',
-});
-app.use('/api', apiLimiter);
-
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || origin.includes('localhost') || origin.includes('vercel.app') || origin === process.env.FRONTEND_URL) {
@@ -35,6 +28,13 @@ app.use(cors({
   },
   credentials: true,
 }));
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 1000, // Increased to 1000 to prevent admin panel lockouts
+  message: 'Too many requests from this IP, please try again after 15 minutes',
+});
+app.use('/api', apiLimiter);
 app.use(express.json({ limit: '2mb' })); // Reduced from 10mb to prevent memory issues with JSON parsing
 app.use(express.urlencoded({ limit: '2mb', extended: true }));
 
