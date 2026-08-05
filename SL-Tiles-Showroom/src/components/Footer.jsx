@@ -82,9 +82,9 @@ const Footer = () => {
                 type="email"
                 placeholder="Your email address"
                 required
-                className="flex-1 min-w-0 bg-gray-900 border border-gray-800 px-4 py-3 text-brand-white focus:outline-none focus:border-brand-gold rounded-xl sm:rounded-r-none"
+                className="flex-1 min-w-0 bg-gray-900 border border-gray-800 px-4 py-4 sm:py-3 text-brand-white focus:outline-none focus:border-brand-gold rounded-xl sm:rounded-r-none"
               />
-              <button type="submit" className="w-full sm:w-auto bg-brand-gold hover:bg-yellow-600 px-6 py-3 font-medium transition-colors rounded-xl sm:rounded-l-none">
+              <button type="submit" className="w-full sm:w-auto bg-brand-gold hover:bg-yellow-600 px-6 py-4 sm:py-3 font-medium transition-colors rounded-xl sm:rounded-l-none">
                 Subscribe
               </button>
             </form>

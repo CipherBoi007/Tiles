@@ -33,18 +33,18 @@ const ProductCard = ({ product, onQuickView }) => {
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
         
-        {/* Hover Action Buttons */}
-        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
+        {/* Hover Action Buttons (Always visible on mobile) */}
+        <div className="absolute inset-0 bg-black/20 md:bg-black/40 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end md:items-center justify-center gap-4 pb-6 md:pb-0">
           <button 
             onClick={() => onQuickView(product)}
-            className="w-12 h-12 bg-brand-white text-brand-black rounded-full flex items-center justify-center hover:bg-brand-gold hover:text-brand-white transition-colors shadow-lg"
+            className="w-10 h-10 md:w-12 md:h-12 bg-brand-white text-brand-black rounded-full flex items-center justify-center hover:bg-brand-gold hover:text-brand-white transition-colors shadow-lg"
             title="Quick View"
           >
             <Eye className="w-5 h-5" />
           </button>
           <button 
             onClick={handleWhatsApp}
-            className="w-12 h-12 bg-green-500 text-brand-white rounded-full flex items-center justify-center hover:bg-green-600 transition-colors shadow-lg"
+            className="w-10 h-10 md:w-12 md:h-12 bg-green-500 text-brand-white rounded-full flex items-center justify-center hover:bg-green-600 transition-colors shadow-lg"
             title="WhatsApp Enquiry"
           >
             <MessageCircle className="w-5 h-5" />

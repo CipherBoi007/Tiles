@@ -78,24 +78,24 @@ const Header = () => {
       )}
 
       {/* Mobile Menu Drawer */}
-      <div className={`fixed top-0 right-0 h-screen w-full max-w-xs bg-brand-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out lg:hidden flex flex-col ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-        <div className="flex items-center justify-between p-5 sm:p-6 border-b border-gray-100">
+      <div className={`fixed top-0 right-0 h-screen w-full max-w-[85vw] sm:max-w-xs bg-brand-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out lg:hidden flex flex-col ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100 h-[72px] sm:h-20">
           <span className="font-luxury font-bold text-xl tracking-wider text-brand-black">MENU</span>
-          <button onClick={() => setIsMenuOpen(false)} className="text-brand-text focus:outline-none hover:text-brand-gold transition-colors">
+          <button onClick={() => setIsMenuOpen(false)} className="p-2 -mr-2 text-brand-text focus:outline-none hover:text-brand-gold transition-colors">
             <X className="w-6 h-6" />
           </button>
         </div>
         
-        <div className="flex-1 overflow-y-auto py-6 px-6 space-y-6">
-          <nav className="flex flex-col space-y-4">
-            <Link to="/" className="text-lg text-brand-textMuted hover:text-brand-gold font-medium transition-colors" onClick={() => setIsMenuOpen(false)}>Home</Link>
-            <Link to="/collections" className="text-lg text-brand-textMuted hover:text-brand-gold font-medium transition-colors" onClick={() => setIsMenuOpen(false)}>Collections</Link>
-            <Link to="/catalogues" className="text-lg text-brand-textMuted hover:text-brand-gold font-medium transition-colors" onClick={() => setIsMenuOpen(false)}>Catalogues</Link>
-            <a href="/#contact" className="text-lg text-brand-textMuted hover:text-brand-gold font-medium transition-colors" onClick={() => setIsMenuOpen(false)}>Contact</a>
+        <div className="flex-1 overflow-y-auto py-8 px-6 space-y-6">
+          <nav className="flex flex-col space-y-6">
+            <Link to="/" className="text-xl text-brand-text hover:text-brand-gold font-medium transition-colors" onClick={() => setIsMenuOpen(false)}>Home</Link>
+            <Link to="/collections" className="text-xl text-brand-text hover:text-brand-gold font-medium transition-colors" onClick={() => setIsMenuOpen(false)}>Collections</Link>
+            <Link to="/catalogues" className="text-xl text-brand-text hover:text-brand-gold font-medium transition-colors" onClick={() => setIsMenuOpen(false)}>Catalogues</Link>
+            <a href="/#contact" className="text-xl text-brand-text hover:text-brand-gold font-medium transition-colors" onClick={() => setIsMenuOpen(false)}>Contact</a>
           </nav>
           
-          <div className="pt-8 border-t border-gray-100 flex flex-col space-y-4">
-            <a href="/#contact" onClick={handleBookVisit} className="w-full text-center px-4 py-3 bg-brand-gold hover:bg-yellow-600 text-brand-white transition-colors rounded-sm flex justify-center items-center font-medium shadow-lg shadow-brand-gold/20">
+          <div className="pt-10 border-t border-gray-100 flex flex-col space-y-4">
+            <a href="/#contact" onClick={handleBookVisit} className="w-full text-center px-4 py-4 bg-brand-gold hover:bg-yellow-600 text-brand-white transition-colors rounded-sm flex justify-center items-center font-medium text-lg shadow-lg shadow-brand-gold/20">
               Book Visit
             </a>
           </div>

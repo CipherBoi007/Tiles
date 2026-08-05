@@ -31,7 +31,7 @@ const ContactSection = () => {
               <p className="text-brand-textMuted text-lg mb-12">Experience the luxury firsthand. Our design experts are ready to turn your vision into reality.</p>
             </FadeUp>
             
-            <StaggerContainer className="space-y-8">
+            <StaggerContainer className="space-y-6 lg:space-y-8">
               <StaggerItem className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-gray-50 flex items-center justify-center rounded-full text-brand-gold shrink-0">
                   <MapPin className="w-5 h-5" />
@@ -112,16 +112,16 @@ const ContactSection = () => {
                 });
               }} className="space-y-4">
                 <div>
-                  <input type="text" name="name" required placeholder="Your Full Name *" className="w-full px-4 py-3 bg-white border border-gray-200 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none transition-colors" />
+                  <input type="text" name="name" required placeholder="Your Full Name *" className="w-full px-4 py-4 md:py-3 min-h-[48px] bg-white border border-gray-200 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none transition-colors" />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <input type="tel" name="phone" required placeholder="Phone Number *" className="w-full px-4 py-3 bg-white border border-gray-200 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none transition-colors" />
-                  <input type="email" name="email" placeholder="Email Address" className="w-full px-4 py-3 bg-white border border-gray-200 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none transition-colors" />
+                  <input type="tel" name="phone" required placeholder="Phone Number *" className="w-full px-4 py-4 md:py-3 min-h-[48px] bg-white border border-gray-200 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none transition-colors" />
+                  <input type="email" name="email" placeholder="Email Address" className="w-full px-4 py-4 md:py-3 min-h-[48px] bg-white border border-gray-200 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none transition-colors" />
                 </div>
                 <div>
-                  <textarea name="message" required placeholder="How can we help you? *" rows="4" className="w-full px-4 py-3 bg-white border border-gray-200 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none transition-colors resize-none"></textarea>
+                  <textarea name="message" required placeholder="How can we help you? *" rows="4" className="w-full px-4 py-4 md:py-3 min-h-[120px] bg-white border border-gray-200 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none transition-colors resize-none"></textarea>
                 </div>
-                <button type="submit" className="w-full py-3 bg-brand-black hover:bg-gray-900 text-brand-white font-medium rounded-sm transition-colors shadow-md">
+                <button type="submit" className="w-full py-4 md:py-3 min-h-[48px] bg-brand-black hover:bg-gray-900 text-brand-white font-medium rounded-sm transition-colors shadow-md">
                   Send Message
                 </button>
               </form>

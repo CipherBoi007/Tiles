@@ -71,7 +71,7 @@ const GlobalSearch = () => {
       <div 
         className={`
           transition-all duration-300 ease-in-out sm:origin-right flex items-center bg-brand-white border border-gray-200 rounded-md shadow-2xl z-50
-          fixed top-[80px] left-4 right-4 sm:absolute sm:top-1/2 sm:left-auto sm:right-0 sm:-translate-y-1/2
+          fixed top-[72px] left-4 right-4 sm:absolute sm:top-1/2 sm:left-auto sm:right-0 sm:-translate-y-1/2
           ${isOpen ? 'opacity-100 visible sm:w-[600px] lg:w-[720px]' : 'opacity-0 invisible sm:w-0 border-transparent shadow-none scale-95 sm:scale-100'}
         `}
       >

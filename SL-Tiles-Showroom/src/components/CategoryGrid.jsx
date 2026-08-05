@@ -36,16 +36,16 @@ const CategoryGrid = () => {
                 alt={cat.name} 
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-brand-black/90 via-brand-black/20 to-transparent flex flex-col justify-end p-6"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-brand-black/90 via-brand-black/40 md:via-brand-black/20 to-transparent flex flex-col justify-end p-6"></div>
               
-              <div className="absolute bottom-0 left-0 w-full p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+              <div className="absolute bottom-0 left-0 w-full p-6 transform translate-y-0 md:translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
                 <h3 className="text-brand-white text-2xl font-luxury font-medium mb-1">{cat.name}</h3>
                 {cat.desc && (
-                  <p className="text-gray-300 text-sm mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-75 line-clamp-2">
+                  <p className="text-gray-300 text-sm mb-3 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-75 line-clamp-2">
                     {cat.desc}
                   </p>
                 )}
-                <span className="inline-flex items-center gap-2 text-brand-gold opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100 font-medium">
+                <span className="inline-flex items-center gap-2 text-brand-gold opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100 font-medium">
                   Explore <ArrowRight className="w-4 h-4" />
                 </span>
               </div>
