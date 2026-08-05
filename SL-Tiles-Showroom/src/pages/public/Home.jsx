@@ -51,7 +51,7 @@ const localBusinessSchema = {
 
 const Home = () => {
   return (
-    <div className="min-h-screen font-luxury bg-brand-lightBg flex flex-col">
+    <div className="min-h-screen font-luxury bg-brand-lightBg flex flex-col w-full overflow-x-hidden relative">
       <SEO 
         title="Best Tiles Showroom" 
         schema={localBusinessSchema} 

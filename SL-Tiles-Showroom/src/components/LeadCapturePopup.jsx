@@ -61,7 +61,7 @@ const LeadCapturePopup = ({ source, onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] h-[100dvh] w-screen flex flex-col justify-center items-center p-4 sm:p-4 overflow-hidden">
+    <div className="fixed inset-0 z-[100] h-[100dvh] w-full flex flex-col justify-center items-center p-4 sm:p-4 overflow-hidden">
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-brand-black/60 backdrop-blur-sm transition-opacity"

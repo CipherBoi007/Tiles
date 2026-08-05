@@ -18,10 +18,10 @@ const WhatsAppFloat = () => {
   return (
     <button 
       onClick={handleWhatsApp}
-      className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-14 h-14 sm:w-16 sm:h-16 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(37,211,102,0.4)] transition-transform hover:-translate-y-2 animate-bounce focus:outline-none focus:ring-2 focus:ring-brand-white/60"
+      className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 z-[90] w-14 h-14 sm:w-16 sm:h-16 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-full flex items-center justify-center shadow-xl shadow-[#25D366]/30 transition-transform hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-[#25D366]/50"
       aria-label="Chat on WhatsApp"
     >
-      <MessageCircle className="w-8 h-8" />
+      <MessageCircle className="w-7 h-7 sm:w-8 sm:h-8" />
     </button>
   );
 };
