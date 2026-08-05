@@ -61,16 +61,16 @@ const LeadCapturePopup = ({ source, onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-4">
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-brand-black/80 backdrop-blur-md transition-opacity"
+        className="absolute inset-0 bg-brand-black/60 backdrop-blur-sm transition-opacity"
         onClick={() => canClose && onClose()}
       />
       
-      {/* Modal */}
+      {/* Modal / Bottom Sheet */}
       <div 
-        className="relative w-full max-w-md max-h-[95vh] flex flex-col bg-brand-white rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300"
+        className="relative w-full max-w-md max-h-[90vh] flex flex-col bg-brand-white rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-8 sm:slide-in-from-bottom-0 sm:zoom-in duration-300"
       >
         {canClose && (
           <button 
@@ -83,6 +83,9 @@ const LeadCapturePopup = ({ source, onClose, onSuccess }) => {
         
         <div className="bg-brand-lightBg p-6 sm:p-8 text-center relative overflow-hidden border-b border-brand-gold/10 shrink-0">
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-brand-gold/5 to-transparent pointer-events-none"></div>
+          {/* Mobile Handle */}
+          <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-4 sm:hidden"></div>
+          
           <h2 className="text-xl sm:text-2xl font-luxury font-bold text-brand-black mb-2 relative z-10">
             Welcome to SriLakshmi Tiles and Granites
           </h2>
@@ -94,7 +97,7 @@ const LeadCapturePopup = ({ source, onClose, onSuccess }) => {
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 sm:p-8 overflow-y-auto">
-          <div className="space-y-5">
+          <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-brand-black mb-1">Full Name *</label>
               <input
@@ -104,7 +107,7 @@ const LeadCapturePopup = ({ source, onClose, onSuccess }) => {
                   setName(e.target.value);
                   if (errors.name) setErrors({...errors, name: ''});
                 }}
-                className={`w-full px-4 py-3 bg-gray-50 border ${errors.name ? 'border-red-400 focus:ring-red-400' : 'border-gray-200 focus:border-brand-gold focus:ring-brand-gold'} rounded-xl text-sm transition-all outline-none focus:ring-2 focus:ring-opacity-20 text-brand-text`}
+                className={`w-full px-4 py-3 bg-gray-50 border ${errors.name ? 'border-red-400 focus:ring-red-400' : 'border-gray-200 focus:border-brand-gold focus:ring-brand-gold'} rounded-xl text-base transition-all outline-none focus:ring-2 focus:ring-opacity-20 text-brand-text`}
                 placeholder="Enter your full name"
               />
               {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
@@ -123,7 +126,7 @@ const LeadCapturePopup = ({ source, onClose, onSuccess }) => {
                     if (val.length <= 10) setPhone(val);
                     if (errors.phone) setErrors({...errors, phone: ''});
                   }}
-                  className={`w-full pl-12 pr-4 py-3 bg-gray-50 border ${errors.phone ? 'border-red-400 focus:ring-red-400' : 'border-gray-200 focus:border-brand-gold focus:ring-brand-gold'} rounded-xl text-sm transition-all outline-none focus:ring-2 focus:ring-opacity-20 text-brand-text`}
+                  className={`w-full pl-12 pr-4 py-3 bg-gray-50 border ${errors.phone ? 'border-red-400 focus:ring-red-400' : 'border-gray-200 focus:border-brand-gold focus:ring-brand-gold'} rounded-xl text-base transition-all outline-none focus:ring-2 focus:ring-opacity-20 text-brand-text`}
                   placeholder="10-digit mobile number"
                 />
               </div>
@@ -134,13 +137,13 @@ const LeadCapturePopup = ({ source, onClose, onSuccess }) => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full mt-8 flex items-center justify-center gap-2 py-4 bg-brand-gold hover:bg-yellow-600 text-brand-white text-base font-medium rounded-xl transition-all shadow-lg shadow-brand-gold/20 disabled:opacity-70"
+            className="w-full mt-6 flex items-center justify-center gap-2 py-3.5 bg-brand-gold hover:bg-yellow-600 text-brand-white text-base font-medium rounded-xl transition-all shadow-lg shadow-brand-gold/20 disabled:opacity-70"
           >
             {isSubmitting ? 'Processing...' : 'Continue'}
             {!isSubmitting && <ArrowRight size={18} />}
           </button>
           
-          <div className="mt-6 flex items-center justify-center gap-2 text-xs text-gray-400">
+          <div className="mt-5 flex items-center justify-center gap-2 text-xs text-gray-400 pb-2">
             <ShieldCheck size={14} className="text-green-500" />
             <span>Your information is secure and will not be shared.</span>
           </div>
