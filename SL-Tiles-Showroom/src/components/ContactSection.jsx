@@ -75,8 +75,8 @@ const ContactSection = () => {
           </div>
 
           {/* Right Column: Contact Form & Action */}
-          <div className="w-full lg:w-1/2 flex flex-col items-center">
-            <FadeUp delay={0.2} className="w-full bg-brand-lightBg p-8 rounded-xl border border-brand-gold/10 shadow-xl shadow-brand-black/5 mb-8">
+          <div className="w-full lg:w-1/2 flex flex-col">
+            <FadeUp delay={0.2} className="w-full h-full flex flex-col justify-center bg-brand-lightBg p-8 rounded-xl border border-brand-gold/10 shadow-xl shadow-brand-black/5">
               <h3 className="text-2xl font-luxury font-bold text-brand-black mb-2">Send us a Message</h3>
               <p className="text-brand-textMuted text-sm mb-6">Fill out the form below and our team will get back to you shortly.</p>
               
@@ -127,13 +127,6 @@ const ContactSection = () => {
               </form>
             </FadeUp>
             
-            <FadeUp delay={0.4} className="w-full bg-[#FFF8E7] p-8 rounded-xl border border-brand-gold/20 flex flex-col items-center text-center">
-              <h3 className="text-xl font-luxury font-bold text-brand-black mb-2">Need Immediate Assistance?</h3>
-              <p className="text-[#8c7028] mb-6 text-sm">Skip the wait and text our experts directly on WhatsApp.</p>
-              <button onClick={handleWhatsApp} className="w-full py-4 bg-[#25D366] hover:bg-[#1ebd5a] text-white text-lg font-medium rounded-xl flex items-center justify-center gap-3 transition-colors shadow-lg shadow-[#25D366]/20">
-                <MessageCircle className="w-6 h-6" />
-                Chat on WhatsApp
-              </button>
             </FadeUp>
           </div>
 

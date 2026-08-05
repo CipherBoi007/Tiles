@@ -56,12 +56,12 @@ const Home = () => {
         title="Best Tiles Showroom" 
         schema={localBusinessSchema} 
       />
-      <OffersBanner />
       <Header />
       <Hero />
       <CategoryGrid />
       <ProductGrid />
       <InspirationGallery />
+      <OffersBanner />
       <WhyChooseUs />
       <CatalogueDownload />
       <Testimonials />
