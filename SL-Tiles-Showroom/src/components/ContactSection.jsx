@@ -126,8 +126,6 @@ const ContactSection = () => {
                 </button>
               </form>
             </FadeUp>
-            
-            </FadeUp>
           </div>
 
         </div>
