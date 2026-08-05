@@ -70,30 +70,30 @@ const LeadCapturePopup = ({ source, onClose, onSuccess }) => {
       
       {/* Modal */}
       <div 
-        className="relative w-full max-w-md bg-brand-white rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300"
+        className="relative w-full max-w-md max-h-[95vh] flex flex-col bg-brand-white rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300"
       >
         {canClose && (
           <button 
             onClick={onClose}
-            className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-brand-black transition-colors"
+            className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100/80 backdrop-blur text-gray-600 hover:bg-gray-200 hover:text-brand-black transition-colors"
           >
             <X size={18} />
           </button>
         )}
         
-        <div className="bg-brand-lightBg p-8 text-center relative overflow-hidden border-b border-brand-gold/10">
+        <div className="bg-brand-lightBg p-6 sm:p-8 text-center relative overflow-hidden border-b border-brand-gold/10 shrink-0">
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-brand-gold/5 to-transparent pointer-events-none"></div>
-          <h2 className="text-2xl font-luxury font-bold text-brand-black mb-2 relative z-10">
+          <h2 className="text-xl sm:text-2xl font-luxury font-bold text-brand-black mb-2 relative z-10">
             Welcome to SriLakshmi Tiles and Granites
           </h2>
-          <p className="text-brand-textMuted text-sm relative z-10">
+          <p className="text-brand-textMuted text-xs sm:text-sm relative z-10 px-2">
             {source === 'Website Entry' 
               ? 'Please share your details to explore our premium collections.' 
               : `Please provide your details to continue with ${source}.`}
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-8">
+        <form onSubmit={handleSubmit} className="p-6 sm:p-8 overflow-y-auto">
           <div className="space-y-5">
             <div>
               <label className="block text-sm font-medium text-brand-black mb-1">Full Name *</label>
