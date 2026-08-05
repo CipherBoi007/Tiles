@@ -1,11 +1,11 @@
 import React from 'react';
-import { ShieldCheck, Truck, ThumbsUp, Medal, HeadphonesIcon } from 'lucide-react';
+import { Shield, Truck, Sparkles, Gem } from 'lucide-react';
 import { FadeUp, StaggerContainer, StaggerItem } from './animations/MotionWrappers';
 
 const features = [
-  { icon: Medal, title: 'Premium Quality', desc: 'Sourced from the finest global manufacturers.' },
-  { icon: ShieldCheck, title: 'Durability Guaranteed', desc: 'Tiles built to last generations without fading.' },
-  { icon: ThumbsUp, title: 'Expert Guidance', desc: 'Free design consultation with our experts.' },
+  { icon: Gem, title: 'Premium Quality', desc: 'Sourced from the finest global manufacturers.' },
+  { icon: Shield, title: 'Durability Guaranteed', desc: 'Tiles built to last generations without fading.' },
+  { icon: Sparkles, title: 'Expert Guidance', desc: 'Free design consultation with our experts.' },
   { icon: Truck, title: 'Safe Delivery', desc: 'Fully insured and damage-free delivery pan-India.' }
 ];
 
@@ -22,7 +22,7 @@ const WhyChooseUs = () => {
           {features.map((item, idx) => (
             <StaggerItem key={idx} className="flex flex-col items-center text-center p-6 border border-gray-800 rounded-sm hover:-translate-y-2 transition-transform duration-300 bg-gray-900/50">
               <div className="w-16 h-16 bg-brand-gold/10 text-brand-gold rounded-full flex items-center justify-center mb-6">
-                <item.icon className="w-8 h-8" />
+                <item.icon className="w-8 h-8" strokeWidth={1.2} />
               </div>
               <h3 className="text-xl font-luxury font-semibold mb-3">{item.title}</h3>
               <p className="text-gray-400 leading-relaxed text-sm">{item.desc}</p>

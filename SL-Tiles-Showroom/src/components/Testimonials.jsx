@@ -119,11 +119,13 @@ const Testimonials = () => {
         </StaggerContainer>
 
         {/* Review Submission Form */}
-        <FadeUp className="max-w-2xl mx-auto bg-brand-white p-8 md:p-10 border border-gray-100 rounded-sm shadow-md">
-          <div className="text-center mb-8">
-            <h3 className="text-2xl font-luxury font-bold text-brand-black mb-2">Share Your Experience</h3>
-            <p className="text-brand-textMuted">We value your feedback. Please leave a review of your showroom visit or our products.</p>
+        <FadeUp className="max-w-5xl mx-auto bg-brand-white p-8 md:p-12 border border-gray-100 rounded-sm shadow-md flex flex-col md:flex-row items-center gap-10 md:gap-16">
+          <div className="md:w-5/12 text-center md:text-left">
+            <h3 className="text-3xl font-luxury font-bold text-brand-black mb-4">Share Your Experience</h3>
+            <p className="text-brand-textMuted text-lg leading-relaxed">We highly value your feedback. Please take a moment to leave a review of your showroom visit or our products. Your insights help us continually improve and serve you better.</p>
           </div>
+
+          <div className="md:w-7/12 w-full">
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
@@ -188,6 +190,7 @@ const Testimonials = () => {
               {isSubmitting ? 'Submitting...' : 'Submit Review'}
             </button>
           </form>
+          </div>
         </FadeUp>
       </div>
     </section>

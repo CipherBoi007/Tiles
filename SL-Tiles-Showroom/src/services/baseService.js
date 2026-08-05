@@ -14,12 +14,6 @@ export class BaseService {
       return [];
     } catch (e) {
       console.error(`Error reading ${this.storageKey} from API`, e);
-      if (typeof window !== 'undefined') {
-        const errorDiv = document.createElement('div');
-        errorDiv.style.cssText = 'position:fixed;top:0;left:0;z-index:9999;background:red;color:white;padding:1rem;';
-        errorDiv.innerText = `Error in _getData (${this.storageKey}): ${e.message}`;
-        document.body.appendChild(errorDiv);
-      }
       return [];
     }
   }

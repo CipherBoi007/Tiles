@@ -17,7 +17,7 @@ const Hero = () => {
     captureLead('WhatsApp Enquiry', execute);
   };
   return (
-    <section className="relative w-full min-h-[560px] h-[70vh] sm:h-[75vh] md:h-[80vh] flex items-center bg-brand-black overflow-hidden">
+    <section className="relative w-full min-h-[400px] sm:min-h-[560px] h-[60vh] sm:h-[75vh] md:h-[80vh] flex items-center bg-brand-black overflow-hidden">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <img 
