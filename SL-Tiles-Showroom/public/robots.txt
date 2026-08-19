@@ -1,6 +1,14 @@
+# robots.txt for SRI LAKSHMI TILES AND GRANITES
 User-agent: *
 Allow: /
+Allow: /catalogues/*.pdf
 Disallow: /admin/
 Disallow: /api/
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
 
 Sitemap: https://srilakshmitiles.com/sitemap.xml

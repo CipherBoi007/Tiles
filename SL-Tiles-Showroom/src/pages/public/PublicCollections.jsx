@@ -79,11 +79,32 @@ const PublicCollections = () => {
     }
   };
 
+  const collectionsBreadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://srilakshmitiles.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": viewMode === 'collections' ? "Curated Collections" : "All Tile Products",
+        "item": `https://srilakshmitiles.com/collections?view=${viewMode}`
+      }
+    ]
+  };
+
   return (
     <div className="min-h-screen font-luxury bg-brand-lightBg flex flex-col">
       <SEO 
-        title={viewMode === 'collections' ? "Curated Tile Collections" : "All Tile Products Catalog"} 
-        description="Explore curated tile collections or browse our entire catalog of ceramic, vitrified, wall, and floor tiles."
+        title={viewMode === 'collections' ? "Curated Tile Collections & Series" : "All Tile Products Catalog (Vitrified, Marble, Granite)"} 
+        description={viewMode === 'collections' ? "Browse exclusive curated tile series, living room collections, and architectural wall cladding by SRI LAKSHMI TILES AND GRANITES." : "Explore our complete catalog of luxury vitrified floor tiles, ceramic wall tiles, large format marble slabs, and outdoor parking tiles."}
+        keywords="tile collections, vitrified floor tiles catalog, marble tile designs, ceramic wall tiles, granite slabs price, Ramanathapuram tiles catalog, Tamil Nadu luxury tiles"
+        schema={collectionsBreadcrumbSchema}
       />
       <Header />
       
