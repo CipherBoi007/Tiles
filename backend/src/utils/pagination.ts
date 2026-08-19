@@ -1,9 +1,11 @@
 import { Request } from 'express';
 
 export const getPagination = (req: Request) => {
-  const page = parseInt(req.query.page as string) || 1;
-  const limit = parseInt(req.query.limit as string) || 10;
-  const search = req.query.search as string || '';
+  const page = Math.max(parseInt(req.query.page as string, 10) || 1, 1);
+  const rawLimit = parseInt(req.query.limit as string, 10) || 10;
+  const limit = Math.min(Math.max(rawLimit, 1), 100);
+  const searchRaw = typeof req.query.search === 'string' ? req.query.search : '';
+  const search = searchRaw.trim().slice(0, 100);
   const skip = (page - 1) * limit;
   return { page, limit, search, skip };
 };

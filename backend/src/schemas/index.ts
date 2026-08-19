@@ -17,8 +17,11 @@ export const enquirySchema = z.object({
 export const tileSchema = z.object({
   name: z.string().min(2).max(100),
   image: z.string().url(),
-  category: z.string().min(2).max(50),
-  size: z.string().min(2).max(50),
-  finish: z.string().min(2).max(50),
+  category: z.string().min(1).max(50).optional().nullable(),
+  size: z.string().min(1).max(100).optional().nullable().or(z.literal('')),
+  finish: z.string().min(1).max(100).optional().nullable().or(z.literal('')),
+  palette: z.string().optional().nullable(),
+  desc: z.string().optional().nullable(),
+  template: z.string().optional().nullable(),
   collectionId: z.number().int().positive().optional().nullable(),
 });

@@ -13,8 +13,8 @@ const PublicCatalogues = () => {
         description="Download our latest 2026 product catalogues. View our complete range of ceramic, vitrified, parking, and bathroom tiles in high-resolution PDF format."
       />
       <Header />
-      <main className="flex-1 pt-24">
-        <CatalogueDownload />
+      <main className="flex-1 pt-0">
+        <CatalogueDownload isStandalone={true} />
       </main>
       <Footer />
       <WhatsAppFloat />

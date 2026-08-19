@@ -1,7 +1,8 @@
 import { BaseService } from './baseService';
 
-export const categoryService = new BaseService('cmsCollectionsData');
-export const collectionService = new BaseService('cmsTilesData');
+export const tileService = new BaseService('cmsTilesData');
+export const collectionService = new BaseService('cmsCollectionsData');
+export const categoryService = collectionService;
 export const catalogueService = new BaseService('cataloguesData');
 export const enquiryService = new BaseService('enquiriesData');
 

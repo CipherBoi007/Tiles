@@ -17,8 +17,11 @@ exports.enquirySchema = zod_1.z.object({
 exports.tileSchema = zod_1.z.object({
     name: zod_1.z.string().min(2).max(100),
     image: zod_1.z.string().url(),
-    category: zod_1.z.string().min(2).max(50),
-    size: zod_1.z.string().min(2).max(50),
-    finish: zod_1.z.string().min(2).max(50),
+    category: zod_1.z.string().min(1).max(50).optional().nullable(),
+    size: zod_1.z.string().min(1).max(100).optional().nullable().or(zod_1.z.literal('')),
+    finish: zod_1.z.string().min(1).max(100).optional().nullable().or(zod_1.z.literal('')),
+    palette: zod_1.z.string().optional().nullable(),
+    desc: zod_1.z.string().optional().nullable(),
+    template: zod_1.z.string().optional().nullable(),
     collectionId: zod_1.z.number().int().positive().optional().nullable(),
 });

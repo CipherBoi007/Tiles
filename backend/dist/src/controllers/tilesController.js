@@ -36,28 +36,50 @@ const getTiles = async (req, res) => {
 exports.getTiles = getTiles;
 const createTile = async (req, res) => {
     try {
-        const tile = await prisma_1.default.tile.create({ data: req.body });
+        const { name, image, category, size, finish, palette, collectionId } = req.body;
+        const tileData = {
+            name: name?.trim(),
+            image,
+            category: category?.trim() || '',
+            size: size?.trim() || '',
+            finish: finish?.trim() || palette?.trim() || '',
+            collectionId: collectionId ? Number(collectionId) : null,
+        };
+        const tile = await prisma_1.default.tile.create({ data: tileData });
         await prisma_1.default.activity.create({
             data: { type: 'tile_added', title: 'Tile added', desc: `${tile.name} was added.` }
         });
         res.status(201).json(tile);
     }
     catch (error) {
-        res.status(500).json({ message: 'Error creating tile', error });
+        if (req.log)
+            req.log.error(error);
+        res.status(500).json({ message: error?.message || 'Error creating tile', error });
     }
 };
 exports.createTile = createTile;
 const updateTile = async (req, res) => {
     try {
         const { id } = req.params;
-        const tile = await prisma_1.default.tile.update({ where: { id: Number(id) }, data: req.body });
+        const { name, image, category, size, finish, palette, collectionId } = req.body;
+        const tileData = {
+            name: name?.trim(),
+            image,
+            category: category?.trim() || '',
+            size: size?.trim() || '',
+            finish: finish?.trim() || palette?.trim() || '',
+            collectionId: collectionId ? Number(collectionId) : null,
+        };
+        const tile = await prisma_1.default.tile.update({ where: { id: Number(id) }, data: tileData });
         await prisma_1.default.activity.create({
             data: { type: 'tile_updated', title: 'Tile updated', desc: `${tile.name} was updated.` }
         });
         res.json(tile);
     }
     catch (error) {
-        res.status(500).json({ message: 'Error updating tile', error });
+        if (req.log)
+            req.log.error(error);
+        res.status(500).json({ message: error?.message || 'Error updating tile', error });
     }
 };
 exports.updateTile = updateTile;

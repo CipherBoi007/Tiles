@@ -59,15 +59,15 @@ const ManageTiles = () => {
   return (
     <div className="max-w-6xl mx-auto pb-12">
       <div className="mb-8">
-        <h1 className="text-2xl font-luxury font-bold text-brand-text">Manage Categories</h1>
-        <p className="text-brand-textMuted">Create and manage tile categories for your showroom.</p>
+        <h1 className="text-2xl font-luxury font-bold text-brand-text">Manage Collections</h1>
+        <p className="text-brand-textMuted">Create and manage curated tile collections for your showroom.</p>
       </div>
 
       {/* Form Section */}
       <div className="bg-brand-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-10">
         <h2 className="text-lg font-luxury font-semibold text-brand-text flex items-center gap-2 mb-6">
           <span className="w-1 h-5 bg-brand-gold rounded-full"></span>
-          {isEditing ? 'Edit Category' : 'Create New Category'}
+          {isEditing ? 'Edit Collection' : 'Create New Collection'}
         </h2>
 
         <form onSubmit={handleSubmit}>
@@ -76,16 +76,16 @@ const ManageTiles = () => {
               <ImageUpload 
                 value={formData.image} 
                 onChange={(img) => setFormData({...formData, image: img})} 
-                label="Category Image *"
+                label="Collection Cover Image *"
               />
             </div>
             
             <div className="lg:col-span-2 space-y-4">
               <FormInput 
-                label="Category Name" 
+                label="Collection Name" 
                 value={formData.name}
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
-                placeholder="e.g. Luxury Marble"
+                placeholder="e.g. Royal Villa Series"
                 required
               />
               
@@ -94,7 +94,7 @@ const ManageTiles = () => {
                 type="textarea"
                 value={formData.desc}
                 onChange={(e) => setFormData({...formData, desc: e.target.value})}
-                placeholder="Brief description of this category..."
+                placeholder="Brief description of this collection..."
                 rows={4}
               />
 
@@ -103,7 +103,7 @@ const ManageTiles = () => {
                   type="submit"
                   className="flex items-center gap-2 bg-brand-gold text-brand-white px-6 py-3 rounded-xl hover:bg-yellow-600 transition-colors shadow-lg shadow-brand-gold/20 font-medium"
                 >
-                  {isEditing ? 'Update Category' : <><Plus size={18} /> Create Category</>}
+                  {isEditing ? 'Update Collection' : <><Plus size={18} /> Create Collection</>}
                 </button>
                 {isEditing && (
                   <button 
@@ -125,14 +125,14 @@ const ManageTiles = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <h2 className="text-lg font-luxury font-semibold text-brand-text flex items-center gap-2">
             <span className="w-1 h-5 bg-brand-black rounded-full"></span>
-            Existing Categories
+            Existing Collections
           </h2>
           
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
             <input 
               type="text" 
-              placeholder="Search categories..." 
+              placeholder="Search collections..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg w-full md:w-64 focus:outline-none focus:border-brand-gold transition-colors text-sm"
@@ -170,7 +170,7 @@ const ManageTiles = () => {
           ))}
           {(Array.isArray(collections) ? collections : []).length === 0 && (
             <div className="col-span-full text-center py-12 text-brand-textMuted bg-brand-white rounded-2xl border border-dashed border-gray-200">
-              No categories found. Create one above!
+              No collections found. Create one above!
             </div>
           )}
         </div>

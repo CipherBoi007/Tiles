@@ -43,9 +43,14 @@ const InspirationGallery = () => {
         </StaggerContainer>
 
         <FadeUp delay={0.2}>
-          <button className="mt-12 px-8 py-3 outline outline-2 outline-offset-2 outline-brand-text text-brand-text hover:bg-brand-text hover:text-brand-white transition-all font-medium rounded-sm">
-            Follow @LuxeTiles
-          </button>
+          <a 
+            href="https://www.instagram.com/sri_lakshmi_tiles_and_granite" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-block mt-12 px-8 py-3 outline outline-2 outline-offset-2 outline-brand-text text-brand-text hover:bg-brand-text hover:text-brand-white transition-all font-medium rounded-sm"
+          >
+            Follow @sri_lakshmi_tiles_and_granite
+          </a>
         </FadeUp>
       </div>
     </section>

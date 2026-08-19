@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { login, createInitialAdmin } from '../controllers/authController';
+import { login } from '../controllers/authController';
 import { getTiles, createTile, updateTile, deleteTile } from '../controllers/tilesController';
 import { getCollections, createCollection, updateCollection, deleteCollection } from '../controllers/collectionsController';
 import { getCatalogues, createCatalogue, deleteCatalogue } from '../controllers/cataloguesController';
@@ -16,7 +16,6 @@ const router = Router();
 
 // Auth
 router.post('/auth/login', validate(loginSchema), login);
-router.post('/auth/setup', createInitialAdmin);
 
 // Tiles
 router.get('/tiles', getTiles);

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { categoryService, collectionService, catalogueService, enquiryService } from '../services';
+import { tileService, collectionService, catalogueService, enquiryService } from '../services';
 
 // Generic Hook
 export const usePaginatedData = (service, initialPage = 1, initialLimit = 8, initialSearch = '') => {
@@ -70,7 +70,8 @@ export const usePaginatedData = (service, initialPage = 1, initialLimit = 8, ini
   };
 };
 
+export const useTiles = (limit = 8) => usePaginatedData(tileService, 1, limit);
 export const useCollections = (limit = 8) => usePaginatedData(collectionService, 1, limit);
-export const useTileCategories = (limit = 8) => usePaginatedData(categoryService, 1, limit);
+export const useTileCategories = (limit = 8) => usePaginatedData(collectionService, 1, limit);
 export const useCatalogues = (limit = 8) => usePaginatedData(catalogueService, 1, limit);
 export const useEnquiries = (limit = 8) => usePaginatedData(enquiryService, 1, limit);

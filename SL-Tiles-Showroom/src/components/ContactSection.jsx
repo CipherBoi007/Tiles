@@ -9,9 +9,9 @@ const ContactSection = () => {
   const { captureLead } = useLeadCapture();
   const { settings } = useData();
 
-  const whatsappNumber = settings?.whatsappNumber || '+918608666441';
-  const emailAddress = settings?.emailAddress || 'hello@luxetiles.com';
-  const address = settings?.address || '13-3011-10, Muniyasamy Nagar, Rameswaram ECR Road, Ramanathapuram';
+  const whatsappNumber = settings?.whatsappNumber || '+91 98765 43210';
+  const emailAddress = settings?.emailAddress || '  ';
+  const address = settings?.address || 'SRI LAKSHMI TILES AND GRANITES, Madurai - Rameswaram Hwy, near mugavai car Care Mandapam, Muniyasamy nagar, Pattinamkathan, Ramanathapuram, Pattinamkathan, Tamil Nadu 623536';
 
   const handleWhatsApp = () => {
     const execute = () => {
@@ -68,7 +68,7 @@ const ContactSection = () => {
                 </div>
                 <div>
                   <h4 className="font-luxury font-semibold text-brand-black">Working Hours</h4>
-                  <p className="text-brand-textMuted mt-1">Monday - Sunday: 10:00 AM - 8:00 PM</p>
+                  <p className="text-brand-textMuted mt-1">Monday - Sunday: 9:00 AM - 9:00 PM</p>
                 </div>
               </StaggerItem>
             </StaggerContainer>

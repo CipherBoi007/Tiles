@@ -92,6 +92,9 @@ const Testimonials = () => {
     alert("Thank you! Your review has been submitted successfully.");
   };
 
+  const [isExpanded, setIsExpanded] = useState(false);
+  const displayedReviews = isExpanded ? reviews : reviews.slice(0, 4);
+
   return (
     <section className="py-20 bg-brand-lightBg">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
@@ -100,9 +103,9 @@ const Testimonials = () => {
           <p className="text-brand-textMuted text-lg">Trusted by homeowners, designers, and architects.</p>
         </FadeUp>
 
-        {/* Existing & New Reviews */}
-        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
-          {reviews.map((testimonial) => (
+        {/* Existing & New Reviews (Truncated to 4 initially, expandable) */}
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+          {displayedReviews.map((testimonial) => (
             <StaggerItem key={testimonial.id} className="bg-brand-white p-6 sm:p-8 border border-gray-100 rounded-sm shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
               <div className="flex items-center gap-1 mb-6 shrink-0">
                 {[...Array(5)].map((_, i) => (
@@ -117,6 +120,17 @@ const Testimonials = () => {
             </StaggerItem>
           ))}
         </StaggerContainer>
+
+        {reviews.length > 4 && (
+          <div className="text-center mb-20">
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="inline-flex items-center gap-2 px-8 py-3 bg-brand-white border border-gray-200 hover:border-brand-gold text-brand-black hover:text-brand-gold font-medium rounded-xl transition-all shadow-sm cursor-pointer"
+            >
+              {isExpanded ? 'Show Less Reviews ▲' : `Show More Reviews (${reviews.length - 4} More) ▼`}
+            </button>
+          </div>
+        )}
 
         {/* Review Submission Form */}
         <FadeUp className="max-w-5xl mx-auto bg-brand-white p-8 md:p-12 border border-gray-100 rounded-sm shadow-md flex flex-col md:flex-row items-center gap-10 md:gap-16">

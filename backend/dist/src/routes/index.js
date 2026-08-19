@@ -16,7 +16,6 @@ const schemas_1 = require("../schemas");
 const router = (0, express_1.Router)();
 // Auth
 router.post('/auth/login', (0, validateMiddleware_1.validate)(schemas_1.loginSchema), authController_1.login);
-router.post('/auth/setup', authController_1.createInitialAdmin);
 // Tiles
 router.get('/tiles', tilesController_1.getTiles);
 router.post('/tiles', authMiddleware_1.protect, (0, validateMiddleware_1.validate)(schemas_1.tileSchema), tilesController_1.createTile);

@@ -15,7 +15,10 @@ const tilesData = [
 
 const cataloguesData = [
   { title: 'Summer 2024 Collection', desc: 'Our latest imported tiles and exclusive designs.', fileUrl: '/catalogues/summer-2024.pdf' },
-  { title: 'Architectural Series 2023', desc: 'Technical specifications for commercial projects.', fileUrl: '/catalogues/arch-2023.pdf' }
+  { title: 'Architectural Series 2023', desc: 'Technical specifications for commercial projects.', fileUrl: '/catalogues/arch-2023.pdf' },
+  { title: 'Summer 2025 Master Catalogue', desc: 'Complete range of imported marble, vitrified, and ceramic floor and wall tiles.', fileUrl: '/catalogues/summer-2025.pdf' },
+  { title: 'Architectural & Commercial Series', desc: 'Technical specs, durability ratings, and slip resistance indices for commercial projects.', fileUrl: '/catalogues/arch-2025.pdf' },
+  { title: 'Luxury Villa Edition', desc: 'Curated premium collection of large-format slabs and book-matched marble designs.', fileUrl: '/catalogues/luxury-villa.pdf' }
 ];
 
 const enquiriesData = [
@@ -48,16 +51,47 @@ async function main() {
     console.log('Seeded tiles');
   }
 
-  const catCount = await prisma.catalogue.count();
-  if (catCount === 0) {
-    for (const c of cataloguesData) await prisma.catalogue.create({ data: c });
-    console.log('Seeded catalogues');
+  for (const c of cataloguesData) {
+    const existing = await prisma.catalogue.findFirst({ where: { title: c.title } });
+    if (!existing) {
+      await prisma.catalogue.create({ data: c });
+    }
   }
+  console.log('Seeded catalogues');
 
   const enqCount = await prisma.enquiry.count();
   if (enqCount === 0) {
     for (const e of enquiriesData) await prisma.enquiry.create({ data: e });
     console.log('Seeded enquiries');
+  }
+
+  const settingCount = await prisma.setting.count();
+  if (settingCount === 0) {
+    await prisma.setting.create({
+      data: {
+        showroomName: 'SRI LAKSHMI TILES AND GRANITES',
+        logoUrl: '/SL_LOGO.png',
+        whatsappNumber: '+91 98765 43210',
+        emailAddress: 'srilakshimitilesandgranite@gmail.com',
+        address: 'SRI LAKSHMI TILES AND GRANITES, Madurai - Rameswaram Hwy, near mugavai car Care Mandapam, Muniyasamy nagar, Pattinamkathan, Ramanathapuram, Pattinamkathan, Tamil Nadu 623536'
+      }
+    });
+    console.log('Seeded settings');
+  } else {
+    const firstSetting = await prisma.setting.findFirst();
+    if (firstSetting) {
+      await prisma.setting.update({
+        where: { id: firstSetting.id },
+        data: {
+          showroomName: 'SRI LAKSHMI TILES AND GRANITES',
+          logoUrl: '/SL_LOGO.png',
+          whatsappNumber: '+91 98765 43210',
+          emailAddress: 'srilakshimitilesandgranite@gmail.com',
+          address: 'SRI LAKSHMI TILES AND GRANITES, Madurai - Rameswaram Hwy, near mugavai car Care Mandapam, Muniyasamy nagar, Pattinamkathan, Ramanathapuram, Pattinamkathan, Tamil Nadu 623536'
+        }
+      });
+      console.log('Updated settings');
+    }
   }
 
   const adminCount = await prisma.adminUser.count();

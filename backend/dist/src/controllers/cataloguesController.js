@@ -35,14 +35,22 @@ const getCatalogues = async (req, res) => {
 exports.getCatalogues = getCatalogues;
 const createCatalogue = async (req, res) => {
     try {
-        const catalogue = await prisma_1.default.catalogue.create({ data: req.body });
+        const { title, desc, fileUrl } = req.body;
+        const catalogueData = {
+            title: title?.trim() || 'Untitled Catalogue',
+            desc: desc?.trim() || '',
+            fileUrl: fileUrl || '',
+        };
+        const catalogue = await prisma_1.default.catalogue.create({ data: catalogueData });
         await prisma_1.default.activity.create({
             data: { type: 'catalogue', title: 'Catalogue uploaded', desc: `${catalogue.title} PDF published.` }
         });
         res.status(201).json(catalogue);
     }
     catch (error) {
-        res.status(500).json({ message: 'Error creating catalogue', error });
+        if (req.log)
+            req.log.error(error);
+        res.status(500).json({ message: error?.message || 'Error creating catalogue', error });
     }
 };
 exports.createCatalogue = createCatalogue;

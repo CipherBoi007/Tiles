@@ -38,8 +38,9 @@ export const DataProvider = ({ children }) => {
 
   const fetchCollections = useCallback(async () => {
     setLoading(prev => ({ ...prev, collections: true }));
-    const data = await mockDb.getCollections();
-    setCollections(data);
+    const res = await mockDb.getCollections();
+    const list = Array.isArray(res) ? res : (res?.data || []);
+    setCollections(list);
     setLoading(prev => ({ ...prev, collections: false }));
   }, []);
 

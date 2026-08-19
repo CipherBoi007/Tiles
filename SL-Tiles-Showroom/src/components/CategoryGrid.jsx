@@ -7,7 +7,8 @@ import SafeImage from './SafeImage';
 import { FadeUp, StaggerContainer, StaggerItem } from './animations/MotionWrappers';
 
 const CategoryGrid = () => {
-  const { data: collections, pagination, setPage, loading } = useTileCategories(8);
+  const { data: collections } = useTileCategories(4);
+  const displayCollections = (Array.isArray(collections) ? collections : []).slice(0, 4);
 
   return (
     <section id="categories" className="py-20 bg-brand-white">
@@ -18,12 +19,12 @@ const CategoryGrid = () => {
             <p className="text-brand-textMuted text-lg max-w-2xl">Find the perfect tiles tailored for every corner of your home.</p>
           </FadeUp>
           <Link to="/collections" className="hidden md:flex items-center gap-2 text-brand-gold font-medium hover:text-yellow-600 transition-colors">
-            View All Collections <ArrowRight className="w-4 h-4" />
+            Explore Spaces <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
         <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {collections.map((cat) => (
+          {displayCollections.map((cat) => (
             <StaggerItem 
               key={cat.id} 
               className="group relative overflow-hidden rounded-sm cursor-pointer aspect-[4/5]"
@@ -53,13 +54,7 @@ const CategoryGrid = () => {
           ))}
         </StaggerContainer>
         
-        {collections.length > 0 && (
-          <Pagination 
-            currentPage={pagination.currentPage} 
-            totalPages={pagination.totalPages} 
-            onPageChange={setPage} 
-          />
-        )}
+
         
         <Link to="/collections" className="md:hidden mt-8 w-full flex justify-center items-center gap-2 text-brand-gold font-medium hover:text-yellow-600">
           View All Collections <ArrowRight className="w-4 h-4" />

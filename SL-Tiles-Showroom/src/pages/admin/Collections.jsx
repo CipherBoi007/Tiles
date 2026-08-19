@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useCollections } from '../../hooks/useDataFetch';
+import { useTiles } from '../../hooks/useDataFetch';
 import { useData } from '../../context/DataContext';
 import ImageUpload from '../../components/admin/ImageUpload';
 import FormInput from '../../components/admin/FormInput';
@@ -17,10 +17,11 @@ const templates = [
 
 const Collections = () => {
   const { collections: globalCollections } = useData();
-  const { data: tiles, pagination, setPage, search, setSearch, createItem, updateItem, deleteItem } = useCollections(12);
+  const { data: tiles, pagination, setPage, search, setSearch, createItem, updateItem, deleteItem } = useTiles(12);
   
   const [formData, setFormData] = useState({
     name: '',
+    category: 'Marble',
     desc: '',
     size: '',
     palette: '',
@@ -40,6 +41,7 @@ const Collections = () => {
     
     const payload = {
       ...formData,
+      finish: formData.palette || 'Glossy',
       collectionId: formData.collectionId ? parseInt(formData.collectionId, 10) : null
     };
 
@@ -52,13 +54,14 @@ const Collections = () => {
     
     // Reset form
     setFormData({
-      name: '', desc: '', size: '', palette: '', template: 'template1', collectionId: '', image: ''
+      name: '', category: 'Marble', desc: '', size: '', palette: '', template: 'template1', collectionId: '', image: ''
     });
   };
 
   const handleEdit = (tile) => {
     setFormData({
       name: tile.name || '',
+      category: tile.category || 'Marble',
       desc: tile.desc || '',
       size: tile.size || '',
       palette: tile.palette || '',
@@ -79,7 +82,7 @@ const Collections = () => {
   const handleCancel = () => {
     setIsEditing(null);
     setFormData({
-      name: '', desc: '', size: '', palette: '', template: 'template1', collectionId: '', image: ''
+      name: '', category: 'Marble', desc: '', size: '', palette: '', template: 'template1', collectionId: '', image: ''
     });
   };
 
@@ -145,13 +148,29 @@ const Collections = () => {
                   <label className="block text-sm font-medium text-brand-text mb-2">Category *</label>
                   <select 
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-colors text-brand-text mb-4"
-                    value={formData.collectionId}
-                    onChange={(e) => setFormData({...formData, collectionId: e.target.value})}
+                    value={formData.category}
+                    onChange={(e) => setFormData({...formData, category: e.target.value})}
                     required
                   >
-                    <option value="" disabled>Select a category</option>
-                    {(Array.isArray(globalCollections) ? globalCollections : []).map(cat => (
-                      <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    <option value="Marble">Marble</option>
+                    <option value="Ceramic">Ceramic</option>
+                    <option value="Vitrified">Vitrified</option>
+                    <option value="Natural Stone">Natural Stone</option>
+                    <option value="Wooden">Wooden</option>
+                    <option value="Luxury">Luxury</option>
+                  </select>
+                </div>
+
+                <div className="md:col-span-1">
+                  <label className="block text-sm font-medium text-brand-text mb-2">Collection (Optional)</label>
+                  <select 
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-colors text-brand-text mb-4"
+                    value={formData.collectionId}
+                    onChange={(e) => setFormData({...formData, collectionId: e.target.value})}
+                  >
+                    <option value="">None (Standalone Product)</option>
+                    {(Array.isArray(globalCollections) ? globalCollections : (globalCollections?.data || [])).map(col => (
+                      <option key={col.id} value={col.id}>{col.name}</option>
                     ))}
                   </select>
                 </div>

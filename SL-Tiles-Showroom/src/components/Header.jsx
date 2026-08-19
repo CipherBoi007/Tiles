@@ -12,8 +12,9 @@ const Header = () => {
   const { settings } = useData();
   const navigate = useNavigate();
 
-  const whatsappNumber = settings?.whatsappNumber || '91XXXXXXXXXX';
-  const logoUrl = settings?.logoUrl || '/SL_LOGO.png';
+  const [imgError, setImgError] = useState(false);
+  const whatsappNumber = settings?.whatsappNumber || '+91 98765 43210';
+  const logoUrl = !imgError ? (settings?.logoUrl && settings.logoUrl !== '/logo.png' ? settings.logoUrl : '/SL_LOGO.png') : '/SL_LOGO.png';
 
   const handleWhatsApp = (e) => {
     e.preventDefault();
@@ -35,19 +36,21 @@ const Header = () => {
       <div className="w-full px-4 md:px-8 lg:px-12 xl:px-16 h-[72px] md:h-20 flex items-center justify-between gap-4">
         {/* Logo */}
         <div className="flex-shrink-0 flex items-center">
-          <Link to="/" className="flex items-center">
-            {logoUrl ? (
-              <img src={logoUrl} alt={settings?.showroomName || "Showroom Logo"} className="h-16 md:h-20 w-auto object-contain" />
-            ) : (
-              <span className="font-luxury font-bold text-xl tracking-wider text-brand-black">{settings?.showroomName || "SHOWROOM"}</span>
-            )}
+          <Link to="/" className="flex items-center py-1">
+            <img 
+              src={logoUrl} 
+              alt={settings?.showroomName || "SRI LAKSHMI TILES AND GRANITES"} 
+              className="h-12 sm:h-14 md:h-16 w-auto object-contain max-h-[64px]"
+              onError={() => setImgError(true)}
+            />
           </Link>
         </div>
 
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex space-x-8">
           <Link to="/" className="text-brand-textMuted hover:text-brand-gold font-medium transition-colors">Home</Link>
-          <Link to="/collections" className="text-brand-textMuted hover:text-brand-gold font-medium transition-colors">Collections</Link>
+          <Link to="/collections?view=collections" className="text-brand-textMuted hover:text-brand-gold font-medium transition-colors">Collections</Link>
+          <Link to="/collections?view=tiles" className="text-brand-textMuted hover:text-brand-gold font-medium transition-colors">All Tiles</Link>
           <Link to="/catalogues" className="text-brand-textMuted hover:text-brand-gold font-medium transition-colors">Catalogues</Link>
           <a href="/#contact" className="text-brand-textMuted hover:text-brand-gold font-medium transition-colors">Contact</a>
         </nav>
@@ -89,7 +92,8 @@ const Header = () => {
           <div className="flex-1 overflow-y-auto py-8 px-6">
             <nav className="flex flex-col space-y-6 text-right items-end">
               <Link to="/" className="text-xl text-brand-text hover:text-brand-gold font-medium transition-colors border-b border-gray-50 pb-4 w-full" onClick={() => setIsMenuOpen(false)}>Home</Link>
-              <Link to="/collections" className="text-xl text-brand-text hover:text-brand-gold font-medium transition-colors border-b border-gray-50 pb-4 w-full" onClick={() => setIsMenuOpen(false)}>Collections</Link>
+              <Link to="/collections?view=collections" className="text-xl text-brand-text hover:text-brand-gold font-medium transition-colors border-b border-gray-50 pb-4 w-full" onClick={() => setIsMenuOpen(false)}>Collections</Link>
+              <Link to="/collections?view=tiles" className="text-xl text-brand-text hover:text-brand-gold font-medium transition-colors border-b border-gray-50 pb-4 w-full" onClick={() => setIsMenuOpen(false)}>All Tiles</Link>
               <Link to="/catalogues" className="text-xl text-brand-text hover:text-brand-gold font-medium transition-colors border-b border-gray-50 pb-4 w-full" onClick={() => setIsMenuOpen(false)}>Catalogues</Link>
               <a href="/#contact" className="text-xl text-brand-text hover:text-brand-gold font-medium transition-colors pb-4 w-full" onClick={() => setIsMenuOpen(false)}>Contact</a>
             </nav>

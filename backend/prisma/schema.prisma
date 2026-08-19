@@ -31,8 +31,9 @@ model Tile {
   size         String
   finish       String
   collectionId Int?
-  collection   Collection? @relation(fields: [collectionId], references: [id])
+  collection   Collection? @relation(fields: [collectionId], references: [id], onDelete: SetNull)
 
+  @@index([name])
   @@index([category])
   @@index([collectionId])
 }

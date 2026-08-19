@@ -27,12 +27,21 @@ export const updateSettings = async (req: Request, res: Response): Promise<any> 
     if (!settings) {
       return res.status(404).json({ message: 'Settings not found' });
     }
+    const { showroomName, logoUrl, whatsappNumber, emailAddress, address } = req.body;
+    const settingsData = {
+      ...(showroomName && { showroomName: showroomName.trim() }),
+      ...(logoUrl && { logoUrl }),
+      ...(whatsappNumber && { whatsappNumber: whatsappNumber.trim() }),
+      ...(emailAddress && { emailAddress: emailAddress.trim() }),
+      ...(address && { address: address.trim() }),
+    };
     const updatedSettings = await prisma.setting.update({
       where: { id: settings.id },
-      data: req.body
+      data: settingsData
     });
     res.json(updatedSettings);
-  } catch (error) {
-    res.status(500).json({ message: 'Error updating settings', error });
+  } catch (error: any) {
+    if (req.log) req.log.error(error);
+    res.status(500).json({ message: error?.message || 'Error updating settings', error });
   }
 };

@@ -36,25 +36,41 @@ const getCollections = async (req, res) => {
 exports.getCollections = getCollections;
 const createCollection = async (req, res) => {
     try {
-        const collection = await prisma_1.default.collection.create({ data: req.body });
+        const { name, desc, image } = req.body;
+        const collectionData = {
+            name: name?.trim() || 'Untitled Collection',
+            desc: desc?.trim() || '',
+            image: image || ''
+        };
+        const collection = await prisma_1.default.collection.create({ data: collectionData });
         await prisma_1.default.activity.create({
             data: { type: 'collection', title: 'Collection created', desc: `${collection.name} was created.` }
         });
         res.status(201).json({ ...collection, tilesCount: 0 });
     }
     catch (error) {
-        res.status(500).json({ message: 'Error creating collection', error });
+        if (req.log)
+            req.log.error(error);
+        res.status(500).json({ message: error?.message || 'Error creating collection', error });
     }
 };
 exports.createCollection = createCollection;
 const updateCollection = async (req, res) => {
     try {
         const { id } = req.params;
-        const collection = await prisma_1.default.collection.update({ where: { id: Number(id) }, data: req.body });
+        const { name, desc, image } = req.body;
+        const collectionData = {
+            name: name?.trim(),
+            desc: desc?.trim(),
+            image
+        };
+        const collection = await prisma_1.default.collection.update({ where: { id: Number(id) }, data: collectionData });
         res.json(collection);
     }
     catch (error) {
-        res.status(500).json({ message: 'Error updating collection', error });
+        if (req.log)
+            req.log.error(error);
+        res.status(500).json({ message: error?.message || 'Error updating collection', error });
     }
 };
 exports.updateCollection = updateCollection;

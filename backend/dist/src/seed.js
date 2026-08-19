@@ -17,7 +17,10 @@ const tilesData = [
 ];
 const cataloguesData = [
     { title: 'Summer 2024 Collection', desc: 'Our latest imported tiles and exclusive designs.', fileUrl: '/catalogues/summer-2024.pdf' },
-    { title: 'Architectural Series 2023', desc: 'Technical specifications for commercial projects.', fileUrl: '/catalogues/arch-2023.pdf' }
+    { title: 'Architectural Series 2023', desc: 'Technical specifications for commercial projects.', fileUrl: '/catalogues/arch-2023.pdf' },
+    { title: 'Summer 2025 Master Catalogue', desc: 'Complete range of imported marble, vitrified, and ceramic floor and wall tiles.', fileUrl: '/catalogues/summer-2025.pdf' },
+    { title: 'Architectural & Commercial Series', desc: 'Technical specs, durability ratings, and slip resistance indices for commercial projects.', fileUrl: '/catalogues/arch-2025.pdf' },
+    { title: 'Luxury Villa Edition', desc: 'Curated premium collection of large-format slabs and book-matched marble designs.', fileUrl: '/catalogues/luxury-villa.pdf' }
 ];
 const enquiriesData = [
     { customer: 'Riya Sharma', phone: '+91 98765 43210', tile: 'Carrara White Marble', status: 'New' },
@@ -45,17 +48,47 @@ async function main() {
         }
         console.log('Seeded tiles');
     }
-    const catCount = await prisma_1.default.catalogue.count();
-    if (catCount === 0) {
-        for (const c of cataloguesData)
+    for (const c of cataloguesData) {
+        const existing = await prisma_1.default.catalogue.findFirst({ where: { title: c.title } });
+        if (!existing) {
             await prisma_1.default.catalogue.create({ data: c });
-        console.log('Seeded catalogues');
+        }
     }
+    console.log('Seeded catalogues');
     const enqCount = await prisma_1.default.enquiry.count();
     if (enqCount === 0) {
         for (const e of enquiriesData)
             await prisma_1.default.enquiry.create({ data: e });
         console.log('Seeded enquiries');
+    }
+    const settingCount = await prisma_1.default.setting.count();
+    if (settingCount === 0) {
+        await prisma_1.default.setting.create({
+            data: {
+                showroomName: 'SRI LAKSHMI TILES AND GRANITES',
+                logoUrl: '/SL_LOGO.png',
+                whatsappNumber: '+91 98765 43210',
+                emailAddress: 'srilakshimitilesandgranite@gmail.com',
+                address: 'SRI LAKSHMI TILES AND GRANITES, Madurai - Rameswaram Hwy, near mugavai car Care Mandapam, Muniyasamy nagar, Pattinamkathan, Ramanathapuram, Pattinamkathan, Tamil Nadu 623536'
+            }
+        });
+        console.log('Seeded settings');
+    }
+    else {
+        const firstSetting = await prisma_1.default.setting.findFirst();
+        if (firstSetting) {
+            await prisma_1.default.setting.update({
+                where: { id: firstSetting.id },
+                data: {
+                    showroomName: 'SRI LAKSHMI TILES AND GRANITES',
+                    logoUrl: '/SL_LOGO.png',
+                    whatsappNumber: '+91 98765 43210',
+                    emailAddress: 'srilakshimitilesandgranite@gmail.com',
+                    address: 'SRI LAKSHMI TILES AND GRANITES, Madurai - Rameswaram Hwy, near mugavai car Care Mandapam, Muniyasamy nagar, Pattinamkathan, Ramanathapuram, Pattinamkathan, Tamil Nadu 623536'
+                }
+            });
+            console.log('Updated settings');
+        }
     }
     const adminCount = await prisma_1.default.adminUser.count();
     if (adminCount === 0) {

@@ -32,23 +32,4 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export const createInitialAdmin = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const count = await prisma.adminUser.count();
-    if (count === 0) {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash('admin123', salt);
-      const admin = await prisma.adminUser.create({
-        data: {
-          email: 'admin@showroom.com',
-          password: hashedPassword,
-        },
-      });
-      res.status(201).json({ message: 'Initial admin created', email: admin.email });
-    } else {
-      res.status(400).json({ message: 'Admin already exists' });
-    }
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
+

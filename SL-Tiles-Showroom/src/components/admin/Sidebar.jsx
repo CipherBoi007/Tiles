@@ -27,7 +27,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   const navItems = [
     { name: 'Dashboard', path: '/admin', icon: <LayoutDashboard size={20} />, exact: true },
     { name: 'Manage Tiles', path: '/admin/tiles', icon: <Grid size={20} /> },
-    { name: 'Categories', path: '/admin/categories', icon: <FolderOpen size={20} /> },
+    { name: 'Collections', path: '/admin/categories', icon: <Layers size={20} /> },
     { name: 'Catalogues', path: '/admin/catalogues', icon: <BookOpen size={20} /> },
     { name: 'Enquiries', path: '/admin/enquiries', icon: <MessageSquare size={20} /> },
     { name: 'Settings', path: '/admin/settings', icon: <Settings size={20} /> },

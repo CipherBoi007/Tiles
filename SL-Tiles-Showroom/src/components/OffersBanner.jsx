@@ -2,8 +2,31 @@ import React from 'react';
 import { Building2, Percent, FileText, Phone } from 'lucide-react';
 import { FadeUp, ScaleUp } from './animations/MotionWrappers';
 import SafeImage from './SafeImage';
+import { useLeadCapture } from '../context/LeadCaptureContext';
+import { openWhatsApp } from '../utils/whatsappUtils';
+import { useData } from '../context/DataContext';
+import { useNavigate } from 'react-router-dom';
 
 const OffersBanner = () => {
+  const { captureLead } = useLeadCapture();
+  const { settings } = useData();
+  const navigate = useNavigate();
+
+  const handleBulkQuote = (e) => {
+    e.preventDefault();
+    captureLead('Bulk Quote Enquiry', () => {
+      openWhatsApp({ 
+        phone: settings?.whatsappNumber || '+919876543210',
+        message: 'Hello! I am interested in bulk tile ordering for a construction project. Please share your bulk price quote.'
+      });
+    });
+  };
+
+  const handleDownloadCatalogue = (e) => {
+    e.preventDefault();
+    navigate('/catalogues');
+  };
+
   return (
     <section className="py-24 md:py-32 bg-brand-white">
       <div className="max-w-[1500px] mx-auto px-4 sm:px-8">
@@ -47,11 +70,17 @@ const OffersBanner = () => {
             </div>
             
             <div className="flex flex-col sm:flex-row gap-6">
-              <button className="px-10 py-4 bg-brand-gold hover:bg-yellow-600 text-brand-white text-xl font-medium rounded-sm flex items-center justify-center gap-3 transition-colors shadow-xl shadow-brand-gold/20">
+              <button 
+                onClick={handleBulkQuote}
+                className="px-10 py-4 bg-brand-gold hover:bg-yellow-600 text-brand-white text-xl font-medium rounded-sm flex items-center justify-center gap-3 transition-colors shadow-xl shadow-brand-gold/20"
+              >
                 <Phone className="w-6 h-6" />
                 Get Bulk Quote
               </button>
-              <button className="px-10 py-4 border-2 border-gray-300 text-brand-black hover:border-brand-black hover:bg-gray-50 text-xl font-medium rounded-sm flex items-center justify-center transition-colors">
+              <button 
+                onClick={handleDownloadCatalogue}
+                className="px-10 py-4 border-2 border-gray-300 text-brand-black hover:border-brand-black hover:bg-gray-50 text-xl font-medium rounded-sm flex items-center justify-center transition-colors cursor-pointer"
+              >
                 Download Catalogue
               </button>
             </div>

@@ -33,26 +33,46 @@ export const getTiles = async (req: Request, res: Response) => {
 
 export const createTile = async (req: Request, res: Response) => {
   try {
-    const tile = await prisma.tile.create({ data: req.body });
+    const { name, image, category, size, finish, palette, collectionId } = req.body;
+    const tileData = {
+      name: name?.trim(),
+      image,
+      category: category?.trim() || '',
+      size: size?.trim() || '',
+      finish: finish?.trim() || palette?.trim() || '',
+      collectionId: collectionId ? Number(collectionId) : null,
+    };
+    const tile = await prisma.tile.create({ data: tileData });
     await prisma.activity.create({
       data: { type: 'tile_added', title: 'Tile added', desc: `${tile.name} was added.` }
     });
     res.status(201).json(tile);
-  } catch (error) {
-    res.status(500).json({ message: 'Error creating tile', error });
+  } catch (error: any) {
+    if (req.log) req.log.error(error);
+    res.status(500).json({ message: error?.message || 'Error creating tile', error });
   }
 };
 
 export const updateTile = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const tile = await prisma.tile.update({ where: { id: Number(id) }, data: req.body });
+    const { name, image, category, size, finish, palette, collectionId } = req.body;
+    const tileData = {
+      name: name?.trim(),
+      image,
+      category: category?.trim() || '',
+      size: size?.trim() || '',
+      finish: finish?.trim() || palette?.trim() || '',
+      collectionId: collectionId ? Number(collectionId) : null,
+    };
+    const tile = await prisma.tile.update({ where: { id: Number(id) }, data: tileData });
     await prisma.activity.create({
       data: { type: 'tile_updated', title: 'Tile updated', desc: `${tile.name} was updated.` }
     });
     res.json(tile);
-  } catch (error) {
-    res.status(500).json({ message: 'Error updating tile', error });
+  } catch (error: any) {
+    if (req.log) req.log.error(error);
+    res.status(500).json({ message: error?.message || 'Error updating tile', error });
   }
 };
 

@@ -18,15 +18,29 @@ const PORT = process.env.PORT || 5000;
 const logger = (0, pino_1.default)({ level: process.env.LOG_LEVEL || 'info' });
 app.use((0, pino_http_1.default)({ logger }));
 app.use((0, helmet_1.default)());
+const allowedOrigins = [
+    process.env.FRONTEND_URL,
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://127.0.0.1:5173'
+].filter(Boolean);
+app.use((0, cors_1.default)({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin) || (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL)) {
+            callback(null, true);
+        }
+        else {
+            callback(new Error('Not allowed by CORS policy'));
+        }
+    },
+    credentials: true,
+}));
 const apiLimiter = (0, express_rate_limit_1.default)({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // limit each IP to 100 requests per windowMs
+    max: 1000, // Increased to 1000 to prevent admin panel lockouts
     message: 'Too many requests from this IP, please try again after 15 minutes',
 });
 app.use('/api', apiLimiter);
-app.use((0, cors_1.default)({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
-}));
 app.use(express_1.default.json({ limit: '2mb' })); // Reduced from 10mb to prevent memory issues with JSON parsing
 app.use(express_1.default.urlencoded({ limit: '2mb', extended: true }));
 app.use('/api', index_1.default);
