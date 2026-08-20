@@ -74,11 +74,15 @@ const LeadCapturePopup = ({ source, onClose, onSuccess }) => {
       >
         <button 
           type="button"
-          onClick={handleClose}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleClose(e);
+          }}
           aria-label="Close dialog"
-          className="absolute top-3 right-3 sm:top-4 sm:right-4 z-30 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100/90 backdrop-blur text-gray-600 hover:bg-gray-200 hover:text-brand-black transition-colors cursor-pointer"
+          className="absolute top-3 right-3 sm:top-4 sm:right-4 z-50 w-9 h-9 flex items-center justify-center rounded-full bg-gray-100/90 hover:bg-gray-200 text-gray-700 hover:text-brand-black transition-all cursor-pointer pointer-events-auto shadow-sm"
         >
-          <X size={18} />
+          <X size={20} />
         </button>
         
         <div className="bg-brand-lightBg p-5 sm:p-8 text-center relative overflow-hidden border-b border-brand-gold/10 shrink-0">

@@ -15,11 +15,12 @@ export const LeadCaptureProvider = ({ children }) => {
 
   useEffect(() => {
     const captured = localStorage.getItem('luxetiles_lead_captured');
+    const dismissed = sessionStorage.getItem('luxetiles_lead_dismissed');
     const isAdmin = window.location.pathname.startsWith('/admin');
     
     if (captured || isAdmin) {
       setHasCapturedLead(true);
-    } else {
+    } else if (!dismissed) {
       // Auto open on initial load with a slight delay
       const timer = setTimeout(() => {
         setPopupConfig({ source: 'Website Entry', callback: null });
@@ -30,7 +31,8 @@ export const LeadCaptureProvider = ({ children }) => {
   }, []);
 
   const captureLead = (source = 'Quick Inquiry', callback) => {
-    if (hasCapturedLead) {
+    const captured = localStorage.getItem('luxetiles_lead_captured');
+    if (hasCapturedLead || captured) {
       if (callback) callback();
       return;
     }
@@ -40,8 +42,11 @@ export const LeadCaptureProvider = ({ children }) => {
   };
 
   const closePopup = () => {
+    sessionStorage.setItem('luxetiles_lead_dismissed', 'true');
     setIsPopupOpen(false);
-    // Callback is NOT executed if closed manually
+    if (popupConfig.callback) {
+      popupConfig.callback();
+    }
   };
 
   const submitSuccess = () => {
