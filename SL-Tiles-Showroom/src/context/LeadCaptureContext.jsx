@@ -15,17 +15,16 @@ export const LeadCaptureProvider = ({ children }) => {
 
   useEffect(() => {
     const captured = localStorage.getItem('luxetiles_lead_captured');
-    const dismissed = sessionStorage.getItem('luxetiles_lead_dismissed');
     const isAdmin = window.location.pathname.startsWith('/admin');
     
     if (captured || isAdmin) {
       setHasCapturedLead(true);
-    } else if (!dismissed) {
-      // Auto open on initial load with a slight delay
+    } else {
+      // Auto open on initial load / refresh after 800ms
       const timer = setTimeout(() => {
         setPopupConfig({ source: 'Website Entry', callback: null });
         setIsPopupOpen(true);
-      }, 500);
+      }, 800);
       return () => clearTimeout(timer);
     }
   }, []);
@@ -42,7 +41,6 @@ export const LeadCaptureProvider = ({ children }) => {
   };
 
   const closePopup = () => {
-    sessionStorage.setItem('luxetiles_lead_dismissed', 'true');
     setIsPopupOpen(false);
     if (popupConfig.callback) {
       popupConfig.callback();

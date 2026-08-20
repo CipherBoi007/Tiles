@@ -8,7 +8,6 @@ import WhyChooseUs from '../../components/WhyChooseUs';
 import Testimonials from '../../components/Testimonials';
 import Footer from '../../components/Footer';
 import WhatsAppFloat from '../../components/WhatsAppFloat';
-import LeadCapturePopup from '../../components/LeadCapturePopup';
 import OffersBanner from '../../components/OffersBanner';
 import SEO from '../../components/SEO';
 import CatalogueDownload from '../../components/CatalogueDownload';
@@ -121,7 +120,6 @@ const Home = () => {
       <ContactSection />
       <Footer />
       <WhatsAppFloat />
-      <LeadCapturePopup />
     </div>
   );
 };
