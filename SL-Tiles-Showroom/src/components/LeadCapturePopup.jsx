@@ -6,19 +6,9 @@ const LeadCapturePopup = ({ source, onClose, onSuccess }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [errors, setErrors] = useState({});
-  const [canClose, setCanClose] = useState(source !== 'Website Entry');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    if (source === 'Website Entry') {
-      const timer = setTimeout(() => {
-        setCanClose(true);
-      }, 5000);
-      return () => clearTimeout(timer);
-    } else {
-      setCanClose(true);
-    }
-  }, [source]);
+  const effectiveSource = source && source !== 'undefined' ? source : 'Website Entry';
 
   const validate = () => {
     const newErrors = {};
@@ -49,7 +39,7 @@ const LeadCapturePopup = ({ source, onClose, onSuccess }) => {
         email: '',
         description: '',
         status: 'New',
-        source: source
+        source: effectiveSource
       });
       
       onSuccess();
@@ -60,37 +50,47 @@ const LeadCapturePopup = ({ source, onClose, onSuccess }) => {
     }
   };
 
+  const handleClose = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (onClose) {
+      onClose();
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-[100] h-[100dvh] w-full flex flex-col justify-center items-center p-4 sm:p-4 overflow-hidden">
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-brand-black/60 backdrop-blur-sm transition-opacity"
-        onClick={() => canClose && onClose()}
+        onClick={handleClose}
       />
       
       {/* Modal - Compact Floating */}
       <div 
         className="relative w-full max-w-sm sm:max-w-md max-h-[85dvh] flex flex-col bg-brand-white rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 sm:zoom-in duration-300 z-10"
       >
-        {canClose && (
-          <button 
-            onClick={onClose}
-            className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100/80 backdrop-blur text-gray-600 hover:bg-gray-200 hover:text-brand-black transition-colors"
-          >
-            <X size={18} />
-          </button>
-        )}
+        <button 
+          type="button"
+          onClick={handleClose}
+          aria-label="Close dialog"
+          className="absolute top-3 right-3 sm:top-4 sm:right-4 z-30 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100/90 backdrop-blur text-gray-600 hover:bg-gray-200 hover:text-brand-black transition-colors cursor-pointer"
+        >
+          <X size={18} />
+        </button>
         
         <div className="bg-brand-lightBg p-5 sm:p-8 text-center relative overflow-hidden border-b border-brand-gold/10 shrink-0">
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-brand-gold/5 to-transparent pointer-events-none"></div>
           
-          <h2 className="text-xl sm:text-2xl font-luxury font-bold text-brand-black mb-2 relative z-10 mt-2 sm:mt-0">
+          <h2 className="text-xl sm:text-2xl font-luxury font-bold text-brand-black mb-2 relative z-10 mt-2 sm:mt-0 pr-6">
             Welcome to SriLakshmi Tiles and Granites
           </h2>
           <p className="text-brand-textMuted text-xs sm:text-sm relative z-10 px-2">
-            {source === 'Website Entry' 
+            {effectiveSource === 'Website Entry' || !source || source === 'undefined'
               ? 'Please share your details to explore our premium collections.' 
-              : `Please provide your details to continue with ${source}.`}
+              : `Please provide your details to continue with ${effectiveSource}.`}
           </p>
         </div>
 

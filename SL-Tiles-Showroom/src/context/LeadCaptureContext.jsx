@@ -29,12 +29,13 @@ export const LeadCaptureProvider = ({ children }) => {
     }
   }, []);
 
-  const captureLead = (source, callback) => {
+  const captureLead = (source = 'Quick Inquiry', callback) => {
     if (hasCapturedLead) {
       if (callback) callback();
       return;
     }
-    setPopupConfig({ source, callback });
+    const safeSource = source && source !== 'undefined' ? source : 'Quick Inquiry';
+    setPopupConfig({ source: safeSource, callback });
     setIsPopupOpen(true);
   };
 
