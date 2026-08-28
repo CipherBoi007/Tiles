@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { mockDb } from '../../data/mockDb';
-import { Grid, Folder, MessageSquare, BookOpen, Plus, Upload, Eye } from 'lucide-react';
+import { Grid, FolderOpen, FolderTree, MessageSquare, BookOpen, Plus, Upload, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
@@ -17,8 +17,8 @@ const Dashboard = () => {
         setStats(dbStats?.totalTiles !== undefined ? dbStats : {
           totalTiles: 0,
           tilesAddedThisWeek: 0,
-          collections: 0,
-          collectionsAddedThisMonth: 0,
+          categories: 0,
+          subCategories: 0,
           newEnquiries: 0,
           catalogues: 0,
           latestCatalogue: 'N/A'
@@ -29,8 +29,8 @@ const Dashboard = () => {
         setStats({
           totalTiles: 0,
           tilesAddedThisWeek: 0,
-          collections: 0,
-          collectionsAddedThisMonth: 0,
+          categories: 0,
+          subCategories: 0,
           newEnquiries: 0,
           catalogues: 0,
           latestCatalogue: 'N/A'
@@ -54,34 +54,33 @@ const Dashboard = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-
+        <StatCard 
+          icon={<FolderOpen className="text-brand-gold" size={24} />} 
+          title="CATEGORIES" 
+          value={stats.categories || stats.collections || 0} 
+          subtitle="Top Level"
+          subtitleColor="text-gray-500"
+        />
+        <StatCard 
+          icon={<FolderTree className="text-brand-black" size={24} />} 
+          title="SUBCATEGORIES" 
+          value={stats.subCategories || 0} 
+          subtitle="Second Level"
+          subtitleColor="text-gray-500"
+        />
         <StatCard 
           icon={<Grid className="text-brand-gold" size={24} />} 
           title="TOTAL TILES" 
-          value={stats.totalTiles} 
-          subtitle={`+${stats.tilesAddedThisWeek} this week`}
-          subtitleColor="text-green-500"
-        />
-        <StatCard 
-          icon={<Folder className="text-brand-textMuted" size={24} />} 
-          title="CATEGORIES" 
-          value={stats.collections} 
-          subtitle={`+${stats.collectionsAddedThisMonth} this month`}
+          value={stats.totalTiles || 0} 
+          subtitle={`+${stats.tilesAddedThisWeek || 0} this week`}
           subtitleColor="text-green-500"
         />
         <StatCard 
           icon={<MessageSquare className="text-brand-gold" size={24} />} 
           title="NEW ENQUIRIES" 
-          value={stats.newEnquiries} 
-          subtitle={`${stats.newEnquiries} pending reply`}
+          value={stats.newEnquiries || 0} 
+          subtitle={`${stats.newEnquiries || 0} pending reply`}
           subtitleColor="text-red-500"
-        />
-        <StatCard 
-          icon={<BookOpen className="text-green-600" size={24} />} 
-          title="CATALOGUES" 
-          value={stats.catalogues} 
-          subtitle={`Latest: ${stats.latestCatalogue}`}
-          subtitleColor="text-gray-500"
         />
       </div>
 
@@ -93,7 +92,6 @@ const Dashboard = () => {
               <span className="w-1 h-5 bg-brand-gold rounded-full"></span>
               Recent Activity
             </h2>
-            <button className="text-brand-gold text-sm font-medium hover:text-yellow-600">View All &rarr;</button>
           </div>
           
           <div className="space-y-6">
@@ -114,6 +112,9 @@ const Dashboard = () => {
                 </div>
               </div>
             ))}
+            {activity.length === 0 && (
+              <p className="text-sm text-brand-textMuted">No recent activity logged.</p>
+            )}
           </div>
         </div>
 
@@ -122,41 +123,46 @@ const Dashboard = () => {
           <div className="bg-brand-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <h2 className="text-lg font-luxury font-semibold text-brand-text mb-6">Quick Actions</h2>
             <div className="space-y-3">
-
+              <button 
+                onClick={() => navigate('/admin/categories')}
+                className="w-full flex items-center gap-3 bg-brand-black text-brand-white p-3 rounded-xl hover:bg-gray-900 transition-colors font-medium text-sm"
+              >
+                <FolderOpen size={18} /> Manage Categories
+              </button>
+              <button 
+                onClick={() => navigate('/admin/subcategories')}
+                className="w-full flex items-center gap-3 bg-brand-black text-brand-white p-3 rounded-xl hover:bg-gray-900 transition-colors font-medium text-sm"
+              >
+                <FolderTree size={18} /> Manage SubCategories
+              </button>
               <button 
                 onClick={() => navigate('/admin/tiles')}
-                className="w-full flex items-center gap-3 bg-brand-gold text-brand-white p-3 rounded-sm hover:bg-yellow-600 transition-colors shadow-sm shadow-brand-gold/20 font-medium"
+                className="w-full flex items-center gap-3 bg-brand-gold text-brand-white p-3 rounded-xl hover:bg-yellow-600 transition-colors shadow-sm shadow-brand-gold/20 font-medium text-sm"
               >
                 <Plus size={18} /> Add New Tile
               </button>
               <button 
-                onClick={() => navigate('/admin/categories')}
-                className="w-full flex items-center gap-3 bg-brand-black text-brand-white p-3 rounded-sm hover:bg-gray-900 transition-colors font-medium"
-              >
-                <Folder size={18} /> Manage Categories
-              </button>
-              <button 
                 onClick={() => navigate('/admin/catalogues')}
-                className="w-full flex items-center gap-3 bg-brand-white border border-gray-200 text-brand-text p-3 rounded-sm hover:bg-brand-lightBg transition-colors font-medium"
+                className="w-full flex items-center gap-3 bg-brand-white border border-gray-200 text-brand-text p-3 rounded-xl hover:bg-brand-lightBg transition-colors font-medium text-sm"
               >
                 <Upload size={18} /> Upload Catalogue
-              </button>
-              <button 
-                onClick={() => navigate('/admin/enquiries')}
-                className="w-full flex items-center gap-3 bg-brand-white border border-gray-200 text-brand-text p-3 rounded-sm hover:bg-brand-lightBg transition-colors font-medium"
-              >
-                <Eye size={18} /> View Enquiries
               </button>
             </div>
           </div>
 
           {/* Alert widget */}
-          {stats.newEnquiries > 0 && (
+          {stats?.newEnquiries > 0 && (
             <div className="bg-[#FFF8E7] rounded-2xl p-6 border border-brand-gold/20">
               <h3 className="text-brand-gold font-semibold mb-2">{stats.newEnquiries} Enquiries Pending</h3>
               <p className="text-sm text-[#8c7028] mb-4">
                 Customers are waiting for a response. Click View Enquiries to follow up.
               </p>
+              <button 
+                onClick={() => navigate('/admin/enquiries')}
+                className="text-xs bg-brand-gold text-white px-3 py-1.5 rounded-lg font-medium"
+              >
+                View Enquiries
+              </button>
             </div>
           )}
         </div>
@@ -184,9 +190,9 @@ const getActivityColor = (type) => {
   switch(type) {
     case 'enquiry': return 'bg-brand-gold';
     case 'tile_added': return 'bg-brand-black';
+    case 'category': return 'bg-yellow-500';
+    case 'subcategory': return 'bg-blue-500';
     case 'catalogue': return 'bg-green-500';
-    case 'collection': return 'bg-gray-400';
-    case 'tile_updated': return 'bg-yellow-500';
     default: return 'bg-gray-300';
   }
 };

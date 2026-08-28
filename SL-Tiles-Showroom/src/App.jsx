@@ -7,8 +7,9 @@ import ContactPage from './pages/public/ContactPage';
 const AdminLayout = React.lazy(() => import('./layouts/AdminLayout'));
 const AdminLogin = React.lazy(() => import('./pages/admin/AdminLogin'));
 const Dashboard = React.lazy(() => import('./pages/admin/Dashboard'));
-const ManageTiles = React.lazy(() => import('./pages/admin/ManageTiles'));
-const Collections = React.lazy(() => import('./pages/admin/Collections'));
+const ManageCategories = React.lazy(() => import('./pages/admin/ManageCategories'));
+const ManageSubCategories = React.lazy(() => import('./pages/admin/ManageSubCategories'));
+const Collections = React.lazy(() => import('./pages/admin/Collections')); // Tile products
 const Catalogues = React.lazy(() => import('./pages/admin/Catalogues'));
 const Enquiries = React.lazy(() => import('./pages/admin/Enquiries'));
 const Settings = React.lazy(() => import('./pages/admin/Settings'));
@@ -45,8 +46,9 @@ function App() {
           }
         >
           <Route index element={<Dashboard />} />
+          <Route path="categories" element={<ManageCategories />} />
+          <Route path="subcategories" element={<ManageSubCategories />} />
           <Route path="tiles" element={<Collections />} />
-          <Route path="categories" element={<ManageTiles />} />
           <Route path="catalogues" element={<Catalogues />} />
           <Route path="enquiries" element={<Enquiries />} />
           <Route path="settings" element={<Settings />} />

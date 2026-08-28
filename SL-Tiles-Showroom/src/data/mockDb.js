@@ -12,6 +12,65 @@ const getAuthHeaders = () => {
 };
 
 export const mockDb = {
+  // Categories API
+  getCategories: async (params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    const res = await fetch(`${API_URL}/categories?${qs}`);
+    return res.json();
+  },
+  addCategory: async (category) => {
+    const res = await fetch(`${API_URL}/categories`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(category)
+    });
+    return res.json();
+  },
+  updateCategory: async (id, updates) => {
+    const res = await fetch(`${API_URL}/categories/${id}`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(updates)
+    });
+    return res.json();
+  },
+  deleteCategory: async (id) => {
+    await fetch(`${API_URL}/categories/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders()
+    });
+  },
+
+  // SubCategories API
+  getSubCategories: async (params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    const res = await fetch(`${API_URL}/subcategories?${qs}`);
+    return res.json();
+  },
+  addSubCategory: async (subCategory) => {
+    const res = await fetch(`${API_URL}/subcategories`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(subCategory)
+    });
+    return res.json();
+  },
+  updateSubCategory: async (id, updates) => {
+    const res = await fetch(`${API_URL}/subcategories/${id}`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(updates)
+    });
+    return res.json();
+  },
+  deleteSubCategory: async (id) => {
+    await fetch(`${API_URL}/subcategories/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders()
+    });
+  },
+
+  // Tiles API
   getTiles: async (params = {}) => {
     const qs = new URLSearchParams(params).toString();
     const res = await fetch(`${API_URL}/tiles?${qs}`);
@@ -40,13 +99,14 @@ export const mockDb = {
     });
   },
 
+  // Backward compatibility alias for collections -> categories
   getCollections: async (params = {}) => {
     const qs = new URLSearchParams(params).toString();
-    const res = await fetch(`${API_URL}/collections?${qs}`);
+    const res = await fetch(`${API_URL}/categories?${qs}`);
     return res.json();
   },
   addCollection: async (collection) => {
-    const res = await fetch(`${API_URL}/collections`, {
+    const res = await fetch(`${API_URL}/categories`, {
       method: 'POST',
       headers: getAuthHeaders(),
       body: JSON.stringify(collection)
@@ -54,7 +114,7 @@ export const mockDb = {
     return res.json();
   },
   updateCollection: async (id, updates) => {
-    const res = await fetch(`${API_URL}/collections/${id}`, {
+    const res = await fetch(`${API_URL}/categories/${id}`, {
       method: 'PUT',
       headers: getAuthHeaders(),
       body: JSON.stringify(updates)
@@ -62,12 +122,13 @@ export const mockDb = {
     return res.json();
   },
   deleteCollection: async (id) => {
-    await fetch(`${API_URL}/collections/${id}`, {
+    await fetch(`${API_URL}/categories/${id}`, {
       method: 'DELETE',
       headers: getAuthHeaders()
     });
   },
 
+  // Catalogues API
   getCatalogues: async (params = {}) => {
     const qs = new URLSearchParams(params).toString();
     const res = await fetch(`${API_URL}/catalogues?${qs}`);
@@ -88,6 +149,7 @@ export const mockDb = {
     });
   },
 
+  // Enquiries API
   getEnquiries: async (params = {}) => {
     const qs = new URLSearchParams(params).toString();
     const res = await fetch(`${API_URL}/enquiries?${qs}`, { headers: getAuthHeaders() });

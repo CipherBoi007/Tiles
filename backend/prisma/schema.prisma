@@ -13,29 +13,57 @@ model AdminUser {
   password String // Hashed
 }
 
-// Collections
-model Collection {
-  id    Int    @id @default(autoincrement())
-  name  String
-  desc  String
-  image String
-  tiles Tile[]
+// Categories
+model Category {
+  id            Int           @id @default(autoincrement())
+  name          String
+  desc          String?
+  image         String
+  slug          String?       @unique
+  status        String        @default("active")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  subCategories SubCategory[]
+
+  @@index([name])
+}
+
+// SubCategories
+model SubCategory {
+  id         Int      @id @default(autoincrement())
+  name       String
+  desc       String?
+  image      String
+  slug       String?
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  tiles      Tile[]
+
+  @@index([categoryId])
+  @@index([name])
 }
 
 // Tiles
 model Tile {
-  id           Int         @id @default(autoincrement())
-  name         String
-  image        String
-  category     String
-  size         String
-  finish       String
-  collectionId Int?
-  collection   Collection? @relation(fields: [collectionId], references: [id], onDelete: SetNull)
+  id            Int         @id @default(autoincrement())
+  name          String
+  desc          String?
+  image         String
+  size          String
+  finish        String
+  palette       String?
+  thickness     String?
+  inStock       Boolean     @default(true)
+  template      String?     @default("template1")
+  subCategoryId Int
+  subCategory   SubCategory @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
   @@index([name])
-  @@index([category])
-  @@index([collectionId])
+  @@index([subCategoryId])
 }
 
 // Catalogues

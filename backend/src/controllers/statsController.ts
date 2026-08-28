@@ -4,16 +4,18 @@ import prisma from '../lib/prisma';
 export const getDashboardStats = async (req: Request, res: Response) => {
   try {
     const totalTiles = await prisma.tile.count();
-    const collectionsCount = await prisma.collection.count();
+    const categoriesCount = await prisma.category.count();
+    const subCategoriesCount = await prisma.subCategory.count();
     const newEnquiries = await prisma.enquiry.count({ where: { status: 'New' } });
     const cataloguesCount = await prisma.catalogue.count();
     const latestCatalogue = await prisma.catalogue.findFirst({ orderBy: { date: 'desc' } });
 
     res.json({
       totalTiles,
-      tilesAddedThisWeek: 4, // Simplified mock value or add date filters
-      collections: collectionsCount,
-      collectionsAddedThisMonth: 1, // Simplified mock value
+      tilesAddedThisWeek: 4,
+      categories: categoriesCount,
+      subCategories: subCategoriesCount,
+      collections: categoriesCount, // fallback for backward compatibility
       newEnquiries,
       catalogues: cataloguesCount,
       latestCatalogue: latestCatalogue ? latestCatalogue.title : 'None'

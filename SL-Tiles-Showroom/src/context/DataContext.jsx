@@ -7,13 +7,16 @@ export const useData = () => useContext(DataContext);
 
 export const DataProvider = ({ children }) => {
   const [tiles, setTiles] = useState([]);
-  const [collections, setCollections] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
   const [catalogues, setCatalogues] = useState([]);
   const [enquiries, setEnquiries] = useState([]);
   const [settings, setSettings] = useState(null);
   
   const [loading, setLoading] = useState({
     tiles: true,
+    categories: true,
+    subCategories: true,
     collections: true,
     catalogues: true,
     enquiries: true,
@@ -23,7 +26,8 @@ export const DataProvider = ({ children }) => {
   // Fetch initial data
   useEffect(() => {
     fetchTiles();
-    fetchCollections();
+    fetchCategories();
+    fetchSubCategories();
     fetchCatalogues();
     fetchEnquiries();
     fetchSettings();
@@ -31,30 +35,41 @@ export const DataProvider = ({ children }) => {
 
   const fetchTiles = useCallback(async () => {
     setLoading(prev => ({ ...prev, tiles: true }));
-    const data = await mockDb.getTiles();
-    setTiles(data);
+    const res = await mockDb.getTiles();
+    const list = Array.isArray(res) ? res : (res?.data || []);
+    setTiles(list);
     setLoading(prev => ({ ...prev, tiles: false }));
   }, []);
 
-  const fetchCollections = useCallback(async () => {
-    setLoading(prev => ({ ...prev, collections: true }));
-    const res = await mockDb.getCollections();
+  const fetchCategories = useCallback(async () => {
+    setLoading(prev => ({ ...prev, categories: true, collections: true }));
+    const res = await mockDb.getCategories();
     const list = Array.isArray(res) ? res : (res?.data || []);
-    setCollections(list);
-    setLoading(prev => ({ ...prev, collections: false }));
+    setCategories(list);
+    setLoading(prev => ({ ...prev, categories: false, collections: false }));
+  }, []);
+
+  const fetchSubCategories = useCallback(async () => {
+    setLoading(prev => ({ ...prev, subCategories: true }));
+    const res = await mockDb.getSubCategories();
+    const list = Array.isArray(res) ? res : (res?.data || []);
+    setSubCategories(list);
+    setLoading(prev => ({ ...prev, subCategories: false }));
   }, []);
 
   const fetchCatalogues = useCallback(async () => {
     setLoading(prev => ({ ...prev, catalogues: true }));
     const data = await mockDb.getCatalogues();
-    setCatalogues(data);
+    const list = Array.isArray(data) ? data : (data?.data || []);
+    setCatalogues(list);
     setLoading(prev => ({ ...prev, catalogues: false }));
   }, []);
 
   const fetchEnquiries = useCallback(async () => {
     setLoading(prev => ({ ...prev, enquiries: true }));
     const data = await mockDb.getEnquiries();
-    setEnquiries(data);
+    const list = Array.isArray(data) ? data : (data?.data || []);
+    setEnquiries(list);
     setLoading(prev => ({ ...prev, enquiries: false }));
   }, []);
 
@@ -67,6 +82,36 @@ export const DataProvider = ({ children }) => {
 
   // Expose methods for UI to update data
   const actions = {
+    addCategory: async (category) => {
+      const newCat = await mockDb.addCategory(category);
+      setCategories(prev => [...prev, newCat]);
+      return newCat;
+    },
+    updateCategory: async (id, updates) => {
+      const updated = await mockDb.updateCategory(id, updates);
+      setCategories(prev => prev.map(c => c.id === id ? updated : c));
+      return updated;
+    },
+    deleteCategory: async (id) => {
+      await mockDb.deleteCategory(id);
+      setCategories(prev => prev.filter(c => c.id !== id));
+    },
+
+    addSubCategory: async (subCategory) => {
+      const newSub = await mockDb.addSubCategory(subCategory);
+      setSubCategories(prev => [...prev, newSub]);
+      return newSub;
+    },
+    updateSubCategory: async (id, updates) => {
+      const updated = await mockDb.updateSubCategory(id, updates);
+      setSubCategories(prev => prev.map(s => s.id === id ? updated : s));
+      return updated;
+    },
+    deleteSubCategory: async (id) => {
+      await mockDb.deleteSubCategory(id);
+      setSubCategories(prev => prev.filter(s => s.id !== id));
+    },
+
     addTile: async (tile) => {
       const newTile = await mockDb.addTile(tile);
       setTiles(prev => [...prev, newTile]);
@@ -82,20 +127,10 @@ export const DataProvider = ({ children }) => {
       setTiles(prev => prev.filter(t => t.id !== id));
     },
 
-    addCollection: async (collection) => {
-      const newCol = await mockDb.addCollection(collection);
-      setCollections(prev => [...prev, newCol]);
-      return newCol;
-    },
-    updateCollection: async (id, updates) => {
-      const updated = await mockDb.updateCollection(id, updates);
-      setCollections(prev => prev.map(c => c.id === id ? updated : c));
-      return updated;
-    },
-    deleteCollection: async (id) => {
-      await mockDb.deleteCollection(id);
-      setCollections(prev => prev.filter(c => c.id !== id));
-    },
+    // Backward compatibility aliases
+    addCollection: async (col) => actions.addCategory(col),
+    updateCollection: async (id, updates) => actions.updateCategory(id, updates),
+    deleteCollection: async (id) => actions.deleteCategory(id),
 
     addCatalogue: async (catalogue) => {
       const newCat = await mockDb.addCatalogue(catalogue);
@@ -122,8 +157,10 @@ export const DataProvider = ({ children }) => {
     },
 
     // Refresh functions
+    refreshCategories: fetchCategories,
+    refreshSubCategories: fetchSubCategories,
     refreshTiles: fetchTiles,
-    refreshCollections: fetchCollections,
+    refreshCollections: fetchCategories,
     refreshCatalogues: fetchCatalogues,
     refreshEnquiries: fetchEnquiries,
     refreshSettings: fetchSettings
@@ -132,7 +169,9 @@ export const DataProvider = ({ children }) => {
   return (
     <DataContext.Provider value={{
       tiles,
-      collections,
+      categories,
+      subCategories,
+      collections: categories, // backward compatibility alias
       catalogues,
       enquiries,
       settings,

@@ -1,35 +1,35 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
-import { useTileCategories } from '../hooks/useDataFetch';
-import { Link } from 'react-router-dom';
-import Pagination from './Pagination';
+import { useCategories } from '../hooks/useDataFetch';
+import { Link, useNavigate } from 'react-router-dom';
 import SafeImage from './SafeImage';
 import { FadeUp, StaggerContainer, StaggerItem } from './animations/MotionWrappers';
 
 const CategoryGrid = () => {
-  const { data: collections } = useTileCategories(4);
-  const displayCollections = (Array.isArray(collections) ? collections : []).slice(0, 4);
+  const { data: categories } = useCategories(4);
+  const navigate = useNavigate();
+  const displayCategories = (Array.isArray(categories) ? categories : []).slice(0, 4);
 
   return (
     <section id="categories" className="py-20 bg-brand-white">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12">
           <FadeUp>
-            <h2 className="text-3xl md:text-5xl font-bold text-brand-black font-luxury mb-4">Shop by Space</h2>
-            <p className="text-brand-textMuted text-lg max-w-2xl">Find the perfect tiles tailored for every corner of your home.</p>
+            <h2 className="text-3xl md:text-5xl font-bold text-brand-black font-luxury mb-4">Shop by Category</h2>
+            <p className="text-brand-textMuted text-lg max-w-2xl">Find the perfect tiles tailored for every architectural requirement.</p>
           </FadeUp>
           <Link to="/collections" className="hidden md:flex items-center gap-2 text-brand-gold font-medium hover:text-yellow-600 transition-colors">
-            Explore Spaces <ArrowRight className="w-4 h-4" />
+            Explore Categories <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
         <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {displayCollections.map((cat) => (
+          {displayCategories.map((cat) => (
             <StaggerItem 
               key={cat.id} 
-              className="group relative overflow-hidden rounded-sm cursor-pointer aspect-[4/5]"
+              className="group relative overflow-hidden rounded-2xl cursor-pointer aspect-[4/5]"
               onClick={() => {
-                window.location.href = `/collections?search=${encodeURIComponent(cat.name)}`;
+                navigate(`/collections?categoryId=${cat.id}`);
               }}
             >
               <SafeImage 
@@ -46,18 +46,16 @@ const CategoryGrid = () => {
                     {cat.desc}
                   </p>
                 )}
-                <span className="inline-flex items-center gap-2 text-brand-gold opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100 font-medium">
-                  Explore <ArrowRight className="w-4 h-4" />
+                <span className="inline-flex items-center gap-2 text-brand-gold opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100 font-medium text-sm">
+                  Explore Series <ArrowRight className="w-4 h-4" />
                 </span>
               </div>
             </StaggerItem>
           ))}
         </StaggerContainer>
         
-
-        
         <Link to="/collections" className="md:hidden mt-8 w-full flex justify-center items-center gap-2 text-brand-gold font-medium hover:text-yellow-600">
-          View All Collections <ArrowRight className="w-4 h-4" />
+          View All Categories <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
     </section>

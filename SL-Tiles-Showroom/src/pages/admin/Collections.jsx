@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { useTiles } from '../../hooks/useDataFetch';
-import { useData } from '../../context/DataContext';
+import { useTiles, useSubCategories, useCategories } from '../../hooks/useDataFetch';
 import ImageUpload from '../../components/admin/ImageUpload';
 import FormInput from '../../components/admin/FormInput';
-import { Edit2, Trash2, Plus, Eye, LayoutTemplate, Search } from 'lucide-react';
+import { Edit2, Trash2, Plus, Eye, LayoutTemplate, Search, CheckCircle2 } from 'lucide-react';
 import Modal from '../../components/admin/Modal';
 import Pagination from '../../components/Pagination';
 import SafeImage from '../../components/SafeImage';
@@ -16,33 +15,49 @@ const templates = [
 ];
 
 const Collections = () => {
-  const { collections: globalCollections } = useData();
   const { data: tiles, pagination, setPage, search, setSearch, createItem, updateItem, deleteItem } = useTiles(12);
-  
+  const { data: subCategories } = useSubCategories(100);
+  const { data: categories } = useCategories(100);
+
+  const subCategoryList = Array.isArray(subCategories) ? subCategories : (subCategories?.data || []);
+  const categoryList = Array.isArray(categories) ? categories : (categories?.data || []);
+
   const [formData, setFormData] = useState({
     name: '',
-    category: 'Marble',
+    subCategoryId: '',
     desc: '',
     size: '',
+    finish: '',
     palette: '',
+    thickness: '',
     template: 'template1',
-    collectionId: '',
     image: ''
   });
   const [isEditing, setIsEditing] = useState(null);
   const [previewTile, setPreviewTile] = useState(null);
 
+  // Find selected subcategory object & its parent category
+  const selectedSubCategoryObj = subCategoryList.find(s => s.id === parseInt(formData.subCategoryId, 10));
+  const autoCategoryName = selectedSubCategoryObj?.category?.name || 
+    categoryList.find(c => c.id === selectedSubCategoryObj?.categoryId)?.name;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.image) {
-      alert("Name and Image are required.");
+    if (!formData.name || !formData.image || !formData.subCategoryId) {
+      alert("Name, SubCategory, and Image are required.");
       return;
     }
     
     const payload = {
-      ...formData,
-      finish: formData.palette || 'Glossy',
-      collectionId: formData.collectionId ? parseInt(formData.collectionId, 10) : null
+      name: formData.name,
+      image: formData.image,
+      subCategoryId: parseInt(formData.subCategoryId, 10),
+      size: formData.size,
+      finish: formData.finish || formData.palette || 'Glossy',
+      palette: formData.palette,
+      thickness: formData.thickness,
+      desc: formData.desc,
+      template: formData.template
     };
 
     if (isEditing) {
@@ -54,19 +69,20 @@ const Collections = () => {
     
     // Reset form
     setFormData({
-      name: '', category: 'Marble', desc: '', size: '', palette: '', template: 'template1', collectionId: '', image: ''
+      name: '', subCategoryId: '', desc: '', size: '', finish: '', palette: '', thickness: '', template: 'template1', image: ''
     });
   };
 
   const handleEdit = (tile) => {
     setFormData({
       name: tile.name || '',
-      category: tile.category || 'Marble',
+      subCategoryId: tile.subCategoryId ? String(tile.subCategoryId) : '',
       desc: tile.desc || '',
       size: tile.size || '',
+      finish: tile.finish || '',
       palette: tile.palette || '',
+      thickness: tile.thickness || '',
       template: tile.template || 'template1',
-      collectionId: tile.collectionId || '',
       image: tile.image || ''
     });
     setIsEditing(tile.id);
@@ -82,7 +98,7 @@ const Collections = () => {
   const handleCancel = () => {
     setIsEditing(null);
     setFormData({
-      name: '', category: 'Marble', desc: '', size: '', palette: '', template: 'template1', collectionId: '', image: ''
+      name: '', subCategoryId: '', desc: '', size: '', finish: '', palette: '', thickness: '', template: 'template1', image: ''
     });
   };
 
@@ -90,7 +106,7 @@ const Collections = () => {
     <div className="max-w-6xl mx-auto pb-12">
       <div className="mb-8">
         <h1 className="text-2xl font-luxury font-bold text-brand-text">Manage Tile Products</h1>
-        <p className="text-brand-textMuted">Create and manage your actual tile products.</p>
+        <p className="text-brand-textMuted">Create and manage individual tile products under their respective SubCategories.</p>
       </div>
 
       {/* Form Section */}
@@ -134,45 +150,55 @@ const Collections = () => {
             
             <div className="lg:col-span-2">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
-                <div className="md:col-span-1">
+                <div className="md:col-span-2">
                   <FormInput 
                     label="Tile Name *" 
                     value={formData.name}
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    placeholder="e.g. Onyx Black"
+                    placeholder="e.g. Carrara White Marble"
                     required
                   />
                 </div>
                 
-                <div className="md:col-span-1">
-                  <label className="block text-sm font-medium text-brand-text mb-2">Category *</label>
+                {/* Single SubCategory Selector */}
+                <div className="md:col-span-2 mb-4">
+                  <label className="block text-sm font-medium text-brand-text mb-2">SubCategory *</label>
                   <select 
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-colors text-brand-text mb-4"
-                    value={formData.category}
-                    onChange={(e) => setFormData({...formData, category: e.target.value})}
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-colors text-brand-text"
+                    value={formData.subCategoryId}
+                    onChange={(e) => setFormData({...formData, subCategoryId: e.target.value})}
                     required
                   >
-                    <option value="Marble">Marble</option>
-                    <option value="Ceramic">Ceramic</option>
-                    <option value="Vitrified">Vitrified</option>
-                    <option value="Natural Stone">Natural Stone</option>
-                    <option value="Wooden">Wooden</option>
-                    <option value="Luxury">Luxury</option>
+                    <option value="">Select SubCategory</option>
+                    {categoryList.map(cat => {
+                      const catSubs = subCategoryList.filter(s => s.categoryId === cat.id);
+                      if (catSubs.length === 0) return null;
+                      return (
+                        <optgroup key={cat.id} label={`📁 ${cat.name}`}>
+                          {catSubs.map(sub => (
+                            <option key={sub.id} value={sub.id}>
+                              {sub.name}
+                            </option>
+                          ))}
+                        </optgroup>
+                      );
+                    })}
+                    {/* Fallback for subcategories without matched optgroup */}
+                    {subCategoryList
+                      .filter(sub => !categoryList.some(cat => cat.id === sub.categoryId))
+                      .map(sub => (
+                        <option key={sub.id} value={sub.id}>{sub.name}</option>
+                      ))
+                    }
                   </select>
-                </div>
 
-                <div className="md:col-span-1">
-                  <label className="block text-sm font-medium text-brand-text mb-2">Collection (Optional)</label>
-                  <select 
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-colors text-brand-text mb-4"
-                    value={formData.collectionId}
-                    onChange={(e) => setFormData({...formData, collectionId: e.target.value})}
-                  >
-                    <option value="">None (Standalone Product)</option>
-                    {(Array.isArray(globalCollections) ? globalCollections : (globalCollections?.data || [])).map(col => (
-                      <option key={col.id} value={col.id}>{col.name}</option>
-                    ))}
-                  </select>
+                  {/* Auto-detected Parent Category Indicator */}
+                  {autoCategoryName && (
+                    <div className="mt-2 flex items-center gap-2 text-xs text-brand-gold font-medium bg-[#FFF8E7] border border-brand-gold/20 px-3 py-2 rounded-lg">
+                      <CheckCircle2 size={14} className="text-brand-gold shrink-0" />
+                      <span>Parent Category: <strong className="font-semibold text-brand-black">{autoCategoryName}</strong> (Auto-associated)</span>
+                    </div>
+                  )}
                 </div>
                 
                 <FormInput 
@@ -183,10 +209,24 @@ const Collections = () => {
                 />
 
                 <FormInput 
+                  label="Finish" 
+                  value={formData.finish}
+                  onChange={(e) => setFormData({...formData, finish: e.target.value})}
+                  placeholder="e.g. High Gloss, Matte, Satin"
+                />
+
+                <FormInput 
                   label="Color Palette" 
                   value={formData.palette}
                   onChange={(e) => setFormData({...formData, palette: e.target.value})}
-                  placeholder="e.g. Black, Gold, White"
+                  placeholder="e.g. White, Gray, Gold"
+                />
+
+                <FormInput 
+                  label="Thickness" 
+                  value={formData.thickness}
+                  onChange={(e) => setFormData({...formData, thickness: e.target.value})}
+                  placeholder="e.g. 9mm"
                 />
                 
                 <div className="md:col-span-2">
@@ -195,7 +235,7 @@ const Collections = () => {
                     type="textarea"
                     value={formData.desc}
                     onChange={(e) => setFormData({...formData, desc: e.target.value})}
-                    placeholder="Brief description of this tile..."
+                    placeholder="Brief description of this tile product..."
                     rows={3}
                   />
                 </div>
@@ -248,18 +288,20 @@ const Collections = () => {
             <div key={tile.id} className="bg-brand-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow group flex flex-col">
               <div className="aspect-[4/3] overflow-hidden relative">
                 <SafeImage src={tile.image} alt={tile.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                {tile.template && (
-                  <div className="absolute bottom-3 left-3 bg-brand-black/80 backdrop-blur text-xs font-medium px-2 py-1 rounded text-white border border-white/10">
-                    {templates.find(t => t.id === tile.template)?.name || tile.template}
+                {tile.subCategory && (
+                  <div className="absolute top-3 left-3 bg-brand-black/80 backdrop-blur text-[11px] font-medium px-2 py-1 rounded text-white border border-white/10">
+                    {tile.subCategory.name}
                   </div>
                 )}
               </div>
               <div className="p-5 flex-1 flex flex-col">
                 <h3 className="font-luxury font-semibold text-brand-text text-lg mb-2">{tile.name}</h3>
                 
-                <div className="flex flex-col gap-y-2 text-sm text-brand-textMuted mb-4">
+                <div className="flex flex-col gap-y-1 text-xs text-brand-textMuted mb-4">
+                  <div><span className="font-medium text-gray-500">SubCategory:</span> {tile.subCategory?.name || 'N/A'}</div>
+                  <div><span className="font-medium text-gray-500">Category:</span> {tile.subCategory?.category?.name || 'N/A'}</div>
                   <div><span className="font-medium text-gray-500">Size:</span> {tile.size || 'N/A'}</div>
-                  <div className="truncate"><span className="font-medium text-gray-500">Colors:</span> {tile.palette || 'N/A'}</div>
+                  <div><span className="font-medium text-gray-500">Finish:</span> {tile.finish || 'N/A'}</div>
                 </div>
 
                 <div className="flex items-center gap-2 mt-auto pt-4 border-t border-gray-100">
@@ -310,18 +352,26 @@ const Collections = () => {
               <h2 className="text-2xl font-luxury font-bold text-brand-text mb-4">{previewTile.name}</h2>
               <p className="text-brand-textMuted mb-6">{previewTile.desc || 'No description'}</p>
               
-              <div className="space-y-3">
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between py-2 border-b border-gray-100">
+                  <span className="text-gray-500">SubCategory</span>
+                  <span className="font-medium text-brand-black">{previewTile.subCategory?.name || 'N/A'}</span>
+                </div>
+                <div className="flex justify-between py-2 border-b border-gray-100">
+                  <span className="text-gray-500">Category</span>
+                  <span className="font-medium text-brand-gold">{previewTile.subCategory?.category?.name || 'N/A'}</span>
+                </div>
                 <div className="flex justify-between py-2 border-b border-gray-100">
                   <span className="text-gray-500">Dimensions</span>
                   <span className="font-medium">{previewTile.size || 'N/A'}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b border-gray-100">
-                  <span className="text-gray-500">Color Palette</span>
-                  <span className="font-medium">{previewTile.palette || 'N/A'}</span>
+                  <span className="text-gray-500">Finish</span>
+                  <span className="font-medium">{previewTile.finish || 'N/A'}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b border-gray-100">
-                  <span className="text-gray-500">Selected Template</span>
-                  <span className="font-medium text-brand-gold">{templates.find(t => t.id === previewTile.template)?.name || previewTile.template}</span>
+                  <span className="text-gray-500">Color Palette</span>
+                  <span className="font-medium">{previewTile.palette || 'N/A'}</span>
                 </div>
               </div>
             </div>

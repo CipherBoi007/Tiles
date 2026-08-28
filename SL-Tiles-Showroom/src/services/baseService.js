@@ -7,6 +7,8 @@ export class BaseService {
 
   async _getData(params = {}) {
     try {
+      if (this.storageKey === 'cmsCategoriesData') return await mockDb.getCategories(params);
+      if (this.storageKey === 'cmsSubCategoriesData') return await mockDb.getSubCategories(params);
       if (this.storageKey === 'cmsTilesData') return await mockDb.getTiles(params);
       if (this.storageKey === 'cmsCollectionsData') return await mockDb.getCollections(params);
       if (this.storageKey === 'cataloguesData') return await mockDb.getCatalogues(params);
@@ -34,14 +36,11 @@ export class BaseService {
       const params = { page, limit };
       if (search) params.search = search;
       if (filterKey && filterValue) {
-        params.filterKey = filterKey;
-        params.filterValue = filterValue;
+        params[filterKey] = filterValue;
       }
       
       const response = await this._getData(params);
       
-      // The backend now returns { data: [...], pagination: { ... } }
-      // If the backend isn't updated yet, or returns an array (e.g. settings), handle it
       if (Array.isArray(response)) {
          return {
            data: response,
@@ -57,18 +56,24 @@ export class BaseService {
   }
 
   async create(item) {
+    if (this.storageKey === 'cmsCategoriesData') return await mockDb.addCategory(item);
+    if (this.storageKey === 'cmsSubCategoriesData') return await mockDb.addSubCategory(item);
     if (this.storageKey === 'cmsTilesData') return await mockDb.addTile(item);
     if (this.storageKey === 'cmsCollectionsData') return await mockDb.addCollection(item);
     if (this.storageKey === 'cataloguesData') return await mockDb.addCatalogue(item);
   }
 
   async update(id, updates) {
+    if (this.storageKey === 'cmsCategoriesData') return await mockDb.updateCategory(id, updates);
+    if (this.storageKey === 'cmsSubCategoriesData') return await mockDb.updateSubCategory(id, updates);
     if (this.storageKey === 'cmsTilesData') return await mockDb.updateTile(id, updates);
     if (this.storageKey === 'cmsCollectionsData') return await mockDb.updateCollection(id, updates);
     if (this.storageKey === 'enquiriesData') return await mockDb.updateEnquiryStatus(id, updates.status);
   }
 
   async delete(id) {
+    if (this.storageKey === 'cmsCategoriesData') return await mockDb.deleteCategory(id);
+    if (this.storageKey === 'cmsSubCategoriesData') return await mockDb.deleteSubCategory(id);
     if (this.storageKey === 'cmsTilesData') return await mockDb.deleteTile(id);
     if (this.storageKey === 'cmsCollectionsData') return await mockDb.deleteCollection(id);
     if (this.storageKey === 'cataloguesData') return await mockDb.deleteCatalogue(id);

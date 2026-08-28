@@ -9,18 +9,36 @@ const pagination_1 = require("../utils/pagination");
 const getTiles = async (req, res) => {
     try {
         const { page, limit, search, skip } = (0, pagination_1.getPagination)(req);
-        const where = search ? {
-            OR: [
+        const subCategoryId = req.query.subCategoryId ? Number(req.query.subCategoryId) : undefined;
+        const categoryId = req.query.categoryId ? Number(req.query.categoryId) : undefined;
+        const where = {};
+        if (search) {
+            where.OR = [
                 { name: { contains: search, mode: 'insensitive' } },
-                { category: { contains: search, mode: 'insensitive' } },
-            ]
-        } : {};
+                { finish: { contains: search, mode: 'insensitive' } },
+                { size: { contains: search, mode: 'insensitive' } },
+                { subCategory: { name: { contains: search, mode: 'insensitive' } } },
+                { subCategory: { category: { name: { contains: search, mode: 'insensitive' } } } }
+            ];
+        }
+        if (subCategoryId) {
+            where.subCategoryId = subCategoryId;
+        }
+        else if (categoryId) {
+            where.subCategory = { categoryId };
+        }
         const [tiles, total] = await Promise.all([
             prisma_1.default.tile.findMany({
                 where,
                 skip,
                 take: limit,
-                include: { collection: true },
+                include: {
+                    subCategory: {
+                        include: {
+                            category: true
+                        }
+                    }
+                },
                 orderBy: { id: 'desc' }
             }),
             prisma_1.default.tile.count({ where })
@@ -36,16 +54,27 @@ const getTiles = async (req, res) => {
 exports.getTiles = getTiles;
 const createTile = async (req, res) => {
     try {
-        const { name, image, category, size, finish, palette, collectionId } = req.body;
+        const { name, image, subCategoryId, size, finish, palette, thickness, desc, template, inStock } = req.body;
         const tileData = {
             name: name?.trim(),
-            image,
-            category: category?.trim() || '',
+            image: image || '',
+            subCategoryId: Number(subCategoryId),
             size: size?.trim() || '',
             finish: finish?.trim() || palette?.trim() || '',
-            collectionId: collectionId ? Number(collectionId) : null,
+            palette: palette?.trim() || null,
+            thickness: thickness?.trim() || null,
+            desc: desc?.trim() || null,
+            template: template || 'template1',
+            inStock: inStock !== undefined ? Boolean(inStock) : true,
         };
-        const tile = await prisma_1.default.tile.create({ data: tileData });
+        const tile = await prisma_1.default.tile.create({
+            data: tileData,
+            include: {
+                subCategory: {
+                    include: { category: true }
+                }
+            }
+        });
         await prisma_1.default.activity.create({
             data: { type: 'tile_added', title: 'Tile added', desc: `${tile.name} was added.` }
         });
@@ -61,16 +90,32 @@ exports.createTile = createTile;
 const updateTile = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, image, category, size, finish, palette, collectionId } = req.body;
+        const { name, image, subCategoryId, size, finish, palette, thickness, desc, template, inStock } = req.body;
         const tileData = {
             name: name?.trim(),
             image,
-            category: category?.trim() || '',
-            size: size?.trim() || '',
-            finish: finish?.trim() || palette?.trim() || '',
-            collectionId: collectionId ? Number(collectionId) : null,
+            size: size?.trim(),
+            finish: finish?.trim() || palette?.trim(),
+            palette: palette?.trim() || null,
+            thickness: thickness?.trim() || null,
+            desc: desc?.trim() || null,
+            template: template || 'template1',
         };
-        const tile = await prisma_1.default.tile.update({ where: { id: Number(id) }, data: tileData });
+        if (subCategoryId) {
+            tileData.subCategoryId = Number(subCategoryId);
+        }
+        if (inStock !== undefined) {
+            tileData.inStock = Boolean(inStock);
+        }
+        const tile = await prisma_1.default.tile.update({
+            where: { id: Number(id) },
+            data: tileData,
+            include: {
+                subCategory: {
+                    include: { category: true }
+                }
+            }
+        });
         await prisma_1.default.activity.create({
             data: { type: 'tile_updated', title: 'Tile updated', desc: `${tile.name} was updated.` }
         });
