@@ -33,10 +33,10 @@ const getCategories = async (req, res) => {
             prisma_1.default.category.count({ where })
         ]);
         const formatted = categories.map(c => {
-            const totalTiles = c.subCategories.reduce((acc, sub) => acc + (sub._count?.tiles || 0), 0);
+            const totalTiles = (c.subCategories || []).reduce((acc, sub) => acc + (sub._count?.tiles || 0), 0);
             return {
                 ...c,
-                subCategoriesCount: c._count.subCategories,
+                subCategoriesCount: c._count?.subCategories || 0,
                 tilesCount: totalTiles
             };
         });

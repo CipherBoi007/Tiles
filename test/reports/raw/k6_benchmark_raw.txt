@@ -1,0 +1,12 @@
+=== HTTP LOAD & LATENCY BENCHMARK ===
+Target URL: http://localhost:5000/api/tiles
+Total Requests: 100, Concurrency: 10
+
+--- BENCHMARK RESULTS ---
+Total Time: 0.20s
+Throughput: 505.05 req/sec
+Success Rate: 100/100 (100.0%)
+p50 Latency: 12 ms
+p90 Latency: 19 ms
+p95 Latency: 19 ms
+p99 Latency: 55 ms

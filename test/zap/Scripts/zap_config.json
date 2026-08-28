@@ -1,0 +1,16 @@
+{
+  "targetUrl": "http://localhost:5000",
+  "scanMode": "passive",
+  "contexts": [
+    {
+      "name": "Tiles API",
+      "urls": ["http://localhost:5000/api/.*"]
+    }
+  ],
+  "rules": [
+    "security-headers",
+    "cors-headers",
+    "jwt-validation",
+    "sql-injection-passive"
+  ]
+}

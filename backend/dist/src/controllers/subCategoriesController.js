@@ -35,7 +35,7 @@ const getSubCategories = async (req, res) => {
         ]);
         const formatted = subCategories.map(sc => ({
             ...sc,
-            tilesCount: sc._count.tiles
+            tilesCount: sc._count?.tiles || 0
         }));
         res.json((0, pagination_1.formatPagination)(formatted, total, page, limit));
     }

@@ -11,7 +11,7 @@ describe('Health Check API', () => {
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
             status: 'ok',
-            message: 'Backend is running'
+            message: 'Backend is healthy and connected to DB'
         });
     });
 });
