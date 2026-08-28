@@ -46,7 +46,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       )}
 
       {/* Sidebar */}
-      <div className={`fixed lg:static inset-y-0 left-0 w-full max-w-[280px] bg-brand-white/95 backdrop-blur-md border-r border-gray-100 text-brand-textMuted flex flex-col min-h-screen shrink-0 z-50 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <div className={`fixed lg:sticky top-0 inset-y-0 left-0 w-full max-w-[280px] h-screen bg-brand-white/95 backdrop-blur-md border-r border-gray-100 text-brand-textMuted flex flex-col shrink-0 z-50 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         {/* Logo Area */}
         <div className="h-16 md:h-20 flex items-center justify-between px-6 shrink-0 border-b border-gray-100/50">
           <NavLink to="/admin" className="flex items-center gap-3">

@@ -2,20 +2,39 @@ import React, { useState } from 'react';
 import { useCategories } from '../../hooks/useDataFetch';
 import ImageUpload from '../../components/admin/ImageUpload';
 import FormInput from '../../components/admin/FormInput';
-import { Edit2, Trash2, Plus, Search, FolderOpen } from 'lucide-react';
+import { Edit2, Trash2, Plus, Search } from 'lucide-react';
+import Drawer from '../../components/admin/Drawer';
 import Pagination from '../../components/Pagination';
 import SafeImage from '../../components/SafeImage';
 
 const ManageCategories = () => {
   const { data: categories, pagination, setPage, search, setSearch, createItem, updateItem, deleteItem } = useCategories(8);
   
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     desc: '',
     image: '',
     status: 'active'
   });
-  const [isEditing, setIsEditing] = useState(null);
+
+  const handleOpenAdd = () => {
+    setEditingId(null);
+    setFormData({ name: '', desc: '', image: '', status: 'active' });
+    setIsDrawerOpen(true);
+  };
+
+  const handleEdit = (cat) => {
+    setEditingId(cat.id);
+    setFormData({
+      name: cat.name || '',
+      desc: cat.desc || '',
+      image: cat.image || '',
+      status: cat.status || 'active'
+    });
+    setIsDrawerOpen(true);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,26 +43,14 @@ const ManageCategories = () => {
       return;
     }
     
-    if (isEditing) {
-      await updateItem(isEditing, formData);
-      setIsEditing(null);
+    if (editingId) {
+      await updateItem(editingId, formData);
     } else {
       await createItem(formData);
     }
     
-    // Reset form
+    setIsDrawerOpen(false);
     setFormData({ name: '', desc: '', image: '', status: 'active' });
-  };
-
-  const handleEdit = (cat) => {
-    setFormData({
-      name: cat.name || '',
-      desc: cat.desc || '',
-      image: cat.image || '',
-      status: cat.status || 'active'
-    });
-    setIsEditing(cat.id);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDelete = async (id) => {
@@ -52,94 +59,29 @@ const ManageCategories = () => {
     }
   };
 
-  const handleCancel = () => {
-    setIsEditing(null);
-    setFormData({ name: '', desc: '', image: '', status: 'active' });
-  };
-
   return (
     <div className="max-w-6xl mx-auto pb-12">
-      <div className="mb-8">
-        <h1 className="text-2xl font-luxury font-bold text-brand-text">Manage Categories</h1>
-        <p className="text-brand-textMuted">Top-level tile categories (e.g., Floor Tiles, Wall Tiles, Natural Stone).</p>
+      {/* Top Header & Actions Bar */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-2xl font-luxury font-bold text-brand-text">Manage Categories</h1>
+          <p className="text-brand-textMuted text-sm">Top-level tile categories (e.g., Floor Tiles, Wall Tiles, Natural Stone).</p>
+        </div>
+
+        <button
+          onClick={handleOpenAdd}
+          className="flex items-center gap-2 bg-brand-gold text-white px-5 py-2.5 rounded-xl hover:bg-yellow-600 transition-all shadow-md shadow-brand-gold/20 font-medium text-sm self-start md:self-auto shrink-0"
+        >
+          <Plus size={18} /> Add New Category
+        </button>
       </div>
 
-      {/* Form Section */}
-      <div className="bg-brand-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-10">
-        <h2 className="text-lg font-luxury font-semibold text-brand-text flex items-center gap-2 mb-6">
-          <span className="w-1 h-5 bg-brand-gold rounded-full"></span>
-          {isEditing ? 'Edit Category' : 'Create New Category'}
-        </h2>
-
-        <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-1">
-              <ImageUpload 
-                value={formData.image} 
-                onChange={(img) => setFormData({...formData, image: img})} 
-                label="Category Cover Image"
-              />
-            </div>
-            
-            <div className="lg:col-span-2 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormInput 
-                  label="Category Name *" 
-                  value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  placeholder="e.g. Floor Tiles"
-                  required
-                />
-                <div>
-                  <label className="block text-sm font-medium text-brand-text mb-2">Status</label>
-                  <select
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-colors text-brand-text"
-                    value={formData.status}
-                    onChange={(e) => setFormData({...formData, status: e.target.value})}
-                  >
-                    <option value="active">Active</option>
-                    <option value="draft">Draft</option>
-                  </select>
-                </div>
-              </div>
-              
-              <FormInput 
-                label="Description" 
-                type="textarea"
-                value={formData.desc}
-                onChange={(e) => setFormData({...formData, desc: e.target.value})}
-                placeholder="Brief summary of what this category contains..."
-                rows={3}
-              />
-
-              <div className="flex gap-4 pt-4">
-                <button 
-                  type="submit"
-                  className="flex items-center gap-2 bg-brand-gold text-brand-white px-6 py-3 rounded-xl hover:bg-yellow-600 transition-colors shadow-lg shadow-brand-gold/20 font-medium"
-                >
-                  {isEditing ? 'Update Category' : <><Plus size={18} /> Create Category</>}
-                </button>
-                {isEditing && (
-                  <button 
-                    type="button"
-                    onClick={handleCancel}
-                    className="px-6 py-3 rounded-xl border border-gray-200 text-brand-text hover:bg-gray-50 transition-colors font-medium"
-                  >
-                    Cancel
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-
-      {/* List Section */}
-      <div className="mb-6">
+      {/* List Section Header & Search */}
+      <div className="bg-brand-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <h2 className="text-lg font-luxury font-semibold text-brand-text flex items-center gap-2">
-            <span className="w-1 h-5 bg-brand-black rounded-full"></span>
-            Existing Categories
+            <span className="w-1 h-5 bg-brand-gold rounded-full"></span>
+            Existing Categories ({pagination.totalItems || (Array.isArray(categories) ? categories.length : 0)})
           </h2>
           
           <div className="relative">
@@ -149,11 +91,12 @@ const ManageCategories = () => {
               placeholder="Search categories..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg w-full md:w-64 focus:outline-none focus:border-brand-gold transition-colors text-sm"
+              className="pl-10 pr-4 py-2 border border-gray-200 rounded-xl w-full md:w-64 focus:outline-none focus:border-brand-gold transition-colors text-sm"
             />
           </div>
         </div>
         
+        {/* Categories Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {(Array.isArray(categories) ? categories : []).map(cat => (
             <div key={cat.id} className="bg-brand-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow group flex flex-col">
@@ -187,19 +130,82 @@ const ManageCategories = () => {
           ))}
           {(Array.isArray(categories) ? categories : []).length === 0 && (
             <div className="col-span-full text-center py-12 text-brand-textMuted bg-brand-white rounded-2xl border border-dashed border-gray-200">
-              No categories found. Create one above!
+              No categories found. Click "+ Add New Category" above to create one!
             </div>
           )}
         </div>
 
         {(Array.isArray(categories) ? categories : []).length > 0 && (
-          <Pagination 
-            currentPage={pagination.currentPage} 
-            totalPages={pagination.totalPages} 
-            onPageChange={setPage} 
-          />
+          <div className="mt-6">
+            <Pagination 
+              currentPage={pagination.currentPage} 
+              totalPages={pagination.totalPages} 
+              onPageChange={setPage} 
+            />
+          </div>
         )}
       </div>
+
+      {/* Right Slide-over Drawer for Add / Edit */}
+      <Drawer 
+        isOpen={isDrawerOpen} 
+        onClose={() => setIsDrawerOpen(false)} 
+        title={editingId ? 'Edit Category' : 'Create New Category'}
+      >
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <ImageUpload 
+            value={formData.image} 
+            onChange={(img) => setFormData({...formData, image: img})} 
+            label="Category Cover Image"
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormInput 
+              label="Category Name" 
+              value={formData.name}
+              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              placeholder="e.g. Floor Tiles"
+              required
+            />
+            <div>
+              <label className="block text-sm font-medium text-brand-text mb-1.5">Status</label>
+              <select
+                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-gold/30 focus:border-brand-gold outline-none transition-all text-sm font-medium text-brand-text"
+                value={formData.status}
+                onChange={(e) => setFormData({...formData, status: e.target.value})}
+              >
+                <option value="active">Active</option>
+                <option value="draft">Draft</option>
+              </select>
+            </div>
+          </div>
+
+          <FormInput 
+            label="Description" 
+            type="textarea"
+            value={formData.desc}
+            onChange={(e) => setFormData({...formData, desc: e.target.value})}
+            placeholder="Brief summary of what this category contains..."
+            rows={4}
+          />
+
+          <div className="flex justify-end gap-3 pt-6 border-t border-gray-100 mt-auto">
+            <button 
+              type="button"
+              onClick={() => setIsDrawerOpen(false)}
+              className="px-5 py-2.5 rounded-xl border border-gray-200 text-brand-text hover:bg-gray-50 transition-colors font-medium text-sm"
+            >
+              Cancel
+            </button>
+            <button 
+              type="submit"
+              className="bg-brand-gold text-white px-6 py-2.5 rounded-xl hover:bg-yellow-600 transition-colors shadow-md shadow-brand-gold/20 font-medium text-sm"
+            >
+              {editingId ? 'Save Changes' : 'Create Category'}
+            </button>
+          </div>
+        </form>
+      </Drawer>
     </div>
   );
 };

@@ -3,6 +3,7 @@ import { useSubCategories, useCategories } from '../../hooks/useDataFetch';
 import ImageUpload from '../../components/admin/ImageUpload';
 import FormInput from '../../components/admin/FormInput';
 import { Edit2, Trash2, Plus, Search } from 'lucide-react';
+import Drawer from '../../components/admin/Drawer';
 import Pagination from '../../components/Pagination';
 import SafeImage from '../../components/SafeImage';
 
@@ -10,15 +11,33 @@ const ManageSubCategories = () => {
   const { data: subCategories, pagination, setPage, search, setSearch, createItem, updateItem, deleteItem } = useSubCategories(8);
   const { data: categories } = useCategories(100);
 
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     desc: '',
     image: '',
     categoryId: ''
   });
-  const [isEditing, setIsEditing] = useState(null);
 
   const categoryList = Array.isArray(categories) ? categories : (categories?.data || []);
+
+  const handleOpenAdd = () => {
+    setEditingId(null);
+    setFormData({ name: '', desc: '', image: '', categoryId: '' });
+    setIsDrawerOpen(true);
+  };
+
+  const handleEdit = (sub) => {
+    setEditingId(sub.id);
+    setFormData({
+      name: sub.name || '',
+      desc: sub.desc || '',
+      image: sub.image || '',
+      categoryId: sub.categoryId ? String(sub.categoryId) : ''
+    });
+    setIsDrawerOpen(true);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,26 +51,14 @@ const ManageSubCategories = () => {
       categoryId: parseInt(formData.categoryId, 10)
     };
     
-    if (isEditing) {
-      await updateItem(isEditing, payload);
-      setIsEditing(null);
+    if (editingId) {
+      await updateItem(editingId, payload);
     } else {
       await createItem(payload);
     }
     
-    // Reset form
+    setIsDrawerOpen(false);
     setFormData({ name: '', desc: '', image: '', categoryId: '' });
-  };
-
-  const handleEdit = (sub) => {
-    setFormData({
-      name: sub.name || '',
-      desc: sub.desc || '',
-      image: sub.image || '',
-      categoryId: sub.categoryId || ''
-    });
-    setIsEditing(sub.id);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDelete = async (id) => {
@@ -60,98 +67,29 @@ const ManageSubCategories = () => {
     }
   };
 
-  const handleCancel = () => {
-    setIsEditing(null);
-    setFormData({ name: '', desc: '', image: '', categoryId: '' });
-  };
-
   return (
     <div className="max-w-6xl mx-auto pb-12">
-      <div className="mb-8">
-        <h1 className="text-2xl font-luxury font-bold text-brand-text">Manage SubCategories</h1>
-        <p className="text-brand-textMuted">Second-tier groupings linked directly to a primary category.</p>
+      {/* Top Header & Actions Bar */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-2xl font-luxury font-bold text-brand-text">Manage SubCategories</h1>
+          <p className="text-brand-textMuted text-sm">Second-tier groupings linked directly to a primary category.</p>
+        </div>
+
+        <button
+          onClick={handleOpenAdd}
+          className="flex items-center gap-2 bg-brand-gold text-white px-5 py-2.5 rounded-xl hover:bg-yellow-600 transition-all shadow-md shadow-brand-gold/20 font-medium text-sm self-start md:self-auto shrink-0"
+        >
+          <Plus size={18} /> Add SubCategory
+        </button>
       </div>
 
-      {/* Form Section */}
-      <div className="bg-brand-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-10">
-        <h2 className="text-lg font-luxury font-semibold text-brand-text flex items-center gap-2 mb-6">
-          <span className="w-1 h-5 bg-brand-gold rounded-full"></span>
-          {isEditing ? 'Edit SubCategory' : 'Create New SubCategory'}
-        </h2>
-
-        <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-1">
-              <ImageUpload 
-                value={formData.image} 
-                onChange={(img) => setFormData({...formData, image: img})} 
-                label="SubCategory Cover Image"
-              />
-            </div>
-            
-            <div className="lg:col-span-2 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormInput 
-                  label="SubCategory Name *" 
-                  value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  placeholder="e.g. Glazed Vitrified (GVT)"
-                  required
-                />
-                
-                <div>
-                  <label className="block text-sm font-medium text-brand-text mb-2">Parent Category *</label>
-                  <select 
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-colors text-brand-text"
-                    value={formData.categoryId}
-                    onChange={(e) => setFormData({...formData, categoryId: e.target.value})}
-                    required
-                  >
-                    <option value="">Select Parent Category</option>
-                    {categoryList.map(cat => (
-                      <option key={cat.id} value={cat.id}>{cat.name}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              
-              <FormInput 
-                label="Description" 
-                type="textarea"
-                value={formData.desc}
-                onChange={(e) => setFormData({...formData, desc: e.target.value})}
-                placeholder="Brief summary of this subcategory..."
-                rows={3}
-              />
-
-              <div className="flex gap-4 pt-4">
-                <button 
-                  type="submit"
-                  className="flex items-center gap-2 bg-brand-gold text-brand-white px-6 py-3 rounded-xl hover:bg-yellow-600 transition-colors shadow-lg shadow-brand-gold/20 font-medium"
-                >
-                  {isEditing ? 'Update SubCategory' : <><Plus size={18} /> Create SubCategory</>}
-                </button>
-                {isEditing && (
-                  <button 
-                    type="button"
-                    onClick={handleCancel}
-                    className="px-6 py-3 rounded-xl border border-gray-200 text-brand-text hover:bg-gray-50 transition-colors font-medium"
-                  >
-                    Cancel
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-
-      {/* List Section */}
-      <div className="mb-6">
+      {/* List Section Header & Search */}
+      <div className="bg-brand-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <h2 className="text-lg font-luxury font-semibold text-brand-text flex items-center gap-2">
-            <span className="w-1 h-5 bg-brand-black rounded-full"></span>
-            Existing SubCategories
+            <span className="w-1 h-5 bg-brand-gold rounded-full"></span>
+            Existing SubCategories ({pagination.totalItems || (Array.isArray(subCategories) ? subCategories.length : 0)})
           </h2>
           
           <div className="relative">
@@ -161,11 +99,12 @@ const ManageSubCategories = () => {
               placeholder="Search subcategories..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg w-full md:w-64 focus:outline-none focus:border-brand-gold transition-colors text-sm"
+              className="pl-10 pr-4 py-2 border border-gray-200 rounded-xl w-full md:w-64 focus:outline-none focus:border-brand-gold transition-colors text-sm"
             />
           </div>
         </div>
         
+        {/* SubCategories Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {(Array.isArray(subCategories) ? subCategories : []).map(sub => (
             <div key={sub.id} className="bg-brand-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow group flex flex-col">
@@ -204,19 +143,86 @@ const ManageSubCategories = () => {
           ))}
           {(Array.isArray(subCategories) ? subCategories : []).length === 0 && (
             <div className="col-span-full text-center py-12 text-brand-textMuted bg-brand-white rounded-2xl border border-dashed border-gray-200">
-              No subcategories found. Create one above!
+              No subcategories found. Click "+ Add SubCategory" above to create one!
             </div>
           )}
         </div>
 
         {(Array.isArray(subCategories) ? subCategories : []).length > 0 && (
-          <Pagination 
-            currentPage={pagination.currentPage} 
-            totalPages={pagination.totalPages} 
-            onPageChange={setPage} 
-          />
+          <div className="mt-6">
+            <Pagination 
+              currentPage={pagination.currentPage} 
+              totalPages={pagination.totalPages} 
+              onPageChange={setPage} 
+            />
+          </div>
         )}
       </div>
+
+      {/* Right Slide-over Drawer for Add / Edit */}
+      <Drawer 
+        isOpen={isDrawerOpen} 
+        onClose={() => setIsDrawerOpen(false)} 
+        title={editingId ? 'Edit SubCategory' : 'Create New SubCategory'}
+      >
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <ImageUpload 
+            value={formData.image} 
+            onChange={(img) => setFormData({...formData, image: img})} 
+            label="SubCategory Cover Image"
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormInput 
+              label="SubCategory Name" 
+              value={formData.name}
+              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              placeholder="e.g. Glazed Vitrified (GVT)"
+              required
+            />
+            
+            <div>
+              <label className="block text-sm font-medium text-brand-text mb-1.5">Parent Category <span className="text-red-500">*</span></label>
+              <select 
+                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-gold/30 focus:border-brand-gold outline-none transition-all text-sm font-medium text-brand-text"
+                value={formData.categoryId}
+                onChange={(e) => setFormData({...formData, categoryId: e.target.value})}
+                required
+              >
+                <option value="">Select Parent Category</option>
+                {categoryList.map(cat => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          
+          <FormInput 
+            label="Description" 
+            type="textarea"
+            value={formData.desc}
+            onChange={(e) => setFormData({...formData, desc: e.target.value})}
+            placeholder="Brief summary of this subcategory..."
+            rows={4}
+          />
+
+          <div className="flex justify-end gap-3 pt-6 border-t border-gray-100 mt-auto">
+            <button 
+              type="button"
+              onClick={() => setIsDrawerOpen(false)}
+              className="px-5 py-2.5 rounded-xl border border-gray-200 text-brand-text hover:bg-gray-50 transition-colors font-medium text-sm"
+            >
+              Cancel
+            </button>
+            <button 
+              type="submit"
+              className="bg-brand-gold text-white px-6 py-2.5 rounded-xl hover:bg-yellow-600 transition-colors shadow-md shadow-brand-gold/20 font-medium text-sm"
+            >
+              {editingId ? 'Save Changes' : 'Create SubCategory'}
+            </button>
+          </div>
+        </form>
+      </Drawer>
     </div>
   );
 };
