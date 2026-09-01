@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Phone, Mail, Clock, MessageCircle } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, MessageCircle, Building2, Sparkles } from 'lucide-react';
 import { FadeUp, StaggerContainer, StaggerItem, ScaleUp } from './animations/MotionWrappers';
 import { useLeadCapture } from '../context/LeadCaptureContext';
 import { openWhatsApp } from '../utils/whatsappUtils';
@@ -24,21 +24,21 @@ const ContactSection = () => {
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
         <div className="flex flex-col lg:flex-row gap-12">
           
-          {/* Left Column: Contact Info */}
+          {/* Left Column: Contact Details & Support Channels */}
           <div className="w-full lg:w-1/2">
             <FadeUp>
               <h2 className="text-3xl md:text-4xl font-semibold font-luxury text-brand-black mb-4">Visit Our Showroom</h2>
-              <p className="text-brand-textMuted text-lg mb-12">Experience the luxury firsthand. Our design experts are ready to turn your vision into reality.</p>
+              <p className="text-brand-textMuted text-lg mb-10">Experience the luxury firsthand. Our design experts are ready to turn your vision into reality.</p>
             </FadeUp>
             
-            <StaggerContainer className="space-y-6 lg:space-y-8">
+            <StaggerContainer className="space-y-6 lg:space-y-7">
               <StaggerItem className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-gray-50 flex items-center justify-center rounded-full text-brand-gold shrink-0">
                   <MapPin className="w-5 h-5" />
                 </div>
                 <div>
                   <h4 className="font-luxury font-semibold text-brand-black">Showroom Address</h4>
-                  <p className="text-brand-textMuted mt-1">{address}</p>
+                  <p className="text-brand-textMuted mt-1 text-sm sm:text-base">{address}</p>
                 </div>
               </StaggerItem>
 
@@ -48,7 +48,7 @@ const ContactSection = () => {
                 </div>
                 <div>
                   <h4 className="font-luxury font-semibold text-brand-black">Phone Number</h4>
-                  <p className="text-brand-textMuted mt-1">{whatsappNumber}</p>
+                  <p className="text-brand-textMuted mt-1 text-sm sm:text-base">{whatsappNumber}</p>
                 </div>
               </StaggerItem>
 
@@ -58,7 +58,7 @@ const ContactSection = () => {
                 </div>
                 <div>
                   <h4 className="font-luxury font-semibold text-brand-black">Email Address</h4>
-                  <p className="text-brand-textMuted mt-1">{emailAddress}</p>
+                  <p className="text-brand-textMuted mt-1 text-sm sm:text-base">{emailAddress}</p>
                 </div>
               </StaggerItem>
 
@@ -68,26 +68,49 @@ const ContactSection = () => {
                 </div>
                 <div>
                   <h4 className="font-luxury font-semibold text-brand-black">Working Hours</h4>
-                  <p className="text-brand-textMuted mt-1">Monday - Sunday: 9:00 AM - 9:00 PM</p>
+                  <p className="text-brand-textMuted mt-1 text-sm sm:text-base">Monday - Sunday: 9:00 AM - 9:00 PM</p>
+                </div>
+              </StaggerItem>
+
+              <StaggerItem className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-gray-50 flex items-center justify-center rounded-full text-brand-gold shrink-0">
+                  <MessageCircle className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-luxury font-semibold text-brand-black">Instant WhatsApp Consultation</h4>
+                  <p className="text-brand-textMuted mt-1 text-sm sm:text-base">
+                    Chat directly with our showroom sales specialists for instant tile photos, pricing, and stock updates.
+                  </p>
+                </div>
+              </StaggerItem>
+
+              <StaggerItem className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-gray-50 flex items-center justify-center rounded-full text-brand-gold shrink-0">
+                  <Building2 className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-luxury font-semibold text-brand-black">Bulk Orders & Architect Desk</h4>
+                  <p className="text-brand-textMuted mt-1 text-sm sm:text-base">
+                    Dedicated priority assistance for builders, architects, interior designers, and commercial project orders.
+                  </p>
                 </div>
               </StaggerItem>
             </StaggerContainer>
           </div>
 
-          {/* Right Column: Contact Form & Action */}
-          <div className="w-full lg:w-1/2 flex flex-col">
-            <FadeUp delay={0.2} className="w-full h-full flex flex-col justify-center bg-brand-lightBg p-8 rounded-xl border border-brand-gold/10 shadow-xl shadow-brand-black/5">
-              <h3 className="text-2xl font-luxury font-bold text-brand-black mb-2">Send us a Message</h3>
-              <p className="text-brand-textMuted text-sm mb-6">Fill out the form below and our team will get back to you shortly.</p>
+          {/* Right Column: Contact Form (Top) & Embedded Interactive Google Map (Bottom) */}
+          <div className="w-full lg:w-1/2 flex flex-col gap-6">
+            {/* Contact Form (Top) */}
+            <FadeUp delay={0.15} className="w-full flex flex-col justify-center bg-brand-lightBg p-6 sm:p-8 rounded-xl border border-brand-gold/10 shadow-xl shadow-brand-black/5">
+              <h3 className="text-xl sm:text-2xl font-luxury font-bold text-brand-black mb-1">Send us a Message</h3>
+              <p className="text-brand-textMuted text-xs sm:text-sm mb-5">Fill out the form below and our team will get back to you shortly.</p>
               
               <form onSubmit={(e) => {
                 e.preventDefault();
                 const btn = e.target.querySelector('button[type="submit"]');
-                const originalText = btn.innerHTML;
                 btn.innerHTML = 'Sending...';
                 btn.disabled = true;
                 
-                // We use dynamic import so it doesn't break if not available
                 import('../services').then(({ enquiryService }) => {
                   enquiryService.create({
                     customer: e.target.name.value,
@@ -98,33 +121,57 @@ const ContactSection = () => {
                     source: 'Contact Form'
                   }).then(() => {
                     btn.innerHTML = 'Message Sent Successfully!';
-                    btn.className = 'w-full py-3 bg-green-600 text-white font-medium rounded-sm transition-colors';
+                    btn.className = 'w-full py-3 bg-green-600 text-white font-medium rounded-lg transition-colors text-sm';
                     e.target.reset();
                     setTimeout(() => {
                       btn.innerHTML = 'Send Message';
                       btn.disabled = false;
-                      btn.className = 'w-full py-3 bg-brand-black hover:bg-gray-900 text-brand-white font-medium rounded-sm transition-colors shadow-md';
+                      btn.className = 'w-full py-3 bg-brand-black hover:bg-gray-900 text-brand-white font-medium rounded-lg transition-colors shadow-md text-sm';
                     }, 3000);
                   }).catch(() => {
                     btn.innerHTML = 'Error! Try WhatsApp';
-                    btn.className = 'w-full py-3 bg-red-600 text-white font-medium rounded-sm transition-colors';
+                    btn.className = 'w-full py-3 bg-red-600 text-white font-medium rounded-lg transition-colors text-sm';
                   });
                 });
-              }} className="space-y-4">
+              }} className="space-y-3.5">
                 <div>
-                  <input type="text" name="name" required placeholder="Your Full Name *" className="w-full px-4 py-4 md:py-3 min-h-[48px] bg-white border border-gray-200 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none transition-colors" />
+                  <input type="text" name="name" required placeholder="Your Full Name *" className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:border-brand-gold outline-none text-sm transition-colors" />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <input type="tel" name="phone" required placeholder="Phone Number *" className="w-full px-4 py-4 md:py-3 min-h-[48px] bg-white border border-gray-200 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none transition-colors" />
-                  <input type="email" name="email" placeholder="Email Address" className="w-full px-4 py-4 md:py-3 min-h-[48px] bg-white border border-gray-200 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none transition-colors" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                  <input type="tel" name="phone" required placeholder="Phone Number *" className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:border-brand-gold outline-none text-sm transition-colors" />
+                  <input type="email" name="email" placeholder="Email Address" className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:border-brand-gold outline-none text-sm transition-colors" />
                 </div>
                 <div>
-                  <textarea name="message" required placeholder="How can we help you? *" rows="4" className="w-full px-4 py-4 md:py-3 min-h-[120px] bg-white border border-gray-200 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none transition-colors resize-none"></textarea>
+                  <textarea name="message" required placeholder="How can we help you? *" rows="3" className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:border-brand-gold outline-none text-sm transition-colors resize-none"></textarea>
                 </div>
-                <button type="submit" className="w-full py-4 md:py-3 min-h-[48px] bg-brand-black hover:bg-gray-900 text-brand-white font-medium rounded-sm transition-colors shadow-md">
+                <button type="submit" className="w-full py-3 bg-brand-black hover:bg-gray-900 text-brand-white font-medium rounded-lg transition-colors shadow-md text-sm">
                   Send Message
                 </button>
               </form>
+            </FadeUp>
+
+            {/* Embedded Google Map Container (Bottom) */}
+            <FadeUp delay={0.25} className="w-full h-[220px] sm:h-[260px] rounded-xl overflow-hidden shadow-md border border-gray-200 relative group">
+              <iframe
+                title="SRI LAKSHMI TILES AND GRANITES Showroom Location"
+                src="https://maps.google.com/maps?q=SRI+LAKSHMI+TILES+AND+GRANITES,+Madurai+-+Rameswaram+Hwy,+Pattinamkathan,+Ramanathapuram,+Tamil+Nadu+623536&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="w-full h-full border-0"
+              ></iframe>
+              <a
+                href="https://maps.google.com/?q=SRI+LAKSHMI+TILES+AND+GRANITES,+Madurai+-+Rameswaram+Hwy,+Pattinamkathan,+Ramanathapuram,+Tamil+Nadu+623536"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="absolute bottom-3 right-3 bg-brand-black text-brand-white hover:bg-brand-gold text-xs px-3.5 py-2 rounded-lg font-medium shadow-lg transition-colors flex items-center gap-1.5 z-10"
+              >
+                <MapPin className="w-3.5 h-3.5 text-brand-gold group-hover:text-white" />
+                <span>Get Directions</span>
+              </a>
             </FadeUp>
           </div>
 
