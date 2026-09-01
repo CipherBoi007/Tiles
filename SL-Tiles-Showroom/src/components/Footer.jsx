@@ -27,8 +27,19 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-brand-black text-brand-white pt-20 pb-10 border-t border-gray-900">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
+    <footer className="relative text-brand-white pt-20 pb-10 border-t border-gray-900 overflow-hidden">
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src="/tiles_BG.jpg"
+          alt=""
+          className="w-full h-full object-cover object-center"
+          style={{ minHeight: '100%', minWidth: '100%' }}
+          loading="lazy"
+        />
+        <div className="absolute inset-0 bg-black/85" />
+      </div>
+      <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6">
         <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           
           {/* Brand & Social Column */}
@@ -167,8 +178,8 @@ const Footer = () => {
           </StaggerItem>
         </StaggerContainer>
 
-        <div className="pt-8 border-t border-gray-900 text-center space-y-4 md:space-y-0 md:flex md:justify-between md:text-left text-gray-500 text-xs">
-          <p>&copy; {new Date().getFullYear()} {showroomName}. All rights reserved.</p>
+        <div className="pt-8 border-t border-gray-900 text-center space-y-4 md:space-y-0 md:flex md:justify-between md:text-left text-xs">
+          <p className="text-white">&copy; {new Date().getFullYear()} {showroomName}. All rights reserved.</p>
           <div className="mt-4 md:mt-0 space-x-6">
             <span className="hover:text-brand-gold transition-colors cursor-pointer" onClick={() => alert("Privacy Policy: SRI LAKSHMI TILES AND GRANITES respects customer privacy.")}>Privacy Policy</span>
             <span className="hover:text-brand-gold transition-colors cursor-pointer" onClick={() => alert("Terms of Service: Standard showroom warranty applies.")}>Terms of Service</span>

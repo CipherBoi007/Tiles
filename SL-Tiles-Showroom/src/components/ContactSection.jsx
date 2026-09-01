@@ -27,7 +27,7 @@ const ContactSection = () => {
           {/* Left Column: Contact Info */}
           <div className="w-full lg:w-1/2">
             <FadeUp>
-              <h2 className="text-3xl md:text-5xl font-bold font-luxury text-brand-black mb-4">Visit Our Showroom</h2>
+              <h2 className="text-3xl md:text-4xl font-semibold font-luxury text-brand-black mb-4">Visit Our Showroom</h2>
               <p className="text-brand-textMuted text-lg mb-12">Experience the luxury firsthand. Our design experts are ready to turn your vision into reality.</p>
             </FadeUp>
             

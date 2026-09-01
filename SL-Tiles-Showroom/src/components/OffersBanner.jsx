@@ -39,7 +39,7 @@ const OffersBanner = () => {
               <span>For Builders & Contractors</span>
             </div>
             
-            <h2 className="text-5xl md:text-6xl xl:text-7xl font-luxury font-bold text-brand-black mb-8 leading-tight">
+            <h2 className="text-3xl md:text-4xl xl:text-5xl font-luxury font-semibold text-brand-black mb-8 leading-tight">
               Bulk Orders for Builders
             </h2>
             
@@ -86,14 +86,26 @@ const OffersBanner = () => {
             </div>
           </FadeUp>
           
-          {/* Right Image Container */}
+          {/* Right Image Composition */}
           <ScaleUp className="w-full lg:w-1/2 xl:w-7/12" delay={0.2}>
-            <div className="relative aspect-[4/3] md:aspect-[16/10] w-full rounded-sm overflow-hidden shadow-2xl">
-              <SafeImage 
-                src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80" 
-                alt="Luxury Hall for Builders" 
-                className="w-full h-full object-cover"
-              />
+            <div className="relative w-full pt-2 pr-2 pb-6">
+              {/* Back Layer (Horizontal Landscape Image - Shifted Lower) */}
+              <div className="w-[88%] sm:w-[85%] aspect-[16/10] rounded-2xl overflow-hidden shadow-xl border border-gray-200/80 relative z-10 mt-8 sm:mt-10">
+                <SafeImage 
+                  src="https://static.vecteezy.com/system/resources/thumbnails/047/266/503/small_2x/industrial-worker-handyman-installing-big-ceramic-tiles-photo.jpg" 
+                  alt="Industrial worker handyman installing big ceramic tiles" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              {/* Front Layer (Vertical Portrait Image - Shifted Upper) */}
+              <div className="absolute right-0 top-0 sm:top-2 z-20 w-[44%] sm:w-[38%] aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl border-4 border-white">
+                <SafeImage 
+                  src="https://thumbs.dreamstime.com/b/professional-male-builder-sticking-ceramic-tiles-wall-bathroom-being-renovated-professional-male-builder-sticking-309926740.jpg" 
+                  alt="Professional male builder sticking ceramic tiles" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
             </div>
           </ScaleUp>
 

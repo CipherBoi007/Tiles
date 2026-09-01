@@ -68,14 +68,14 @@ const PublicCollections = () => {
     setSelectedCategory(cat);
     setSelectedSubCategory(null);
     setViewMode('subcategories');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   };
 
   const handleSubCategorySelect = (sub) => {
     setSelectedSubCategory(sub);
     setFilter({ key: 'subCategoryId', value: sub.id.toString() });
     setViewMode('tiles');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   };
 
   const clearFilters = () => {
@@ -84,6 +84,7 @@ const PublicCollections = () => {
     setSearch('');
     setFilter({ key: '', value: '' });
     setViewMode('categories');
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   };
 
   const handleSwitchView = (mode) => {
@@ -93,6 +94,7 @@ const PublicCollections = () => {
       setSelectedSubCategory(null);
       setFilter({ key: '', value: '' });
     }
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   };
 
   return (
@@ -108,7 +110,7 @@ const PublicCollections = () => {
         <div className="bg-brand-white border-b border-gray-100 py-6 mb-8 shadow-sm">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
-              <h1 className="text-3xl md:text-5xl font-bold font-luxury text-brand-black mb-2">
+              <h1 className="text-3xl md:text-4xl font-semibold font-luxury text-brand-black mb-2">
                 {viewMode === 'categories' && 'Tile Categories'}
                 {viewMode === 'subcategories' && (selectedCategory ? selectedCategory.name : 'SubCategories')}
                 {viewMode === 'tiles' && (selectedSubCategory ? `${selectedSubCategory.name} Tiles` : 'All Tile Products')}
@@ -120,33 +122,35 @@ const PublicCollections = () => {
               </p>
             </div>
 
-            {/* View Switcher Tabs */}
-            <div className="flex items-center bg-gray-100 p-1.5 rounded-2xl shrink-0 self-start md:self-auto border border-gray-200">
+            {/* View switcher tabs */}
+            <div className="flex items-center gap-2 bg-brand-lightBg p-1.5 rounded-xl border border-gray-200">
               <button
                 onClick={() => handleSwitchView('categories')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-xs sm:text-sm transition-all ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                   viewMode === 'categories'
-                    ? 'bg-brand-gold text-white shadow-md font-bold'
+                    ? 'bg-brand-white text-brand-gold shadow-sm font-semibold'
                     : 'text-brand-textMuted hover:text-brand-black'
                 }`}
               >
                 <FolderOpen size={16} /> Categories
               </button>
+
               <button
                 onClick={() => handleSwitchView('subcategories')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-xs sm:text-sm transition-all ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                   viewMode === 'subcategories'
-                    ? 'bg-brand-gold text-white shadow-md font-bold'
+                    ? 'bg-brand-white text-brand-gold shadow-sm font-semibold'
                     : 'text-brand-textMuted hover:text-brand-black'
                 }`}
               >
                 <FolderTree size={16} /> SubCategories
               </button>
+
               <button
                 onClick={() => handleSwitchView('tiles')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-xs sm:text-sm transition-all ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                   viewMode === 'tiles'
-                    ? 'bg-brand-gold text-white shadow-md font-bold'
+                    ? 'bg-brand-white text-brand-gold shadow-sm font-semibold'
                     : 'text-brand-textMuted hover:text-brand-black'
                 }`}
               >
@@ -166,28 +170,23 @@ const PublicCollections = () => {
                   <StaggerItem key={cat.id}>
                     <div 
                       onClick={() => handleCategorySelect(cat)}
-                      className="group relative overflow-hidden rounded-2xl cursor-pointer border border-gray-200 hover:border-brand-gold shadow-sm hover:shadow-xl transition-all duration-300"
+                      className="group relative overflow-hidden rounded-2xl cursor-pointer bg-brand-black border border-gray-200/80 hover:border-brand-gold shadow-sm hover:shadow-xl hover:shadow-brand-gold/15 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-end h-[260px] sm:h-[280px]"
                     >
-                      <div className="aspect-[4/3] overflow-hidden relative">
+                      {/* Background Image & Multi-stop Luxury Gradient */}
+                      <div className="absolute inset-0 z-0 overflow-hidden">
                         <SafeImage 
                           src={cat.image} 
                           alt={cat.name} 
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" 
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-brand-black/90 via-brand-black/40 to-transparent"></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-brand-black/65 to-black/15 group-hover:via-brand-black/50 transition-colors duration-300"></div>
                       </div>
                       
-                      <div className="absolute bottom-0 left-0 w-full p-5 text-brand-white">
-                        <div className="flex items-center justify-between mb-1">
-                          <h3 className="text-xl font-luxury font-bold text-white group-hover:text-brand-gold transition-colors">{cat.name}</h3>
-                          <span className="text-[11px] bg-white/20 backdrop-blur px-2.5 py-0.5 rounded-full font-medium text-white">
-                            {cat.subCategoriesCount || 0} Subcategories
-                          </span>
-                        </div>
-                        <p className="text-gray-300 text-xs line-clamp-2 mb-3">{cat.desc}</p>
-                        <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-gold group-hover:translate-x-1 transition-transform">
-                          Explore SubCategories <ArrowRight className="w-3.5 h-3.5" />
-                        </span>
+                      {/* Bottom Content Area - Title Only */}
+                      <div className="relative z-10 p-6 flex flex-col justify-end text-brand-white">
+                        <h3 className="text-xl sm:text-2xl font-luxury font-bold text-white group-hover:text-brand-gold transition-colors duration-300 leading-snug">
+                          {cat.name}
+                        </h3>
                       </div>
                     </div>
                   </StaggerItem>
@@ -199,56 +198,28 @@ const PublicCollections = () => {
           {/* LEVEL 2: SUBCATEGORIES VIEW */}
           {viewMode === 'subcategories' && (
             <section>
-              {selectedCategory && (
-                <div className="mb-6 flex items-center justify-between bg-brand-gold/10 border border-brand-gold/30 rounded-2xl p-4">
-                  <div className="flex items-center gap-3">
-                    <button 
-                      onClick={() => handleSwitchView('categories')}
-                      className="p-2 bg-brand-white rounded-xl text-brand-black hover:bg-brand-gold hover:text-white transition-colors shadow-sm"
-                    >
-                      <ArrowLeft size={18} />
-                    </button>
-                    <div>
-                      <h3 className="text-lg font-bold font-luxury text-brand-black">Category: {selectedCategory.name}</h3>
-                      <p className="text-xs text-brand-textMuted">{selectedCategory.desc}</p>
-                    </div>
-                  </div>
-                  <button 
-                    onClick={() => { setSelectedCategory(null); setViewMode('subcategories'); }}
-                    className="text-xs text-red-500 hover:underline font-medium"
-                  >
-                    View All SubCategories
-                  </button>
-                </div>
-              )}
-
               <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredSubCategories.map((sub) => (
                   <StaggerItem key={sub.id}>
                     <div 
                       onClick={() => handleSubCategorySelect(sub)}
-                      className="group relative overflow-hidden rounded-2xl cursor-pointer border border-gray-200 hover:border-brand-gold shadow-sm hover:shadow-xl transition-all duration-300"
+                      className="group relative overflow-hidden rounded-2xl cursor-pointer bg-brand-black border border-gray-200/80 hover:border-brand-gold shadow-sm hover:shadow-xl hover:shadow-brand-gold/15 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-end h-[260px] sm:h-[280px]"
                     >
-                      <div className="aspect-[16/9] overflow-hidden relative">
+                      {/* Background Image & Multi-stop Luxury Gradient */}
+                      <div className="absolute inset-0 z-0 overflow-hidden">
                         <SafeImage 
                           src={sub.image} 
                           alt={sub.name} 
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" 
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-brand-black/90 via-brand-black/40 to-transparent"></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-brand-black/65 to-black/15 group-hover:via-brand-black/50 transition-colors duration-300"></div>
                       </div>
                       
-                      <div className="absolute bottom-0 left-0 w-full p-5 text-brand-white">
-                        <div className="flex items-center justify-between mb-1">
-                          <h3 className="text-lg font-luxury font-bold text-white group-hover:text-brand-gold transition-colors">{sub.name}</h3>
-                          <span className="text-[11px] bg-brand-gold/80 backdrop-blur px-2.5 py-0.5 rounded-full font-medium text-white">
-                            {sub.tilesCount || 0} Tiles
-                          </span>
-                        </div>
-                        <p className="text-gray-300 text-xs line-clamp-2 mb-3">{sub.desc}</p>
-                        <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-gold group-hover:translate-x-1 transition-transform">
-                          View Tiles <ArrowRight className="w-3.5 h-3.5" />
-                        </span>
+                      {/* Bottom Content Area - Title Only */}
+                      <div className="relative z-10 p-6 flex flex-col justify-end text-brand-white">
+                        <h3 className="text-xl sm:text-2xl font-luxury font-bold text-white group-hover:text-brand-gold transition-colors duration-300 leading-snug">
+                          {sub.name}
+                        </h3>
                       </div>
                     </div>
                   </StaggerItem>
@@ -260,34 +231,6 @@ const PublicCollections = () => {
           {/* LEVEL 3: TILES VIEW */}
           {viewMode === 'tiles' && (
             <section id="all-tiles-section">
-              {/* Active Filter Banner */}
-              {(selectedSubCategory || selectedCategory) && (
-                <div className="mb-6 bg-brand-gold/10 border border-brand-gold/30 rounded-2xl p-4 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <button 
-                      onClick={() => setViewMode('subcategories')}
-                      className="p-2 bg-brand-white rounded-xl text-brand-black hover:bg-brand-gold hover:text-white transition-colors shadow-sm"
-                      title="Back to SubCategories"
-                    >
-                      <ArrowLeft size={18} />
-                    </button>
-                    <div>
-                      <h3 className="text-lg font-bold font-luxury text-brand-black">
-                        {selectedSubCategory ? `SubCategory: ${selectedSubCategory.name}` : `Category: ${selectedCategory.name}`}
-                      </h3>
-                      <p className="text-xs text-brand-textMuted">{selectedSubCategory?.desc || selectedCategory?.desc}</p>
-                    </div>
-                  </div>
-
-                  <button 
-                    onClick={clearFilters}
-                    className="flex items-center gap-1 text-xs text-red-500 hover:text-red-700 font-medium bg-white px-3 py-1.5 rounded-lg border border-red-200"
-                  >
-                    <X size={14} /> Clear Filter
-                  </button>
-                </div>
-              )}
-
               {/* Search Bar */}
               <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-8">
                 <div className="relative w-full md:w-80">

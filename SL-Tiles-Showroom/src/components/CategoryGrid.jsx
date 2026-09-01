@@ -15,7 +15,7 @@ const CategoryGrid = () => {
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12">
           <FadeUp>
-            <h2 className="text-3xl md:text-5xl font-bold text-brand-black font-luxury mb-4">Shop by Category</h2>
+            <h2 className="text-3xl md:text-4xl font-semibold text-brand-black font-luxury mb-4">Shop by Category</h2>
             <p className="text-brand-textMuted text-lg max-w-2xl">Find the perfect tiles tailored for every architectural requirement.</p>
           </FadeUp>
           <Link to="/collections" className="hidden md:flex items-center gap-2 text-brand-gold font-medium hover:text-yellow-600 transition-colors">
@@ -27,7 +27,7 @@ const CategoryGrid = () => {
           {displayCategories.map((cat) => (
             <StaggerItem 
               key={cat.id} 
-              className="group relative overflow-hidden rounded-2xl cursor-pointer aspect-[4/5]"
+              className="group relative overflow-hidden rounded-2xl cursor-pointer bg-brand-black border border-gray-200/80 hover:border-brand-gold shadow-md hover:shadow-2xl hover:shadow-brand-gold/15 transition-all duration-500 hover:-translate-y-2 aspect-[3/4] sm:aspect-[4/5] min-h-[380px] sm:min-h-[420px]"
               onClick={() => {
                 navigate(`/collections?categoryId=${cat.id}`);
               }}
@@ -35,20 +35,12 @@ const CategoryGrid = () => {
               <SafeImage 
                 src={cat.image} 
                 alt={cat.name} 
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" 
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-brand-black/90 via-brand-black/40 md:via-brand-black/20 to-transparent flex flex-col justify-end p-6"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-brand-black/55 to-black/15 group-hover:via-brand-black/40 transition-colors duration-500 flex flex-col justify-end p-6"></div>
               
-              <div className="absolute bottom-0 left-0 w-full p-6 transform translate-y-0 md:translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                <h3 className="text-brand-white text-2xl font-luxury font-medium mb-1">{cat.name}</h3>
-                {cat.desc && (
-                  <p className="text-gray-300 text-sm mb-3 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-75 line-clamp-2">
-                    {cat.desc}
-                  </p>
-                )}
-                <span className="inline-flex items-center gap-2 text-brand-gold opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100 font-medium text-sm">
-                  Explore Series <ArrowRight className="w-4 h-4" />
-                </span>
+              <div className="absolute bottom-0 left-0 w-full p-6 text-brand-white">
+                <h3 className="text-white text-2xl sm:text-3xl font-luxury font-bold group-hover:text-brand-gold transition-colors duration-300 leading-snug">{cat.name}</h3>
               </div>
             </StaggerItem>
           ))}

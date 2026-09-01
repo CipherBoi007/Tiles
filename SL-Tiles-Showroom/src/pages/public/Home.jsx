@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from '../../components/Header';
 import Hero from '../../components/Hero';
+import PartnerBrands from '../../components/PartnerBrands';
 import ProductGrid from '../../components/ProductGrid';
 import CategoryGrid from '../../components/CategoryGrid';
 import InspirationGallery from '../../components/InspirationGallery';
@@ -110,6 +111,7 @@ const Home = () => {
       />
       <Header />
       <Hero />
+      <PartnerBrands />
       <CategoryGrid />
       <ProductGrid />
       <OffersBanner />

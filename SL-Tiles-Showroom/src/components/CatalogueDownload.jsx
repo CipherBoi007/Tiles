@@ -38,7 +38,7 @@ const CatalogueDownload = ({ isStandalone = false }) => {
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
           <FadeUp>
-            <h2 className="text-3xl md:text-5xl font-luxury font-bold text-brand-black mb-3">
+            <h2 className="text-3xl md:text-4xl font-luxury font-semibold text-brand-black mb-3">
               Download Our Catalogues
             </h2>
             <p className="text-brand-textMuted text-base md:text-lg max-w-2xl">

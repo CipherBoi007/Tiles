@@ -28,7 +28,7 @@ const ProductGrid = () => {
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10">
           <FadeUp>
-            <h2 className="text-3xl md:text-5xl font-bold text-brand-black font-luxury mb-2">All Tile Products</h2>
+            <h2 className="text-3xl md:text-4xl font-semibold text-brand-black font-luxury mb-2">All Tile Products</h2>
             <p className="text-brand-textMuted text-lg">Browse our complete range of luxury ceramic, vitrified, wall, and floor tiles</p>
           </FadeUp>
           <Link to="/collections" className="flex items-center gap-2 text-brand-gold font-medium hover:text-yellow-600 transition-colors">

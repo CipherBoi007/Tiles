@@ -4,7 +4,7 @@ import { collectionService } from '../services';
 import SafeImage from './SafeImage';
 import { useNavigate } from 'react-router-dom';
 
-const GlobalSearch = () => {
+const GlobalSearch = ({ isTransparent = false }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
@@ -62,7 +62,7 @@ const GlobalSearch = () => {
     <div ref={wrapperRef} className="relative flex items-center">
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="text-brand-text hover:text-brand-gold transition-colors focus:outline-none flex items-center"
+        className={`${isTransparent ? 'text-white hover:text-brand-gold' : 'text-brand-text hover:text-brand-gold'} transition-colors focus:outline-none flex items-center`}
       >
         <Search className="w-5 h-5" />
       </button>

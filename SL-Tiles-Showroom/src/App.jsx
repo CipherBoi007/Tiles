@@ -18,11 +18,13 @@ import ErrorBoundary from './components/ErrorBoundary';
 import { LeadCaptureProvider } from './context/LeadCaptureContext';
 
 import { HelmetProvider } from 'react-helmet-async';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
     <HelmetProvider>
     <BrowserRouter>
+      <ScrollToTop />
       <ErrorBoundary>
         <LeadCaptureProvider>
           <React.Suspense fallback={<div className="flex h-screen items-center justify-center">Loading...</div>}>

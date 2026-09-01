@@ -18,7 +18,7 @@ import { useData } from '../../context/DataContext';
 const Sidebar = ({ isOpen, setIsOpen }) => {
   const navigate = useNavigate();
   const { settings } = useData();
-  const logoUrl = settings?.logoUrl || '/SL_LOGO.png';
+  const logoUrl = settings?.logoUrl || '/SL_LOGO_TRANS.png';
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
