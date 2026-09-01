@@ -23,11 +23,11 @@ const CategoryGrid = () => {
           </Link>
         </div>
 
-        <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StaggerContainer className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {displayCategories.map((cat) => (
             <StaggerItem 
               key={cat.id} 
-              className="group relative overflow-hidden rounded-2xl cursor-pointer bg-brand-black border border-gray-200/80 hover:border-brand-gold shadow-md hover:shadow-2xl hover:shadow-brand-gold/15 transition-all duration-500 hover:-translate-y-2 aspect-[3/4] sm:aspect-[4/5] min-h-[380px] sm:min-h-[420px]"
+              className="group relative overflow-hidden rounded-xl sm:rounded-2xl cursor-pointer bg-brand-black border border-gray-200/80 hover:border-brand-gold shadow-md hover:shadow-2xl hover:shadow-brand-gold/15 transition-all duration-500 hover:-translate-y-2 aspect-[3/4] min-h-[220px] sm:min-h-[420px]"
               onClick={() => {
                 navigate(`/collections?categoryId=${cat.id}`);
               }}

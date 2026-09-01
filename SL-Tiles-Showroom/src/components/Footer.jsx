@@ -96,53 +96,56 @@ const Footer = () => {
             </div>
           </StaggerItem>
 
-          {/* Quick Links Column */}
-          <StaggerItem>
-            <h4 className="text-lg font-luxury font-semibold mb-6 text-brand-gold">Quick Links</h4>
-            <ul className="space-y-3.5 text-sm">
-              {[
-                { name: 'Home', href: '/' },
-                { name: 'Curated Collections', href: '/collections?view=collections' },
-                { name: 'All Tile Products', href: '/collections?view=tiles' },
-                { name: 'PDF Catalogues', href: '/catalogues' },
-                { name: 'Visit Showroom', href: '/#contact' }
-              ].map(link => (
-                <li key={link.name}>
-                  <Link 
-                    to={link.href} 
-                    className="text-gray-400 hover:text-brand-gold transition-colors flex items-center gap-2 group"
-                  >
-                    <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 -ml-5 group-hover:ml-0 transition-all text-brand-gold" />
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </StaggerItem>
+          {/* Quick Links & Our Collections Column Group (Adjacent on Mobile) */}
+          <div className="grid grid-cols-2 gap-4 sm:gap-8 md:contents">
+            {/* Quick Links Column */}
+            <StaggerItem>
+              <h4 className="text-base sm:text-lg font-luxury font-semibold mb-4 sm:mb-6 text-brand-gold">Quick Links</h4>
+              <ul className="space-y-3 sm:space-y-3.5 text-xs sm:text-sm">
+                {[
+                  { name: 'Home', href: '/' },
+                  { name: 'Curated Collections', href: '/collections?view=collections' },
+                  { name: 'All Tile Products', href: '/collections?view=tiles' },
+                  { name: 'PDF Catalogues', href: '/catalogues' },
+                  { name: 'Visit Showroom', href: '/#contact' }
+                ].map(link => (
+                  <li key={link.name}>
+                    <Link 
+                      to={link.href} 
+                      className="text-gray-400 hover:text-brand-gold transition-colors flex items-center gap-2 group"
+                    >
+                      <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 -ml-5 group-hover:ml-0 transition-all text-brand-gold" />
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </StaggerItem>
 
-          {/* Collections Column */}
-          <StaggerItem>
-            <h4 className="text-lg font-luxury font-semibold mb-6 text-brand-gold">Our Collections</h4>
-            <ul className="space-y-3.5 text-sm">
-              {[
-                { name: 'Living Room Tiles', search: 'Living' },
-                { name: 'Bathroom Elegance', search: 'Bathroom' },
-                { name: 'Designer Kitchen', search: 'Kitchen' },
-                { name: 'Outdoor & Parking', search: 'Outdoor' },
-                { name: 'Luxury Wall Cladding', search: 'Wall' }
-              ].map(item => (
-                <li key={item.name}>
-                  <Link 
-                    to={`/collections?search=${encodeURIComponent(item.search)}`} 
-                    className="text-gray-400 hover:text-brand-gold transition-colors flex items-center gap-2 group"
-                  >
-                    <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 -ml-5 group-hover:ml-0 transition-all text-brand-gold" />
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </StaggerItem>
+            {/* Collections Column */}
+            <StaggerItem>
+              <h4 className="text-base sm:text-lg font-luxury font-semibold mb-4 sm:mb-6 text-brand-gold">Our Collections</h4>
+              <ul className="space-y-3 sm:space-y-3.5 text-xs sm:text-sm">
+                {[
+                  { name: 'Living Room Tiles', search: 'Living' },
+                  { name: 'Bathroom Elegance', search: 'Bathroom' },
+                  { name: 'Designer Kitchen', search: 'Kitchen' },
+                  { name: 'Outdoor & Parking', search: 'Outdoor' },
+                  { name: 'Luxury Wall Cladding', search: 'Wall' }
+                ].map(item => (
+                  <li key={item.name}>
+                    <Link 
+                      to={`/collections?search=${encodeURIComponent(item.search)}`} 
+                      className="text-gray-400 hover:text-brand-gold transition-colors flex items-center gap-2 group"
+                    >
+                      <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 -ml-5 group-hover:ml-0 transition-all text-brand-gold" />
+                      {item.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </StaggerItem>
+          </div>
 
           {/* Newsletter Column */}
           <StaggerItem>

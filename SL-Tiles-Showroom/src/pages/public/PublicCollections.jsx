@@ -123,39 +123,44 @@ const PublicCollections = () => {
             </div>
 
             {/* View switcher tabs */}
-            <div className="flex items-center gap-2 bg-brand-lightBg p-1.5 rounded-xl border border-gray-200">
-              <button
-                onClick={() => handleSwitchView('categories')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                  viewMode === 'categories'
-                    ? 'bg-brand-white text-brand-gold shadow-sm font-semibold'
-                    : 'text-brand-textMuted hover:text-brand-black'
-                }`}
-              >
-                <FolderOpen size={16} /> Categories
-              </button>
+            <div className="w-full md:w-auto overflow-x-auto scrollbar-hide">
+              <div className="flex items-center gap-1 sm:gap-2 bg-brand-lightBg p-1 sm:p-1.5 rounded-xl border border-gray-200 min-w-max md:min-w-0">
+                <button
+                  onClick={() => handleSwitchView('categories')}
+                  className={`flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap flex-1 md:flex-initial ${
+                    viewMode === 'categories'
+                      ? 'bg-brand-white text-brand-gold shadow-sm font-semibold'
+                      : 'text-brand-textMuted hover:text-brand-black'
+                  }`}
+                >
+                  <FolderOpen className="w-4 h-4 shrink-0" />
+                  <span>Categories</span>
+                </button>
 
-              <button
-                onClick={() => handleSwitchView('subcategories')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                  viewMode === 'subcategories'
-                    ? 'bg-brand-white text-brand-gold shadow-sm font-semibold'
-                    : 'text-brand-textMuted hover:text-brand-black'
-                }`}
-              >
-                <FolderTree size={16} /> SubCategories
-              </button>
+                <button
+                  onClick={() => handleSwitchView('subcategories')}
+                  className={`flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap flex-1 md:flex-initial ${
+                    viewMode === 'subcategories'
+                      ? 'bg-brand-white text-brand-gold shadow-sm font-semibold'
+                      : 'text-brand-textMuted hover:text-brand-black'
+                  }`}
+                >
+                  <FolderTree className="w-4 h-4 shrink-0" />
+                  <span>SubCategories</span>
+                </button>
 
-              <button
-                onClick={() => handleSwitchView('tiles')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                  viewMode === 'tiles'
-                    ? 'bg-brand-white text-brand-gold shadow-sm font-semibold'
-                    : 'text-brand-textMuted hover:text-brand-black'
-                }`}
-              >
-                <Grid size={16} /> All Tiles
-              </button>
+                <button
+                  onClick={() => handleSwitchView('tiles')}
+                  className={`flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap flex-1 md:flex-initial ${
+                    viewMode === 'tiles'
+                      ? 'bg-brand-white text-brand-gold shadow-sm font-semibold'
+                      : 'text-brand-textMuted hover:text-brand-black'
+                  }`}
+                >
+                  <Grid className="w-4 h-4 shrink-0" />
+                  <span>All Tiles</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -165,12 +170,12 @@ const PublicCollections = () => {
           {/* LEVEL 1: CATEGORIES VIEW */}
           {viewMode === 'categories' && (
             <section>
-              <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <StaggerContainer className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
                 {categoryList.map((cat) => (
                   <StaggerItem key={cat.id}>
                     <div 
                       onClick={() => handleCategorySelect(cat)}
-                      className="group relative overflow-hidden rounded-2xl cursor-pointer bg-brand-black border border-gray-200/80 hover:border-brand-gold shadow-sm hover:shadow-xl hover:shadow-brand-gold/15 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-end h-[260px] sm:h-[280px]"
+                      className="group relative overflow-hidden rounded-xl sm:rounded-2xl cursor-pointer bg-brand-black border border-gray-200/80 hover:border-brand-gold shadow-sm hover:shadow-xl hover:shadow-brand-gold/15 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-end h-[200px] sm:h-[280px]"
                     >
                       {/* Background Image & Multi-stop Luxury Gradient */}
                       <div className="absolute inset-0 z-0 overflow-hidden">
@@ -183,8 +188,8 @@ const PublicCollections = () => {
                       </div>
                       
                       {/* Bottom Content Area - Title Only */}
-                      <div className="relative z-10 p-6 flex flex-col justify-end text-brand-white">
-                        <h3 className="text-xl sm:text-2xl font-luxury font-bold text-white group-hover:text-brand-gold transition-colors duration-300 leading-snug">
+                      <div className="relative z-10 p-4 sm:p-6 flex flex-col justify-end text-brand-white">
+                        <h3 className="text-base sm:text-2xl font-luxury font-bold text-white group-hover:text-brand-gold transition-colors duration-300 leading-snug">
                           {cat.name}
                         </h3>
                       </div>
@@ -198,12 +203,12 @@ const PublicCollections = () => {
           {/* LEVEL 2: SUBCATEGORIES VIEW */}
           {viewMode === 'subcategories' && (
             <section>
-              <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <StaggerContainer className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
                 {filteredSubCategories.map((sub) => (
                   <StaggerItem key={sub.id}>
                     <div 
                       onClick={() => handleSubCategorySelect(sub)}
-                      className="group relative overflow-hidden rounded-2xl cursor-pointer bg-brand-black border border-gray-200/80 hover:border-brand-gold shadow-sm hover:shadow-xl hover:shadow-brand-gold/15 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-end h-[260px] sm:h-[280px]"
+                      className="group relative overflow-hidden rounded-xl sm:rounded-2xl cursor-pointer bg-brand-black border border-gray-200/80 hover:border-brand-gold shadow-sm hover:shadow-xl hover:shadow-brand-gold/15 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-end h-[200px] sm:h-[280px]"
                     >
                       {/* Background Image & Multi-stop Luxury Gradient */}
                       <div className="absolute inset-0 z-0 overflow-hidden">
@@ -216,8 +221,8 @@ const PublicCollections = () => {
                       </div>
                       
                       {/* Bottom Content Area - Title Only */}
-                      <div className="relative z-10 p-6 flex flex-col justify-end text-brand-white">
-                        <h3 className="text-xl sm:text-2xl font-luxury font-bold text-white group-hover:text-brand-gold transition-colors duration-300 leading-snug">
+                      <div className="relative z-10 p-4 sm:p-6 flex flex-col justify-end text-brand-white">
+                        <h3 className="text-base sm:text-2xl font-luxury font-bold text-white group-hover:text-brand-gold transition-colors duration-300 leading-snug">
                           {sub.name}
                         </h3>
                       </div>
@@ -246,7 +251,7 @@ const PublicCollections = () => {
               </div>
 
               {/* Tile Cards Grid */}
-              <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <StaggerContainer className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
                 {(Array.isArray(tiles) ? tiles : []).length > 0 ? (
                   tiles.map((product) => (
                     <StaggerItem key={product.id}>

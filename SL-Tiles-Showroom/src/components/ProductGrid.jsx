@@ -37,7 +37,7 @@ const ProductGrid = () => {
         </div>
 
         <div className="flex flex-col gap-10">
-          <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <StaggerContainer className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             {tiles.length > 0 ? tiles.slice(0, 8).map((product) => (
               <StaggerItem key={product.id}>
                 <ProductCard 

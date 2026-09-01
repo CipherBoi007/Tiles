@@ -57,7 +57,7 @@ const CatalogueDownload = ({ isStandalone = false }) => {
         </div>
         
         {displayCatalogues.length > 0 ? (
-          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <StaggerContainer className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-8">
             {displayCatalogues.map((catalogue) => (
               <StaggerItem key={catalogue.id} className="bg-brand-lightBg rounded-2xl p-6 border border-gray-100 group hover:shadow-xl transition-all duration-300 relative overflow-hidden flex flex-col h-full hover:-translate-y-1">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-brand-gold/5 rounded-bl-full -z-0 group-hover:scale-110 transition-transform"></div>
