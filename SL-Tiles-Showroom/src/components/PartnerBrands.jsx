@@ -20,6 +20,23 @@ const ItalakeLogo = ({ className = "h-8 sm:h-9 w-auto" }) => (
   </svg>
 );
 
+const ItacaLogo = ({ className = "h-7 sm:h-8 w-auto" }) => (
+  <svg 
+    viewBox="0 0 420 80" 
+    className={className} 
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    style={{ minWidth: '120px', maxWidth: '170px' }}
+  >
+    <text x="0" y="54" fontFamily="'Playfair Display', 'Times New Roman', serif" fontSize="54" fontWeight="900" letterSpacing="5" fill="#1E293B">
+      ITACA
+    </text>
+    <text x="220" y="64" fontFamily="system-ui, -apple-system, sans-serif" fontSize="13" fontWeight="600" letterSpacing="1.5" fill="#64748B">
+      an italian live
+    </text>
+  </svg>
+);
+
 const PartnerBrands = () => {
   return (
     <section className="bg-brand-white border-y border-gray-100 py-4 sm:py-5 relative z-10">
@@ -48,7 +65,7 @@ const PartnerBrands = () => {
             {/* Subtle Divider Bullet */}
             <span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
 
-            {/* Itaca Ceramic */}
+            {/* Itaca Ceramic Vector Logo */}
             <a
               href="https://www.itaca.in"
               target="_blank"
@@ -56,11 +73,7 @@ const PartnerBrands = () => {
               className="group flex items-center justify-center opacity-85 hover:opacity-100 transition-all duration-300 transform hover:scale-105"
               title="Itaca Ceramic"
             >
-              <img
-                src="https://www.itaca.in/assets/imgs/logo/logo-black.png"
-                alt="Itaca Ceramic"
-                className="h-7 sm:h-8 w-auto object-contain filter grayscale opacity-75 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
-              />
+              <ItacaLogo className="h-7 sm:h-8 w-auto filter grayscale opacity-75 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300" />
             </a>
           </div>
         </FadeUp>
