@@ -21,12 +21,7 @@ const ProductCard = ({ product, onQuickView }) => {
       </div>
 
       <div className="p-3.5 sm:p-5">
-        <h3 className="text-base sm:text-xl font-luxury font-semibold text-brand-black mb-1.5 sm:mb-3 leading-snug group-hover:text-brand-gold transition-colors">{product.name}</h3>
-        
-        <div className="space-y-0.5 text-xs sm:text-sm text-brand-textMuted">
-          <p><span className="font-medium text-brand-black">Size:</span> {product.size || 'N/A'}</p>
-          <p><span className="font-medium text-brand-black">Palette:</span> {product.palette || product.color || 'N/A'}</p>
-        </div>
+        <h3 className="text-base sm:text-lg font-luxury font-semibold text-brand-black leading-snug group-hover:text-brand-gold transition-colors">{product.name}</h3>
       </div>
     </div>
   );

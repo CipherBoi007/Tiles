@@ -14,14 +14,13 @@ const ManageCategories = () => {
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
-    desc: '',
     image: '',
     status: 'active'
   });
 
   const handleOpenAdd = () => {
     setEditingId(null);
-    setFormData({ name: '', desc: '', image: '', status: 'active' });
+    setFormData({ name: '', image: '', status: 'active' });
     setIsDrawerOpen(true);
   };
 
@@ -29,7 +28,6 @@ const ManageCategories = () => {
     setEditingId(cat.id);
     setFormData({
       name: cat.name || '',
-      desc: cat.desc || '',
       image: cat.image || '',
       status: cat.status || 'active'
     });
@@ -50,7 +48,7 @@ const ManageCategories = () => {
     }
     
     setIsDrawerOpen(false);
-    setFormData({ name: '', desc: '', image: '', status: 'active' });
+    setFormData({ name: '', image: '', status: 'active' });
   };
 
   const handleDelete = async (id) => {
@@ -106,12 +104,9 @@ const ManageCategories = () => {
                   {cat.subCategoriesCount || 0} SubCategories
                 </span>
               </div>
-              <div className="p-5 flex-1 flex flex-col">
-                <h3 className="font-luxury font-semibold text-brand-text text-lg mb-1">{cat.name}</h3>
-                <p className="text-sm text-brand-textMuted line-clamp-2 mb-4 flex-1">
-                  {cat.desc || 'No description provided.'}
-                </p>
-                <div className="flex items-center gap-2 pt-4 border-t border-gray-100">
+              <div className="p-5 flex-1 flex flex-col justify-between">
+                <h3 className="font-luxury font-semibold text-brand-text text-lg mb-4">{cat.name}</h3>
+                <div className="flex items-center gap-2 pt-4 border-t border-gray-100 mt-auto">
                   <button 
                     onClick={() => handleEdit(cat)}
                     className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium text-brand-text hover:text-brand-gold bg-gray-50 hover:bg-[#FFF8E7] rounded-lg transition-colors"
@@ -179,15 +174,6 @@ const ManageCategories = () => {
               </select>
             </div>
           </div>
-
-          <FormInput 
-            label="Description" 
-            type="textarea"
-            value={formData.desc}
-            onChange={(e) => setFormData({...formData, desc: e.target.value})}
-            placeholder="Brief summary of what this category contains..."
-            rows={4}
-          />
 
           <div className="flex justify-end gap-3 pt-6 border-t border-gray-100 mt-auto">
             <button 

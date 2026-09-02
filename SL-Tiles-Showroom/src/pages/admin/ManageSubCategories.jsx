@@ -15,7 +15,6 @@ const ManageSubCategories = () => {
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
-    desc: '',
     image: '',
     categoryId: ''
   });
@@ -24,7 +23,7 @@ const ManageSubCategories = () => {
 
   const handleOpenAdd = () => {
     setEditingId(null);
-    setFormData({ name: '', desc: '', image: '', categoryId: '' });
+    setFormData({ name: '', image: '', categoryId: '' });
     setIsDrawerOpen(true);
   };
 
@@ -32,7 +31,6 @@ const ManageSubCategories = () => {
     setEditingId(sub.id);
     setFormData({
       name: sub.name || '',
-      desc: sub.desc || '',
       image: sub.image || '',
       categoryId: sub.categoryId ? String(sub.categoryId) : ''
     });
@@ -58,7 +56,7 @@ const ManageSubCategories = () => {
     }
     
     setIsDrawerOpen(false);
-    setFormData({ name: '', desc: '', image: '', categoryId: '' });
+    setFormData({ name: '', image: '', categoryId: '' });
   };
 
   const handleDelete = async (id) => {
@@ -119,12 +117,9 @@ const ManageSubCategories = () => {
                   {sub.tilesCount || 0} Tiles
                 </span>
               </div>
-              <div className="p-5 flex-1 flex flex-col">
-                <h3 className="font-luxury font-semibold text-brand-text text-lg mb-1">{sub.name}</h3>
-                <p className="text-sm text-brand-textMuted line-clamp-2 mb-4 flex-1">
-                  {sub.desc || 'No description provided.'}
-                </p>
-                <div className="flex items-center gap-2 pt-4 border-t border-gray-100">
+              <div className="p-5 flex-1 flex flex-col justify-between">
+                <h3 className="font-luxury font-semibold text-brand-text text-lg mb-4">{sub.name}</h3>
+                <div className="flex items-center gap-2 pt-4 border-t border-gray-100 mt-auto">
                   <button 
                     onClick={() => handleEdit(sub)}
                     className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium text-brand-text hover:text-brand-gold bg-gray-50 hover:bg-[#FFF8E7] rounded-lg transition-colors"
@@ -196,15 +191,6 @@ const ManageSubCategories = () => {
               </select>
             </div>
           </div>
-          
-          <FormInput 
-            label="Description" 
-            type="textarea"
-            value={formData.desc}
-            onChange={(e) => setFormData({...formData, desc: e.target.value})}
-            placeholder="Brief summary of this subcategory..."
-            rows={4}
-          />
 
           <div className="flex justify-end gap-3 pt-6 border-t border-gray-100 mt-auto">
             <button 

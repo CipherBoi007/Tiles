@@ -23,11 +23,6 @@ const Collections = () => {
   const [formData, setFormData] = useState({
     name: '',
     subCategoryId: '',
-    desc: '',
-    size: '',
-    finish: '',
-    palette: '',
-    thickness: '',
     image: ''
   });
 
@@ -55,7 +50,7 @@ const Collections = () => {
   const handleOpenAdd = () => {
     setEditingId(null);
     setFormData({
-      name: '', subCategoryId: '', desc: '', size: '', finish: '', palette: '', thickness: '', image: ''
+      name: '', subCategoryId: '', image: ''
     });
     setDropdownSearch('');
     setIsFormDrawerOpen(true);
@@ -66,11 +61,6 @@ const Collections = () => {
     setFormData({
       name: tile.name || '',
       subCategoryId: tile.subCategoryId ? String(tile.subCategoryId) : '',
-      desc: tile.desc || '',
-      size: tile.size || '',
-      finish: tile.finish || '',
-      palette: tile.palette || '',
-      thickness: tile.thickness || '',
       image: tile.image || ''
     });
     setDropdownSearch('');
@@ -87,12 +77,7 @@ const Collections = () => {
     const payload = {
       name: formData.name,
       image: formData.image,
-      subCategoryId: parseInt(formData.subCategoryId, 10),
-      size: formData.size,
-      finish: formData.finish || formData.palette || 'Glossy',
-      palette: formData.palette,
-      thickness: formData.thickness,
-      desc: formData.desc
+      subCategoryId: parseInt(formData.subCategoryId, 10)
     };
 
     if (editingId) {
@@ -103,7 +88,7 @@ const Collections = () => {
     
     setIsFormDrawerOpen(false);
     setFormData({
-      name: '', subCategoryId: '', desc: '', size: '', finish: '', palette: '', thickness: '', image: ''
+      name: '', subCategoryId: '', image: ''
     });
     setDropdownSearch('');
   };
@@ -174,8 +159,6 @@ const Collections = () => {
                 <div className="flex flex-col gap-y-1 text-xs text-brand-textMuted mb-4">
                   <div><span className="font-medium text-gray-500">SubCategory:</span> {tile.subCategory?.name || 'N/A'}</div>
                   <div><span className="font-medium text-gray-500">Category:</span> {tile.subCategory?.category?.name || 'N/A'}</div>
-                  <div><span className="font-medium text-gray-500">Size:</span> {tile.size || 'N/A'}</div>
-                  <div><span className="font-medium text-gray-500">Finish:</span> {tile.finish || 'N/A'}</div>
                 </div>
 
                 <div className="flex items-center gap-2 mt-auto pt-4 border-t border-gray-100">
@@ -315,44 +298,7 @@ const Collections = () => {
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormInput 
-              label="Dimensions" 
-              value={formData.size}
-              onChange={(e) => setFormData({...formData, size: e.target.value})}
-              placeholder="e.g. 600x600 mm"
-            />
 
-            <FormInput 
-              label="Finish" 
-              value={formData.finish}
-              onChange={(e) => setFormData({...formData, finish: e.target.value})}
-              placeholder="e.g. High Gloss, Matte, Satin"
-            />
-
-            <FormInput 
-              label="Color Palette" 
-              value={formData.palette}
-              onChange={(e) => setFormData({...formData, palette: e.target.value})}
-              placeholder="e.g. White, Gray, Gold"
-            />
-
-            <FormInput 
-              label="Thickness" 
-              value={formData.thickness}
-              onChange={(e) => setFormData({...formData, thickness: e.target.value})}
-              placeholder="e.g. 9mm"
-            />
-          </div>
-
-          <FormInput 
-            label="Description" 
-            type="textarea"
-            value={formData.desc}
-            onChange={(e) => setFormData({...formData, desc: e.target.value})}
-            placeholder="Brief description of this tile product..."
-            rows={3}
-          />
 
           <div className="flex justify-end gap-3 pt-6 border-t border-gray-100 mt-auto">
             <button 

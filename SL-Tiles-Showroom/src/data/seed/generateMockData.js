@@ -15,7 +15,6 @@ export const generateCategories = (count = 100) => {
       name: name,
       slug: name.toLowerCase().replace(/ /g, '-'),
       image: getUniqueImage(space),
-      desc: `Explore our beautiful collection of ${style.toLowerCase()} tiles specifically curated for your ${space.toLowerCase()}.`,
       createdAt: new Date(Date.now() - Math.floor(Math.random() * 10000000000)).toISOString()
     });
   }
@@ -26,8 +25,6 @@ export const generateCollections = (count = 100, categories) => {
   const materials = ['Marble', 'Ceramic', 'Porcelain', 'Granite', 'Wood-look', 'Stone', 'Terrazzo', 'Glass', 'Slate', 'Concrete'];
   const finishes = ['Glossy', 'Matte', 'Satin', 'Polished', 'Textured', 'Honed', 'Lappato'];
   const colors = ['White', 'Black', 'Grey', 'Beige', 'Cream', 'Brown', 'Blue', 'Green', 'Gold', 'Charcoal'];
-  const sizes = ['300x300 mm', '600x600 mm', '800x800 mm', '1200x600 mm', '200x1200 mm', '400x400 mm'];
-  const templates = ['template1', 'template2', 'template3'];
   
   const products = [];
 
@@ -42,11 +39,6 @@ export const generateCollections = (count = 100, categories) => {
       id: `prod-${i}`,
       categoryId: categoryId,
       name: name,
-      size: sizes[Math.floor(Math.random() * sizes.length)],
-      palette: `${color}, ${colors[Math.floor(Math.random() * colors.length)]}`,
-      finish: finish,
-      desc: `Premium ${material.toLowerCase()} tile with a stunning ${finish.toLowerCase()} finish. Perfect for any luxury interior.`,
-      template: templates[Math.floor(Math.random() * templates.length)],
       image: getUniqueImage(material),
       createdAt: new Date(Date.now() - Math.floor(Math.random() * 10000000000)).toISOString()
     });

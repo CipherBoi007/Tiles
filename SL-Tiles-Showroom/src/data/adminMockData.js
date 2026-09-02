@@ -17,16 +17,16 @@ export const recentActivity = [
 ];
 
 export const tilesData = [
-  { id: 1, name: 'Carrara White Marble', image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=150&q=80', category: 'Marble', size: '600x600', finish: 'Glossy' },
-  { id: 2, name: 'Onyx Black', image: 'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&w=150&q=80', category: 'Luxury', size: '800x800', finish: 'High Gloss' },
-  { id: 3, name: 'Rustic Concrete', image: 'https://images.unsplash.com/photo-1505691938895-1758d7bef511?auto=format&fit=crop&w=150&q=80', category: 'Ceramic', size: '300x600', finish: 'Matte' },
-  { id: 4, name: 'Travertine Beige', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=150&q=80', category: 'Natural Stone', size: '600x600', finish: 'Satin' }
+  { id: 1, name: 'Carrara White Marble', image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=150&q=80', category: 'Marble' },
+  { id: 2, name: 'Onyx Black', image: 'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&w=150&q=80', category: 'Luxury' },
+  { id: 3, name: 'Rustic Concrete', image: 'https://images.unsplash.com/photo-1505691938895-1758d7bef511?auto=format&fit=crop&w=150&q=80', category: 'Ceramic' },
+  { id: 4, name: 'Travertine Beige', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=150&q=80', category: 'Natural Stone' }
 ];
 
 export const collectionsData = [
-  { id: 1, name: 'Luxury Marble', desc: 'Premium imported marble tiles for elegant spaces.', image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=400&q=80', tilesCount: 24 },
-  { id: 2, name: 'Minimalist Concrete', desc: 'Modern concrete look for industrial design themes.', image: 'https://images.unsplash.com/photo-1505691938895-1758d7bef511?auto=format&fit=crop&w=400&q=80', tilesCount: 16 },
-  { id: 3, name: 'Mediterranean Series', desc: 'Warm, earthy tones inspired by coastal villas.', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=400&q=80', tilesCount: 12 }
+  { id: 1, name: 'Luxury Marble', image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=400&q=80', tilesCount: 24 },
+  { id: 2, name: 'Minimalist Concrete', image: 'https://images.unsplash.com/photo-1505691938895-1758d7bef511?auto=format&fit=crop&w=400&q=80', tilesCount: 16 },
+  { id: 3, name: 'Mediterranean Series', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=400&q=80', tilesCount: 12 }
 ];
 
 export const cataloguesData = [

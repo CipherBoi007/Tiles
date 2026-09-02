@@ -57,34 +57,13 @@ const TileModal = ({ product, onClose }) => {
         </div>
 
         {/* Right: Details */}
-        <div className="w-full md:w-1/2 p-4 sm:p-6 md:p-10 flex flex-col justify-center">
+        <div className="w-full md:w-1/2 p-6 md:p-10 flex flex-col justify-center">
           {product.tag && (
             <span className="inline-block px-3 py-1 bg-brand-gold/10 text-brand-gold text-xs font-semibold uppercase tracking-wider mb-4 w-max max-w-full truncate rounded-sm">
               {product.tag}
             </span>
           )}
-          <h2 className="text-3xl md:text-4xl font-luxury font-bold text-brand-black mb-6">{product.name}</h2>
-          
-          <p className="text-brand-text mb-8 leading-relaxed whitespace-pre-wrap break-words">
-            {product.desc || `Elevate your space with our premium ${product.name}. Known for its striking appearance and durability, this tile is perfect for creating a luxurious ambiance in any setting.`}
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8 border-y border-gray-100 py-6">
-            <div>
-              <p className="text-brand-textMuted text-sm mb-1">Dimensions</p>
-              <p className="font-medium text-brand-black">{product.size || 'N/A'}</p>
-            </div>
-            <div>
-              <p className="text-brand-textMuted text-sm mb-1">Color Palette</p>
-              <p className="font-medium text-brand-black">{product.palette || product.color || 'N/A'}</p>
-            </div>
-            <div>
-              <p className="text-brand-textMuted text-sm mb-1">Template Type</p>
-              <p className="font-medium text-brand-black uppercase text-xs tracking-wider bg-gray-100 px-2 py-1 rounded inline-block">
-                {product.template || 'Standard'}
-              </p>
-            </div>
-          </div>
+          <h2 className="text-3xl md:text-4xl font-luxury font-bold text-brand-black mb-8">{product.name}</h2>
 
           <button 
             onClick={handleWhatsApp}

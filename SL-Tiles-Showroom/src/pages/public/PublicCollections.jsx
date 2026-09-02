@@ -244,7 +244,7 @@ const PublicCollections = () => {
                     type="text"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Search tiles by name, size, finish..."
+                    placeholder="Search tiles by name..."
                     className="w-full pl-10 pr-4 py-2.5 bg-brand-white border border-gray-200 rounded-xl focus:outline-none focus:border-brand-gold text-sm transition-colors shadow-sm"
                   />
                 </div>

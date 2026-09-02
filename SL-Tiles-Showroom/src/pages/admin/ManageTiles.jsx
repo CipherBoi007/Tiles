@@ -12,7 +12,6 @@ const ManageTiles = () => {
   // Form State
   const [formData, setFormData] = useState({
     name: '',
-    desc: '',
     image: ''
   });
   const [isEditing, setIsEditing] = useState(null);
@@ -32,13 +31,12 @@ const ManageTiles = () => {
     }
     
     // Reset form
-    setFormData({ name: '', desc: '', image: '' });
+    setFormData({ name: '', image: '' });
   };
 
   const handleEdit = (cat) => {
     setFormData({
       name: cat.name,
-      desc: cat.desc || '',
       image: cat.image
     });
     setIsEditing(cat.id);
@@ -53,7 +51,7 @@ const ManageTiles = () => {
 
   const handleCancel = () => {
     setIsEditing(null);
-    setFormData({ name: '', desc: '', image: '' });
+    setFormData({ name: '', image: '' });
   };
 
   return (
@@ -87,15 +85,6 @@ const ManageTiles = () => {
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
                 placeholder="e.g. Royal Villa Series"
                 required
-              />
-              
-              <FormInput 
-                label="Description" 
-                type="textarea"
-                value={formData.desc}
-                onChange={(e) => setFormData({...formData, desc: e.target.value})}
-                placeholder="Brief description of this collection..."
-                rows={4}
               />
 
               <div className="flex gap-4 pt-4">
@@ -146,12 +135,9 @@ const ManageTiles = () => {
               <div className="aspect-[4/3] overflow-hidden relative">
                 <SafeImage src={cat.image} alt={cat.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
               </div>
-              <div className="p-5 flex-1 flex flex-col">
-                <h3 className="font-luxury font-semibold text-brand-text text-lg mb-1">{cat.name}</h3>
-                <p className="text-sm text-brand-textMuted line-clamp-2 mb-4 flex-1">
-                  {cat.desc || 'No description provided.'}
-                </p>
-                <div className="flex items-center gap-2 pt-4 border-t border-gray-100">
+              <div className="p-5 flex-1 flex flex-col justify-between">
+                <h3 className="font-luxury font-semibold text-brand-text text-lg mb-4">{cat.name}</h3>
+                <div className="flex items-center gap-2 pt-4 border-t border-gray-100 mt-auto">
                   <button 
                     onClick={() => handleEdit(cat)}
                     className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium text-brand-text hover:text-brand-gold bg-gray-50 hover:bg-[#FFF8E7] rounded-lg transition-colors"
