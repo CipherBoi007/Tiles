@@ -1,1 +1,0 @@
-SL-Tiles-Showroom/public/catalogues/*.pdf filter=lfs diff=lfs merge=lfs -text

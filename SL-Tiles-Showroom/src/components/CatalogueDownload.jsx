@@ -92,7 +92,7 @@ const CatalogueDownload = ({ isStandalone = false }) => {
                       <Eye size={15} /> Preview
                     </button>
                     <a 
-                      href={catalogue.fileUrl} 
+                      href={encodeURI(catalogue.fileUrl)} 
                       onClick={(e) => handleDownload(e, catalogue)}
                       className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 bg-brand-gold hover:bg-yellow-600 text-brand-white font-medium text-xs rounded-xl transition-colors shadow-md shadow-brand-gold/20 h-[40px]"
                     >
@@ -140,7 +140,7 @@ const CatalogueDownload = ({ isStandalone = false }) => {
 
               <div className="flex items-center gap-3">
                 <a
-                  href={activePdfModal.fileUrl}
+                  href={encodeURI(activePdfModal.fileUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hidden sm:flex items-center gap-1.5 text-xs font-medium bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg transition-colors"
@@ -165,7 +165,7 @@ const CatalogueDownload = ({ isStandalone = false }) => {
             {/* Embedded PDF Viewer iFrame */}
             <div className="flex-1 bg-gray-100 relative overflow-hidden">
               <iframe
-                src={activePdfModal.fileUrl}
+                src={encodeURI(activePdfModal.fileUrl)}
                 title={activePdfModal.title}
                 className="w-full h-full border-0"
               />

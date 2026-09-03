@@ -47,8 +47,33 @@ app.use('/api', apiLimiter);
 app.use(express.json({ limit: '2mb' })); // Reduced from 10mb to prevent memory issues with JSON parsing
 app.use(express.urlencoded({ limit: '2mb', extended: true }));
 
-// Static route to serve local PDF catalogues directly
-app.use('/catalogues', express.static(path.join(__dirname, '../../SL-Tiles-Showroom/public/catalogues')));
+// Static route to serve local PDF catalogues directly with space/hyphen fallback
+app.use('/catalogues', (req, res, next) => {
+  try {
+    const rawPath = decodeURIComponent(req.path);
+    const publicCataloguesDir = path.join(__dirname, '../../SL-Tiles-Showroom/public/catalogues');
+    const directFilePath = path.join(publicCataloguesDir, rawPath);
+
+    if (fs.existsSync(directFilePath) && fs.statSync(directFilePath).isFile()) {
+      return res.sendFile(directFilePath);
+    }
+
+    // Try fuzzy match (e.g. spaces converted to hyphens or timestamp separators)
+    const normalizedName = rawPath.replace(/^\//, '');
+    const files = fs.readdirSync(publicCataloguesDir);
+    const matchedFile = files.find(f => 
+      f.toLowerCase() === normalizedName.toLowerCase() ||
+      f.replace(/[-_\s]+/g, '').toLowerCase() === normalizedName.replace(/[-_\s]+/g, '').toLowerCase()
+    );
+
+    if (matchedFile) {
+      return res.sendFile(path.join(publicCataloguesDir, matchedFile));
+    }
+  } catch (err) {
+    // Fallback to default express static handler
+  }
+  next();
+}, express.static(path.join(__dirname, '../../SL-Tiles-Showroom/public/catalogues')));
 
 app.use('/api', routes);
 
