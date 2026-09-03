@@ -7,7 +7,7 @@ import Drawer from '../../components/admin/Drawer';
 import FormInput from '../../components/admin/FormInput';
 
 const Catalogues = () => {
-  const { data: catalogues, pagination, setPage, search, setSearch, createItem, deleteItem, loading } = useCatalogues(8);
+  const { data: catalogues, pagination, setPage, search, setSearch, createItem, deleteItem, loading } = useCatalogues(30);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [file, setFile] = useState(null);

@@ -75,5 +75,5 @@ export const useSubCategories = (limit = 8) => usePaginatedData(subCategoryServi
 export const useTiles = (limit = 8) => usePaginatedData(tileService, 1, limit);
 export const useCollections = (limit = 8) => usePaginatedData(collectionService, 1, limit);
 export const useTileCategories = (limit = 8) => usePaginatedData(categoryService, 1, limit);
-export const useCatalogues = (limit = 8) => usePaginatedData(catalogueService, 1, limit);
+export const useCatalogues = (limit = 30) => usePaginatedData(catalogueService, 1, limit);
 export const useEnquiries = (limit = 8) => usePaginatedData(enquiryService, 1, limit);

@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { Download, FileText, Eye, ArrowRight, X } from 'lucide-react';
+import { Download, FileText, Eye, ArrowRight, X, ArrowLeft } from 'lucide-react';
 import { useCatalogues } from '../hooks/useDataFetch';
 import Pagination from './Pagination';
 import { FadeUp, StaggerContainer, StaggerItem } from './animations/MotionWrappers';
 import { useLeadCapture } from '../context/LeadCaptureContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const CatalogueDownload = ({ isStandalone = false }) => {
-  const { data: catalogues, pagination, setPage, loading } = useCatalogues(8);
+  const limit = isStandalone ? 30 : 8;
+  const { data: catalogues, pagination, setPage, loading } = useCatalogues(limit);
   const { captureLead } = useLeadCapture();
   const [activePdfModal, setActivePdfModal] = useState(null);
+  const navigate = useNavigate();
 
   const handlePreview = (catalogue) => {
     captureLead('Catalogue Preview', () => {
@@ -29,7 +31,7 @@ const CatalogueDownload = ({ isStandalone = false }) => {
     });
   };
 
-  const displayCatalogues = (Array.isArray(catalogues) ? catalogues : []).slice(0, 8);
+  const displayCatalogues = (Array.isArray(catalogues) ? catalogues : []).slice(0, limit);
 
   if (loading) return null;
 
@@ -38,6 +40,15 @@ const CatalogueDownload = ({ isStandalone = false }) => {
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
           <FadeUp>
+            {isStandalone && (
+              <button
+                onClick={() => navigate(-1)}
+                className="inline-flex items-center gap-2 text-xs font-semibold text-gray-500 hover:text-brand-gold transition-colors mb-3 group cursor-pointer"
+              >
+                <ArrowLeft size={15} className="transition-transform group-hover:-translate-x-1 text-brand-gold" />
+                <span>Back</span>
+              </button>
+            )}
             <h2 className="text-3xl md:text-4xl font-luxury font-semibold text-brand-black mb-3">
               Download Our Catalogues
             </h2>
