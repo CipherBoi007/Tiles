@@ -8,6 +8,7 @@ import Modal from '../../components/admin/Modal';
 import Pagination from '../../components/Pagination';
 import SafeImage from '../../components/SafeImage';
 import FilterDropdown from '../../components/admin/FilterDropdown';
+import ConfirmModal from '../../components/admin/ConfirmModal';
 
 const Collections = () => {
   const { data: tiles, pagination, setPage, search, setSearch, filter, setFilter, createItem, updateItem, deleteItem } = useTiles(12);
@@ -100,9 +101,12 @@ const Collections = () => {
     setDropdownSearch('');
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      await deleteItem(id);
+  const [deleteTargetId, setDeleteTargetId] = useState(null);
+
+  const handleConfirmDelete = async () => {
+    if (deleteTargetId) {
+      await deleteItem(deleteTargetId);
+      setDeleteTargetId(null);
     }
   };
 
@@ -128,8 +132,8 @@ const Collections = () => {
       {/* Top Header & Actions Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-luxury font-bold text-brand-text">Manage Tile Products</h1>
-          <p className="text-brand-textMuted text-sm">Create and manage individual tile products under their respective SubCategories.</p>
+          <h1 className="text-2xl font-luxury font-bold text-brand-text">Manage Products</h1>
+          <p className="text-brand-textMuted text-sm">Create and manage individual products (Tiles, Sanitaryware, Kitchen & Plumbing) under their respective SubCategories.</p>
         </div>
 
         <button
@@ -206,7 +210,7 @@ const Collections = () => {
                     <Eye size={15} /> Preview
                   </button>
                   <button 
-                    onClick={() => handleDelete(tile.id)}
+                    onClick={() => setDeleteTargetId(tile.id)}
                     className="p-2 text-red-500 hover:text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
                     title="Delete"
                   >
@@ -328,8 +332,6 @@ const Collections = () => {
             )}
           </div>
 
-
-
           <div className="flex justify-end gap-3 pt-6 border-t border-gray-100 mt-auto">
             <button 
               type="button"
@@ -383,6 +385,17 @@ const Collections = () => {
           </div>
         )}
       </Modal>
+
+      {/* Luxury Confirmation Modal */}
+      <ConfirmModal 
+        isOpen={Boolean(deleteTargetId)}
+        onClose={() => setDeleteTargetId(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Tile Product?"
+        message="Are you sure you want to delete this product item? It will be permanently removed from PostgreSQL."
+        confirmText="Delete Product"
+        type="danger"
+      />
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { uploadFile } from '../../services/uploadService';
 import Pagination from '../../components/Pagination';
 import Drawer from '../../components/admin/Drawer';
 import FormInput from '../../components/admin/FormInput';
+import ConfirmModal from '../../components/admin/ConfirmModal';
 
 const Catalogues = () => {
   const { data: catalogues, pagination, setPage, search, setSearch, createItem, deleteItem, loading } = useCatalogues(30);
@@ -13,6 +14,7 @@ const Catalogues = () => {
   const [file, setFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [copiedId, setCopiedId] = useState(null);
+  const [deleteTargetId, setDeleteTargetId] = useState(null);
   const fileInputRef = useRef(null);
 
   const handleOpenAdd = () => {
@@ -20,6 +22,13 @@ const Catalogues = () => {
     setFile(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
     setIsDrawerOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deleteTargetId) {
+      await deleteItem(deleteTargetId);
+      setDeleteTargetId(null);
+    }
   };
 
   const handleUpload = async (e) => {
@@ -49,12 +58,6 @@ const Catalogues = () => {
       alert("Failed to upload catalogue: " + (err.message || 'Unknown error'));
     } finally {
       setIsUploading(false);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this catalogue?")) {
-      await deleteItem(id);
     }
   };
 
@@ -143,7 +146,7 @@ const Catalogues = () => {
                 {/* Actions */}
                 <div className="flex items-center gap-2 shrink-0">
                   <a
-                    href={catalogue.fileUrl}
+                    href={encodeURI(catalogue.fileUrl)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center w-9 h-9 rounded-xl border border-gray-200 text-gray-500 hover:text-brand-text hover:border-gray-400 hover:bg-gray-50 transition-colors cursor-pointer"
@@ -159,7 +162,7 @@ const Catalogues = () => {
                     {copiedId === catalogue.id ? <Check size={16} className="text-green-600" /> : <Link size={16} />}
                   </button>
                   <a 
-                    href={catalogue.fileUrl} 
+                    href={encodeURI(catalogue.fileUrl)} 
                     download 
                     className="flex items-center justify-center w-9 h-9 rounded-xl border border-gray-200 text-gray-500 hover:text-brand-gold hover:border-brand-gold/30 hover:bg-[#FFF8E7] transition-colors cursor-pointer" 
                     title="Download PDF"
@@ -167,7 +170,7 @@ const Catalogues = () => {
                     <Download size={16} />
                   </a>
                   <button 
-                    onClick={() => handleDelete(catalogue.id)} 
+                    onClick={() => setDeleteTargetId(catalogue.id)} 
                     className="flex items-center justify-center w-9 h-9 rounded-xl border border-gray-200 text-gray-500 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-colors cursor-pointer" 
                     title="Delete Catalogue"
                   >
@@ -198,34 +201,32 @@ const Catalogues = () => {
       <Drawer 
         isOpen={isDrawerOpen} 
         onClose={() => !isUploading && setIsDrawerOpen(false)} 
-        title="Upload New Catalogue"
+        title="Upload New Catalogue (PDF)"
       >
         <form onSubmit={handleUpload} className="space-y-6">
           {/* PDF Drag and Drop Area */}
           <div>
-            <label className="block text-sm font-medium text-brand-text mb-2">Catalogue PDF File <span className="text-red-500">*</span></label>
+            <label className="block text-sm font-medium text-brand-text mb-2">Catalogue PDF File *</label>
             <div 
               onClick={() => fileInputRef.current?.click()}
-              className={`border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all ${
+              className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
                 file 
-                  ? 'border-brand-gold bg-[#FFF8E7]/50' 
-                  : 'border-gray-200 hover:border-brand-gold/50 bg-gray-50/50 hover:bg-[#FFF8E7]/30'
+                  ? 'border-brand-gold bg-[#FFF8E7]/30' 
+                  : 'border-gray-200 hover:border-brand-gold/50 bg-gray-50'
               }`}
             >
-              <div className="w-14 h-14 bg-brand-white rounded-2xl shadow-sm flex items-center justify-center mb-3 text-brand-gold border border-gray-100">
-                <UploadCloud size={28} />
-              </div>
+              <UploadCloud className={`mx-auto mb-3 ${file ? 'text-brand-gold' : 'text-gray-400'}`} size={32} />
 
               {file ? (
                 <div>
-                  <p className="font-luxury font-bold text-brand-text text-sm mb-1">{file.name}</p>
-                  <p className="text-xs text-brand-gold font-medium">{(file.size / (1024 * 1024)).toFixed(2)} MB PDF Selected</p>
+                  <p className="text-sm font-bold text-brand-text truncate max-w-[240px] mx-auto">{file.name}</p>
+                  <p className="text-xs text-brand-gold font-medium mt-1">{(file.size / (1024 * 1024)).toFixed(2)} MB • Ready to upload</p>
+                  <p className="text-[11px] text-gray-400 mt-2">Click to change file</p>
                 </div>
               ) : (
                 <div>
-                  <p className="font-medium text-brand-text text-sm mb-1">Click to select PDF document</p>
-                  <p className="text-xs text-brand-textMuted">or drag & drop file here</p>
-                  <p className="text-[11px] text-gray-400 font-medium mt-2">Maximum file size: 50MB</p>
+                  <p className="text-xs font-medium text-brand-text">Click to select PDF document</p>
+                  <p className="text-[11px] text-brand-textMuted mt-1">PDF format supported (Up to 50MB)</p>
                 </div>
               )}
 
@@ -275,18 +276,28 @@ const Catalogues = () => {
               {isUploading ? (
                 <>
                   <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                  Uploading PDF...
+                  Uploading...
                 </>
               ) : (
-                'Upload & Publish Catalogue'
+                'Publish Catalogue'
               )}
             </button>
           </div>
         </form>
       </Drawer>
+
+      {/* Luxury Confirmation Modal */}
+      <ConfirmModal 
+        isOpen={Boolean(deleteTargetId)}
+        onClose={() => setDeleteTargetId(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete PDF Catalogue?"
+        message="Are you sure you want to delete this catalogue? The PDF file reference will be permanently removed."
+        confirmText="Delete Catalogue"
+        type="danger"
+      />
     </div>
   );
 };
 
 export default Catalogues;
-

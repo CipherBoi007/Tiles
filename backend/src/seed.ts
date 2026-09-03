@@ -9,7 +9,10 @@ const categoriesData = [
   { name: 'Imported Marble Slabs', image: 'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&w=800&q=80', slug: 'imported-marble-slabs' },
   { name: 'Wooden Planks & Decking', image: 'https://images.unsplash.com/photo-1505691938895-1758d7bef511?auto=format&fit=crop&w=800&q=80', slug: 'wooden-planks-decking' },
   { name: 'Granite & Natural Stone', image: 'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=800&q=80', slug: 'granite-natural-stone' },
-  { name: 'Outdoor & Parking Heavy Duty', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80', slug: 'outdoor-parking-heavy-duty' }
+  { name: 'Outdoor & Parking Heavy Duty', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80', slug: 'outdoor-parking-heavy-duty' },
+  { name: 'Sanitaryware & Bathware', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80', slug: 'sanitaryware-bathware' },
+  { name: 'Kitchen Fittings & Sinks', image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80', slug: 'kitchen-fittings-sinks' },
+  { name: 'Plumbing & PVC Pipes', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80', slug: 'plumbing-pvc-pipes' }
 ];
 
 const subCategoriesData = [
@@ -35,53 +38,81 @@ const subCategoriesData = [
 
   // Outdoor & Parking Heavy Duty (catIndex: 5)
   { catIndex: 5, name: 'Anti-Skid Parking Pavers', image: 'https://images.unsplash.com/photo-1574362848149-11496d93a7c7?auto=format&fit=crop&w=600&q=80', slug: 'anti-skid-parking' },
-  { catIndex: 5, name: 'Cobblestone Terrace Pavers', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80', slug: 'cobblestone-terrace' }
+  { catIndex: 5, name: 'Cobblestone Terrace Pavers', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80', slug: 'cobblestone-terrace' },
+
+  // Sanitaryware & Bathware (catIndex: 6)
+  { catIndex: 6, name: 'Designer Wash Basins', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80', slug: 'designer-wash-basins' },
+  { catIndex: 6, name: 'Wall Hung Water Closets', image: 'https://images.unsplash.com/photo-1585412727339-54e4ba3bbf92?auto=format&fit=crop&w=600&q=80', slug: 'wall-hung-water-closets' },
+  { catIndex: 6, name: 'Thermostatic Rain Showers & Faucets', image: 'https://images.unsplash.com/photo-1620626011761-996317b8d101?auto=format&fit=crop&w=600&q=80', slug: 'thermostatic-rain-showers' },
+
+  // Kitchen Fittings & Sinks (catIndex: 7)
+  { catIndex: 7, name: 'SS 304 & Quartz Kitchen Sinks', image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=600&q=80', slug: 'ss304-quartz-kitchen-sinks' },
+  { catIndex: 7, name: 'Pull-Out Kitchen Faucets & Mixers', image: 'https://images.unsplash.com/photo-1600585152220-90363fe7e115?auto=format&fit=crop&w=600&q=80', slug: 'pull-out-kitchen-faucets' },
+
+  // Plumbing & PVC Pipes (catIndex: 8)
+  { catIndex: 8, name: 'Heavy Duty CPVC & UPVC Pipes', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80', slug: 'cpvc-upvc-pipes' },
+  { catIndex: 8, name: 'Brass Valves & Water Storage Tanks', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=600&q=80', slug: 'valves-water-tanks' }
 ];
 
 const sampleTiles = [
-  // Sub 0: Glazed Vitrified
-  { subIndex: 0, name: 'Carrara White PGVT', image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=600&q=80' },
-  { subIndex: 0, name: 'Armani Bronze Vitrified', image: 'https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=600&q=80' },
+  // Sub 0: GVT/PGVT
+  { subIndex: 0, name: 'Carrara White PGVT Slab 800x1600 mm', image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=600&q=80' },
+  { subIndex: 0, name: 'Honey Onyx Translucent PGVT Slab', image: 'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&w=600&q=80' },
 
   // Sub 1: Double Charge
-  { subIndex: 1, name: 'Crema Marfil Double Charge', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80' },
-  { subIndex: 1, name: 'Super White Nano Vitrified', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80' },
+  { subIndex: 1, name: 'Tropico Beige Double Charge 600x600 mm', image: 'https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=600&q=80' },
 
-  // Sub 2: Bathroom & Kitchen Ceramic
-  { subIndex: 2, name: 'Azure Floral Bathroom Highlight', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80' },
-  { subIndex: 2, name: 'Spanish Subway Gloss White', image: 'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=600&q=80' },
+  // Sub 2: Bathroom Ceramic
+  { subIndex: 2, name: 'Spanish Subway Glossy White Wall Tile 300x600 mm', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80' },
 
   // Sub 3: 3D Stone Elevation
-  { subIndex: 3, name: 'Rustic Charcoal Stone Elevation', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80' },
-  { subIndex: 3, name: 'Sandstone Ledge Facade Tile', image: 'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&w=600&q=80' },
+  { subIndex: 3, name: 'Slate Charcoal 3D Cladding Tile', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80' },
 
-  // Sub 4: Italian Statuario Series
-  { subIndex: 4, name: 'Statuario Supreme Book-Matched Slab', image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=600&q=80' },
-  { subIndex: 4, name: 'Calacatta Gold Porcelain Slab', image: 'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&w=600&q=80' },
+  // Sub 4: Italian Statuario
+  { subIndex: 4, name: 'Statuario Extra Bookmatch Slab 1200x2400 mm', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80' },
 
-  // Sub 5: Royal Onyx Slabs
-  { subIndex: 5, name: 'Honey Onyx Translucent Slab', image: 'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&w=600&q=80' },
-  { subIndex: 5, name: 'Emerald Green Onyx Slab', image: 'https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=600&q=80' },
+  // Sub 5: Royal Onyx
+  { subIndex: 5, name: 'Emerald Jade Onyx Polished Slab', image: 'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&w=600&q=80' },
 
-  // Sub 6: Oak & Teak Wood Planks
-  { subIndex: 6, name: 'Teakwood Oak Plank', image: 'https://images.unsplash.com/photo-1505691938895-1758d7bef511?auto=format&fit=crop&w=600&q=80' },
-  { subIndex: 6, name: 'Nordic Ash White Wood Plank', image: 'https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?auto=format&fit=crop&w=600&q=80' },
+  // Sub 6: Wooden Planks
+  { subIndex: 6, name: 'Teakwood Oak Plank Tile 200x1200 mm', image: 'https://images.unsplash.com/photo-1505691938895-1758d7bef511?auto=format&fit=crop&w=600&q=80' },
 
-  // Sub 7: Herringbone Wooden Parquet
-  { subIndex: 7, name: 'Walnut Herringbone Parquet Tile', image: 'https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?auto=format&fit=crop&w=600&q=80' },
+  // Sub 7: Herringbone Parquet
+  { subIndex: 7, name: 'Smoked Walnut Parquet Tile', image: 'https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?auto=format&fit=crop&w=600&q=80' },
 
   // Sub 8: Black Galaxy Granite
-  { subIndex: 8, name: 'Star Galaxy Black Granite Slab', image: 'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=600&q=80' },
+  { subIndex: 8, name: 'Premium Gold Fleck Black Galaxy Slab', image: 'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=600&q=80' },
 
   // Sub 9: Kashmir White Granite
-  { subIndex: 9, name: 'Kashmir White Granite Countertop', image: 'https://images.unsplash.com/photo-1588854337221-4cf9fa96059c?auto=format&fit=crop&w=600&q=80' },
+  { subIndex: 9, name: 'Kashmir White Countertop Granite', image: 'https://images.unsplash.com/photo-1588854337221-4cf9fa96059c?auto=format&fit=crop&w=600&q=80' },
 
-  // Sub 10: Anti-Skid Parking Pavers
+  // Sub 10: Anti-Skid Pavers
   { subIndex: 10, name: 'Heavy Duty Checkered Paver', image: 'https://images.unsplash.com/photo-1574362848149-11496d93a7c7?auto=format&fit=crop&w=600&q=80' },
-  { subIndex: 10, name: 'Industrial Stone Grip Paver', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80' },
 
   // Sub 11: Cobblestone Terrace Pavers
-  { subIndex: 11, name: 'European Cobble Terrace Tile', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80' }
+  { subIndex: 11, name: 'European Cobble Terrace Tile', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80' },
+
+  // Sub 12: Designer Wash Basins
+  { subIndex: 12, name: 'Royal Gold Rim Table Top Wash Basin', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80' },
+  { subIndex: 12, name: 'Matte Black Oval Ceramic Vessel Sink', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80' },
+
+  // Sub 13: Wall Hung Water Closets
+  { subIndex: 13, name: 'Rimless Wall-Hung Closet with Soft-Close Seat', image: 'https://images.unsplash.com/photo-1585412727339-54e4ba3bbf92?auto=format&fit=crop&w=600&q=80' },
+
+  // Sub 14: Thermostatic Rain Showers & Faucets
+  { subIndex: 14, name: 'Brushed Gold Thermostatic Concealed Diverter Shower Set', image: 'https://images.unsplash.com/photo-1620626011761-996317b8d101?auto=format&fit=crop&w=600&q=80' },
+
+  // Sub 15: SS 304 & Quartz Kitchen Sinks
+  { subIndex: 15, name: 'Handmade Black Quartz Double Bowl Kitchen Sink', image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=600&q=80' },
+
+  // Sub 16: Pull-Out Kitchen Faucets & Mixers
+  { subIndex: 16, name: '360° Flexible Pull-Out Commercial Kitchen Mixer Faucet', image: 'https://images.unsplash.com/photo-1600585152220-90363fe7e115?auto=format&fit=crop&w=600&q=80' },
+
+  // Sub 17: Heavy Duty CPVC & UPVC Pipes
+  { subIndex: 17, name: 'High-Pressure Schedule 80 CPVC Plumbing Pipe (1 inch)', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80' },
+
+  // Sub 18: Brass Valves & Water Storage Tanks
+  { subIndex: 18, name: 'Triple Layer UV Protected Overhead Water Storage Tank (1000L)', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=600&q=80' }
 ];
 
 // Dynamically scan public/catalogues directory to preserve all uploaded PDF catalogues

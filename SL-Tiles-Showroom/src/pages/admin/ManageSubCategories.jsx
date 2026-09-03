@@ -7,6 +7,7 @@ import Drawer from '../../components/admin/Drawer';
 import Pagination from '../../components/Pagination';
 import SafeImage from '../../components/SafeImage';
 import FilterDropdown from '../../components/admin/FilterDropdown';
+import ConfirmModal from '../../components/admin/ConfirmModal';
 
 const ManageSubCategories = () => {
   const { data: subCategories, pagination, setPage, search, setSearch, filter, setFilter, createItem, updateItem, deleteItem } = useSubCategories(8);
@@ -61,9 +62,12 @@ const ManageSubCategories = () => {
     setFormData({ name: '', image: '', categoryId: '' });
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this subcategory? All tiles inside it will also be deleted.")) {
-      await deleteItem(id);
+  const [deleteTargetId, setDeleteTargetId] = useState(null);
+
+  const handleConfirmDelete = async () => {
+    if (deleteTargetId) {
+      await deleteItem(deleteTargetId);
+      setDeleteTargetId(null);
     }
   };
 
@@ -152,7 +156,7 @@ const ManageSubCategories = () => {
                     <Edit2 size={16} /> Edit
                   </button>
                   <button 
-                    onClick={() => handleDelete(sub.id)}
+                    onClick={() => setDeleteTargetId(sub.id)}
                     className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium text-red-500 hover:text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
                   >
                     <Trash2 size={16} /> Delete
@@ -234,6 +238,17 @@ const ManageSubCategories = () => {
           </div>
         </form>
       </Drawer>
+
+      {/* Luxury Confirmation Modal */}
+      <ConfirmModal 
+        isOpen={Boolean(deleteTargetId)}
+        onClose={() => setDeleteTargetId(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete SubCategory?"
+        message="Are you sure you want to delete this subcategory? All tile products inside it will also be permanently deleted."
+        confirmText="Delete SubCategory"
+        type="danger"
+      />
     </div>
   );
 };

@@ -18,6 +18,7 @@ export const categorySchema = z.object({
   name: z.string().min(2).max(100),
   image: z.string().url().or(z.literal('')).optional().nullable(),
   slug: z.string().optional().nullable(),
+  division: z.string().optional().nullable(),
   status: z.string().optional().nullable(),
 });
 

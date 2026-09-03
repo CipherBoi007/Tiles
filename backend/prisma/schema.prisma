@@ -19,6 +19,7 @@ model Category {
   name          String
   image         String
   slug          String?       @unique
+  division      String?       @default("tiles") // "tiles" | "sanitaryware" | "kitchen" | "plumbing"
   status        String        @default("active")
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt

@@ -8,8 +8,9 @@ import Pagination from '../../components/Pagination';
 import SafeImage from '../../components/SafeImage';
 import { useCategories, useSubCategories, useTiles } from '../../hooks/useDataFetch';
 import { FadeUp, StaggerContainer, StaggerItem } from '../../components/animations/MotionWrappers';
-import { ChevronRight, Search, Home } from 'lucide-react';
+import { ChevronRight, Search, Filter, Layers, Bath, UtensilsCrossed, Wrench } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { getCategoryDivision } from '../../components/CategoryGrid';
 
 const PublicCollections = () => {
   const { data: categories } = useCategories(100);
@@ -18,6 +19,7 @@ const PublicCollections = () => {
   
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
+  const [selectedDivision, setSelectedDivision] = useState('all'); // 'all' | 'tiles' | 'sanitaryware' | 'kitchen' | 'plumbing'
   const [viewMode, setViewMode] = useState('categories'); // 'categories' | 'subcategories' | 'tiles'
   
   const location = useLocation();
@@ -30,6 +32,12 @@ const PublicCollections = () => {
   const filteredSubCategories = selectedCategory
     ? subCategoryList.filter(sc => sc.categoryId === selectedCategory.id)
     : subCategoryList;
+
+  // Dynamically Group Categories into Divisions
+  const tileCategories = categoryList.filter(cat => getCategoryDivision(cat) === 'tiles');
+  const sanitaryCategories = categoryList.filter(cat => getCategoryDivision(cat) === 'sanitaryware');
+  const kitchenCategories = categoryList.filter(cat => getCategoryDivision(cat) === 'kitchen');
+  const plumbingCategories = categoryList.filter(cat => getCategoryDivision(cat) === 'plumbing');
 
   // Read URL query parameters
   useEffect(() => {
@@ -80,15 +88,6 @@ const PublicCollections = () => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   };
 
-  const clearFilters = () => {
-    setSelectedCategory(null);
-    setSelectedSubCategory(null);
-    setSearch('');
-    setFilter({ key: '', value: '' });
-    setViewMode('categories');
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-  };
-
   const handleBreadcrumbClick = (targetLevel) => {
     if (targetLevel === 'categories') {
       setSelectedCategory(null);
@@ -103,11 +102,65 @@ const PublicCollections = () => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   };
 
+  // Helper renderer for Alternating Column Cards
+  const renderCategoryCards = (items, colsClass = "grid-cols-2 md:grid-cols-3 lg:grid-cols-6") => {
+    return (
+      <StaggerContainer className={`grid ${colsClass} gap-3 sm:gap-5 items-stretch`}>
+        {items.map((cat, idx) => {
+          const isNameTop = idx % 2 === 0;
+
+          const NameBox = (
+            <div 
+              key={`cat-name-${cat.id}`}
+              onClick={() => handleCategorySelect(cat)}
+              className="group flex flex-col items-center justify-center p-3 sm:p-4 bg-brand-white border border-gray-200/80 rounded-xl cursor-pointer hover:border-brand-gold hover:shadow-lg transition-all duration-300 h-20 sm:h-24 md:h-28 text-center shrink-0"
+            >
+              <h3 className="text-xs sm:text-sm md:text-base font-luxury font-bold text-brand-black uppercase tracking-wider group-hover:text-brand-gold transition-colors leading-tight">
+                {cat.name}
+              </h3>
+            </div>
+          );
+
+          const ImageBox = (
+            <div 
+              key={`cat-img-${cat.id}`}
+              onClick={() => handleCategorySelect(cat)}
+              className="group relative overflow-hidden border border-gray-200/80 rounded-xl cursor-pointer bg-brand-black shadow-sm hover:shadow-xl transition-all duration-300 h-[240px] sm:h-[340px] md:h-[380px] flex-1"
+            >
+              <SafeImage 
+                src={cat.image} 
+                alt={cat.name} 
+                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" 
+              />
+              <div className="absolute inset-0 bg-brand-black/15 group-hover:bg-brand-black/0 transition-colors duration-300"></div>
+            </div>
+          );
+
+          return (
+            <StaggerItem key={cat.id} className="flex flex-col gap-3 sm:gap-4 h-full">
+              {isNameTop ? (
+                <>
+                  {NameBox}
+                  {ImageBox}
+                </>
+              ) : (
+                <>
+                  {ImageBox}
+                  {NameBox}
+                </>
+              )}
+            </StaggerItem>
+          );
+        })}
+      </StaggerContainer>
+    );
+  };
+
   return (
     <div className="min-h-screen font-luxury bg-brand-lightBg flex flex-col">
       <SEO 
-        title="Tile Collections & Catalogue | SRI LAKSHMI TILES" 
-        description="Explore luxury floor tiles, wall tiles, natural stone slabs, and exterior paver collections."
+        title="Showroom Collections & Product Catalog | SRI LAKSHMI TILES AND GRANITES" 
+        description="Explore luxury floor tiles, wall tiles, natural stone slabs, sanitaryware, kitchen fittings, and plumbing pipes."
       />
       <Header />
       
@@ -123,7 +176,7 @@ const PublicCollections = () => {
                   viewMode === 'categories' ? 'text-brand-black font-bold text-base sm:text-lg' : 'text-gray-500'
                 }`}
               >
-                Categories
+                All Categories
               </button>
 
               {(viewMode === 'subcategories' || viewMode === 'tiles') && (
@@ -144,80 +197,148 @@ const PublicCollections = () => {
                 <>
                   <ChevronRight className="w-4 h-4 text-gray-400 shrink-0" />
                   <span className="text-brand-gold font-bold text-base sm:text-lg">
-                    {selectedSubCategory ? selectedSubCategory.name : 'Tiles'}
+                    {selectedSubCategory ? selectedSubCategory.name : 'Products'}
                   </span>
                 </>
               )}
             </nav>
 
             <p className="text-brand-textMuted text-xs sm:text-sm">
-              {viewMode === 'categories' && 'Select a main category to explore targeted subcategories.'}
-              {viewMode === 'subcategories' && 'Choose a subcategory to browse available tile designs.'}
-              {viewMode === 'tiles' && `Showing ${pagination.totalItems || tiles.length} tile products.`}
+              {viewMode === 'categories' && 'Select a specialized category section to view sub-series and items.'}
+              {viewMode === 'subcategories' && 'Choose a subcategory to browse available products.'}
+              {viewMode === 'tiles' && `Showing ${pagination.totalItems || tiles.length} products.`}
             </p>
           </div>
         </div>
 
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
 
-          {/* LEVEL 1: CATEGORIES VIEW (Vertical Column Alternating Stack) */}
+          {/* LEVEL 1: CATEGORIES VIEW (Grouped into Dedicated Product Divisions) */}
           {viewMode === 'categories' && (
-            <section>
-              <StaggerContainer className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-5 items-stretch">
-                {categoryList.map((cat, idx) => {
-                  const isNameTop = idx % 2 === 0;
+            <div>
+              {/* Division Navigation Filter Bar */}
+              <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-8 no-scrollbar">
+                <button
+                  onClick={() => setSelectedDivision('all')}
+                  className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${
+                    selectedDivision === 'all'
+                      ? 'bg-brand-black text-white shadow-md'
+                      : 'bg-white text-brand-text hover:bg-gray-100 border border-gray-200'
+                  }`}
+                >
+                  All Categories
+                </button>
+                <button
+                  onClick={() => setSelectedDivision('tiles')}
+                  className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer flex items-center gap-2 ${
+                    selectedDivision === 'tiles'
+                      ? 'bg-brand-gold text-white shadow-md'
+                      : 'bg-white text-brand-text hover:bg-gray-100 border border-gray-200'
+                  }`}
+                >
+                  🧱 Tiles & Marbles
+                </button>
+                <button
+                  onClick={() => setSelectedDivision('sanitaryware')}
+                  className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer flex items-center gap-2 ${
+                    selectedDivision === 'sanitaryware'
+                      ? 'bg-brand-black text-white shadow-md'
+                      : 'bg-white text-brand-text hover:bg-gray-100 border border-gray-200'
+                  }`}
+                >
+                  🛁 Sanitaryware & Bathware
+                </button>
+                <button
+                  onClick={() => setSelectedDivision('kitchen')}
+                  className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer flex items-center gap-2 ${
+                    selectedDivision === 'kitchen'
+                      ? 'bg-brand-gold text-white shadow-md'
+                      : 'bg-white text-brand-text hover:bg-gray-100 border border-gray-200'
+                  }`}
+                >
+                  🍳 Kitchen Fittings
+                </button>
+                <button
+                  onClick={() => setSelectedDivision('plumbing')}
+                  className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer flex items-center gap-2 ${
+                    selectedDivision === 'plumbing'
+                      ? 'bg-brand-black text-white shadow-md'
+                      : 'bg-white text-brand-text hover:bg-gray-100 border border-gray-200'
+                  }`}
+                >
+                  🚰 Plumbing & Pipes
+                </button>
+              </div>
 
-                  const NameBox = (
-                    <div 
-                      key={`cat-name-${cat.id}`}
-                      onClick={() => handleCategorySelect(cat)}
-                      className="group flex flex-col items-center justify-center p-3 sm:p-4 bg-brand-white border border-gray-200/80 rounded-xl cursor-pointer hover:border-brand-gold hover:shadow-lg transition-all duration-300 h-20 sm:h-24 md:h-28 text-center shrink-0"
-                    >
-                      <h3 className="text-xs sm:text-sm md:text-base font-luxury font-bold text-brand-black uppercase tracking-wider group-hover:text-brand-gold transition-colors leading-tight">
-                        {cat.name}
-                      </h3>
-                    </div>
-                  );
+              {/* DIVISION 1: TILES, MARBLES & NATURAL STONES */}
+              {(selectedDivision === 'all' || selectedDivision === 'tiles') && tileCategories.length > 0 && (
+                <div className="mb-16">
+                  <div className="mb-6 border-b border-gray-200/70 pb-3">
+                    <h2 className="text-2xl font-bold font-luxury text-brand-black flex items-center gap-3">
+                      <span className="w-2.5 h-6 bg-brand-gold rounded-full"></span>
+                      Tiles, Marbles & Natural Stones
+                    </h2>
+                    <p className="text-xs sm:text-sm text-brand-textMuted mt-1">
+                      Explore Vitrified floor tiles, ceramic wall elevation, imported Italian marble slabs, and granite.
+                    </p>
+                  </div>
+                  {renderCategoryCards(tileCategories, "grid-cols-2 md:grid-cols-3 lg:grid-cols-6")}
+                </div>
+              )}
 
-                  const ImageBox = (
-                    <div 
-                      key={`cat-img-${cat.id}`}
-                      onClick={() => handleCategorySelect(cat)}
-                      className="group relative overflow-hidden border border-gray-200/80 rounded-xl cursor-pointer bg-brand-black shadow-sm hover:shadow-xl transition-all duration-300 h-[240px] sm:h-[340px] md:h-[400px] flex-1"
-                    >
-                      <SafeImage 
-                        src={cat.image} 
-                        alt={cat.name} 
-                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" 
-                      />
-                      <div className="absolute inset-0 bg-brand-black/15 group-hover:bg-brand-black/0 transition-colors duration-300"></div>
-                    </div>
-                  );
+              {/* DIVISION 2: SANITARYWARE & BATHWARE */}
+              {(selectedDivision === 'all' || selectedDivision === 'sanitaryware') && sanitaryCategories.length > 0 && (
+                <div className="mb-16">
+                  <div className="mb-6 border-b border-gray-200/70 pb-3">
+                    <h2 className="text-2xl font-bold font-luxury text-brand-black flex items-center gap-3">
+                      <span className="w-2.5 h-6 bg-brand-black rounded-full"></span>
+                      Sanitaryware & Bathware
+                    </h2>
+                    <p className="text-xs sm:text-sm text-brand-textMuted mt-1">
+                      Designer wash basins, wall-hung closets, thermostatic rain showers, and bath fittings.
+                    </p>
+                  </div>
+                  {renderCategoryCards(sanitaryCategories, "grid-cols-1 md:grid-cols-3 lg:grid-cols-3")}
+                </div>
+              )}
 
-                  return (
-                    <StaggerItem key={cat.id} className="flex flex-col gap-3 sm:gap-4 h-full">
-                      {isNameTop ? (
-                        <>
-                          {NameBox}
-                          {ImageBox}
-                        </>
-                      ) : (
-                        <>
-                          {ImageBox}
-                          {NameBox}
-                        </>
-                      )}
-                    </StaggerItem>
-                  );
-                })}
-              </StaggerContainer>
-            </section>
+              {/* DIVISION 3: KITCHEN FITTINGS & SINKS */}
+              {(selectedDivision === 'all' || selectedDivision === 'kitchen') && kitchenCategories.length > 0 && (
+                <div className="mb-16">
+                  <div className="mb-6 border-b border-gray-200/70 pb-3">
+                    <h2 className="text-2xl font-bold font-luxury text-brand-black flex items-center gap-3">
+                      <span className="w-2.5 h-6 bg-brand-gold rounded-full"></span>
+                      Kitchen Fittings & Sinks
+                    </h2>
+                    <p className="text-xs sm:text-sm text-brand-textMuted mt-1">
+                      Handmade SS 304 & Quartz kitchen sinks, 360° pull-out faucets, and modular accessories.
+                    </p>
+                  </div>
+                  {renderCategoryCards(kitchenCategories, "grid-cols-1 md:grid-cols-3 lg:grid-cols-3")}
+                </div>
+              )}
+
+              {/* DIVISION 4: PLUMBING & PVC PIPES */}
+              {(selectedDivision === 'all' || selectedDivision === 'plumbing') && plumbingCategories.length > 0 && (
+                <div className="mb-16">
+                  <div className="mb-6 border-b border-gray-200/70 pb-3">
+                    <h2 className="text-2xl font-bold font-luxury text-brand-black flex items-center gap-3">
+                      <span className="w-2.5 h-6 bg-brand-black rounded-full"></span>
+                      Plumbing & PVC Piping Systems
+                    </h2>
+                    <p className="text-xs sm:text-sm text-brand-textMuted mt-1">
+                      Heavy-duty CPVC & UPVC plumbing pipes, brass valves, and UV protected water storage tanks.
+                    </p>
+                  </div>
+                  {renderCategoryCards(plumbingCategories, "grid-cols-1 md:grid-cols-3 lg:grid-cols-3")}
+                </div>
+              )}
+            </div>
           )}
 
-          {/* LEVEL 2: SUBCATEGORIES VIEW (Vertical Column Alternating Stack with Dynamic Container & Tall Height) */}
+          {/* LEVEL 2: SUBCATEGORIES VIEW */}
           {viewMode === 'subcategories' && (
             <section>
-              {/* Dynamic width container based on item count so subcategory cards stay grand & perfectly proportioned */}
               <div className={`mx-auto ${
                 filteredSubCategories.length <= 2 
                   ? 'max-w-3xl sm:max-w-4xl' 
@@ -255,7 +376,7 @@ const PublicCollections = () => {
                       <div 
                         key={`sub-img-${sub.id}`}
                         onClick={() => handleSubCategorySelect(sub)}
-                        className="group relative overflow-hidden border border-gray-200/80 rounded-2xl cursor-pointer bg-brand-black shadow-sm hover:shadow-xl transition-all duration-300 h-[320px] sm:h-[440px] md:h-[500px] flex-1"
+                        className="group relative overflow-hidden border border-gray-200/80 rounded-2xl cursor-pointer bg-brand-black shadow-sm hover:shadow-xl transition-all duration-300 h-[260px] sm:h-[360px] md:h-[440px] flex-1"
                       >
                         <SafeImage 
                           src={sub.image} 
@@ -283,63 +404,62 @@ const PublicCollections = () => {
                     );
                   })}
                 </StaggerContainer>
+                
+                {filteredSubCategories.length === 0 && (
+                  <div className="text-center py-16 bg-brand-white rounded-3xl border border-dashed border-gray-200">
+                    <p className="text-brand-textMuted text-base font-medium">No subcategories currently registered under this category.</p>
+                  </div>
+                )}
               </div>
             </section>
           )}
 
-          {/* LEVEL 3: TILES VIEW (Image + Name Alone) */}
+          {/* LEVEL 3: TILES / PRODUCTS VIEW */}
           {viewMode === 'tiles' && (
-            <section id="all-tiles-section">
-              {/* Search Bar */}
-              <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-8">
-                <div className="relative w-full md:w-80">
-                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                  <input
-                    type="text"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Search tiles by name..."
-                    className="w-full pl-10 pr-4 py-2.5 bg-brand-white border border-gray-200 rounded-xl focus:outline-none focus:border-brand-gold text-sm transition-colors shadow-sm"
-                  />
+            <section>
+              {tilesLoading ? (
+                <div className="text-center py-20 text-brand-textMuted font-medium text-lg">
+                  Loading Products...
                 </div>
-              </div>
-
-              {/* Ultra Narrow Tile Cards Grid */}
-              <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
-                {(Array.isArray(tiles) ? tiles : []).length > 0 ? (
-                  tiles.map((product) => (
-                    <StaggerItem key={product.id}>
-                      <ProductCard product={product} />
-                    </StaggerItem>
-                  ))
-                ) : (
-                  <div className="col-span-full py-16 text-center text-brand-textMuted bg-brand-white rounded-2xl border border-dashed border-gray-200">
-                    <p className="text-lg font-medium mb-1">No tile products found</p>
-                    <p className="text-sm text-gray-400 mb-4">Try adjusting your search terms.</p>
-                    <button onClick={clearFilters} className="px-4 py-2 bg-brand-gold text-white text-xs rounded-lg font-medium">
-                      Reset Filters
-                    </button>
+              ) : (
+                <>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
+                    {tiles.map((tile) => (
+                      <ProductCard key={tile.id} tile={tile} />
+                    ))}
                   </div>
-                )}
-              </StaggerContainer>
 
-              {/* Pagination */}
-              {(Array.isArray(tiles) ? tiles : []).length > 0 && (
-                <div className="mt-10">
-                  <Pagination 
-                    currentPage={pagination.currentPage} 
-                    totalPages={pagination.totalPages} 
-                    onPageChange={setPage} 
-                  />
-                </div>
+                  {tiles.length === 0 && (
+                    <div className="text-center py-20 bg-brand-white rounded-3xl border border-gray-100 p-8">
+                      <p className="text-brand-textMuted text-lg font-medium mb-4">No products found matching your active filter.</p>
+                      <button 
+                        onClick={() => handleBreadcrumbClick('categories')}
+                        className="px-6 py-2.5 bg-brand-gold text-white font-semibold rounded-xl hover:bg-yellow-600 transition-colors shadow-md cursor-pointer text-sm"
+                      >
+                        Reset & Browse All Categories
+                      </button>
+                    </div>
+                  )}
+
+                  {tiles.length > 0 && (
+                    <div className="mt-12">
+                      <Pagination 
+                        currentPage={pagination.currentPage} 
+                        totalPages={pagination.totalPages} 
+                        onPageChange={setPage} 
+                      />
+                    </div>
+                  )}
+                </>
               )}
             </section>
           )}
+
         </div>
       </main>
 
-      <Footer />
       <WhatsAppFloat />
+      <Footer />
     </div>
   );
 };

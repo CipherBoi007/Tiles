@@ -5,6 +5,7 @@ import FormInput from '../../components/admin/FormInput';
 import { Edit2, Trash2, Plus, Search } from 'lucide-react';
 import Pagination from '../../components/Pagination';
 import SafeImage from '../../components/SafeImage';
+import ConfirmModal from '../../components/admin/ConfirmModal';
 
 const ManageTiles = () => {
   const { data: collections, pagination, setPage, search, setSearch, createItem, updateItem, deleteItem } = useTileCategories(8);
@@ -15,6 +16,7 @@ const ManageTiles = () => {
     image: ''
   });
   const [isEditing, setIsEditing] = useState(null);
+  const [deleteTargetId, setDeleteTargetId] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,9 +45,10 @@ const ManageTiles = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this category?")) {
-      await deleteItem(id);
+  const handleConfirmDelete = async () => {
+    if (deleteTargetId) {
+      await deleteItem(deleteTargetId);
+      setDeleteTargetId(null);
     }
   };
 
@@ -90,7 +93,7 @@ const ManageTiles = () => {
               <div className="flex gap-4 pt-4">
                 <button 
                   type="submit"
-                  className="flex items-center gap-2 bg-brand-gold text-brand-white px-6 py-3 rounded-xl hover:bg-yellow-600 transition-colors shadow-lg shadow-brand-gold/20 font-medium"
+                  className="flex items-center gap-2 bg-brand-gold text-brand-white px-6 py-3 rounded-xl hover:bg-yellow-600 transition-colors shadow-lg shadow-brand-gold/20 font-medium cursor-pointer"
                 >
                   {isEditing ? 'Update Collection' : <><Plus size={18} /> Create Collection</>}
                 </button>
@@ -98,7 +101,7 @@ const ManageTiles = () => {
                   <button 
                     type="button"
                     onClick={handleCancel}
-                    className="px-6 py-3 rounded-xl border border-gray-200 text-brand-text hover:bg-gray-50 transition-colors font-medium"
+                    className="px-6 py-3 rounded-xl border border-gray-200 text-brand-text hover:bg-gray-50 transition-colors font-medium cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -140,13 +143,13 @@ const ManageTiles = () => {
                 <div className="flex items-center gap-2 pt-4 border-t border-gray-100 mt-auto">
                   <button 
                     onClick={() => handleEdit(cat)}
-                    className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium text-brand-text hover:text-brand-gold bg-gray-50 hover:bg-[#FFF8E7] rounded-lg transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium text-brand-text hover:text-brand-gold bg-gray-50 hover:bg-[#FFF8E7] rounded-lg transition-colors cursor-pointer"
                   >
                     <Edit2 size={16} /> Edit
                   </button>
                   <button 
-                    onClick={() => handleDelete(cat.id)}
-                    className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium text-red-500 hover:text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
+                    onClick={() => setDeleteTargetId(cat.id)}
+                    className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium text-red-500 hover:text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors cursor-pointer"
                   >
                     <Trash2 size={16} /> Delete
                   </button>
@@ -169,6 +172,17 @@ const ManageTiles = () => {
           />
         )}
       </div>
+
+      {/* Luxury Confirmation Modal */}
+      <ConfirmModal 
+        isOpen={Boolean(deleteTargetId)}
+        onClose={() => setDeleteTargetId(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Collection?"
+        message="Are you sure you want to delete this collection? This item will be permanently removed."
+        confirmText="Delete Collection"
+        type="danger"
+      />
     </div>
   );
 };

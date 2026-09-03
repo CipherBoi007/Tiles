@@ -6,6 +6,7 @@ import { Edit2, Trash2, Plus, Search } from 'lucide-react';
 import Drawer from '../../components/admin/Drawer';
 import Pagination from '../../components/Pagination';
 import SafeImage from '../../components/SafeImage';
+import ConfirmModal from '../../components/admin/ConfirmModal';
 
 const ManageCategories = () => {
   const { data: categories, pagination, setPage, search, setSearch, createItem, updateItem, deleteItem } = useCategories(8);
@@ -15,12 +16,14 @@ const ManageCategories = () => {
   const [formData, setFormData] = useState({
     name: '',
     image: '',
+    division: 'tiles',
     status: 'active'
   });
+  const [deleteTargetId, setDeleteTargetId] = useState(null);
 
   const handleOpenAdd = () => {
     setEditingId(null);
-    setFormData({ name: '', image: '', status: 'active' });
+    setFormData({ name: '', image: '', division: 'tiles', status: 'active' });
     setIsDrawerOpen(true);
   };
 
@@ -29,6 +32,7 @@ const ManageCategories = () => {
     setFormData({
       name: cat.name || '',
       image: cat.image || '',
+      division: cat.division || 'tiles',
       status: cat.status || 'active'
     });
     setIsDrawerOpen(true);
@@ -51,9 +55,10 @@ const ManageCategories = () => {
     setFormData({ name: '', image: '', status: 'active' });
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this category? All its subcategories and tiles will also be deleted.")) {
-      await deleteItem(id);
+  const handleConfirmDelete = async () => {
+    if (deleteTargetId) {
+      await deleteItem(deleteTargetId);
+      setDeleteTargetId(null);
     }
   };
 
@@ -114,7 +119,7 @@ const ManageCategories = () => {
                     <Edit2 size={16} /> Edit
                   </button>
                   <button 
-                    onClick={() => handleDelete(cat.id)}
+                    onClick={() => setDeleteTargetId(cat.id)}
                     className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium text-red-500 hover:text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
                   >
                     <Trash2 size={16} /> Delete
@@ -154,24 +159,46 @@ const ManageCategories = () => {
             label="Category Cover Image"
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-4">
             <FormInput 
               label="Category Name" 
               value={formData.name}
               onChange={(e) => setFormData({...formData, name: e.target.value})}
-              placeholder="e.g. Floor Tiles"
+              placeholder="e.g. Designer Wash Basins"
               required
             />
-            <div>
-              <label className="block text-sm font-medium text-brand-text mb-1.5">Status</label>
-              <select
-                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-gold/30 focus:border-brand-gold outline-none transition-all text-sm font-medium text-brand-text"
-                value={formData.status}
-                onChange={(e) => setFormData({...formData, status: e.target.value})}
-              >
-                <option value="active">Active</option>
-                <option value="draft">Draft</option>
-              </select>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-brand-text mb-1.5">
+                  Showroom Division <span className="text-brand-gold font-bold">*</span>
+                </label>
+                <select
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-gold/30 focus:border-brand-gold outline-none transition-all text-sm font-medium text-brand-text"
+                  value={formData.division}
+                  onChange={(e) => setFormData({...formData, division: e.target.value})}
+                >
+                  <option value="tiles">🧱 Tiles, Marbles & Stones</option>
+                  <option value="sanitaryware">🛁 Sanitaryware & Bathware</option>
+                  <option value="kitchen">🍳 Kitchen Fittings & Sinks</option>
+                  <option value="plumbing">🚰 Plumbing & PVC Pipes</option>
+                </select>
+                <p className="text-[11px] text-brand-textMuted mt-1">
+                  Controls where this category automatically appears on the homepage & catalog.
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-brand-text mb-1.5">Status</label>
+                <select
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-gold/30 focus:border-brand-gold outline-none transition-all text-sm font-medium text-brand-text"
+                  value={formData.status}
+                  onChange={(e) => setFormData({...formData, status: e.target.value})}
+                >
+                  <option value="active">Active</option>
+                  <option value="draft">Draft</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -192,6 +219,17 @@ const ManageCategories = () => {
           </div>
         </form>
       </Drawer>
+
+      {/* Luxury Confirmation Modal */}
+      <ConfirmModal 
+        isOpen={Boolean(deleteTargetId)}
+        onClose={() => setDeleteTargetId(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Primary Category?"
+        message="Are you sure you want to delete this category? All subcategories and tile products linked to it will also be permanently deleted."
+        confirmText="Delete Category"
+        type="danger"
+      />
     </div>
   );
 };

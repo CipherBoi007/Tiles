@@ -2,19 +2,22 @@ import React, { useState } from 'react';
 import { Search, Filter, CheckCircle, Clock, Trash2 } from 'lucide-react';
 import { useEnquiries } from '../../hooks/useDataFetch';
 import Pagination from '../../components/Pagination';
+import ConfirmModal from '../../components/admin/ConfirmModal';
 
 const Enquiries = () => {
   const { data: enquiries, pagination, setPage, search, setSearch, filter, setFilter, updateItem, deleteItem, loading } = useEnquiries(10);
   const activeTab = filter.value || 'All';
   const tabs = ['All', 'New', 'Contacted', 'Resolved'];
+  const [deleteTargetId, setDeleteTargetId] = useState(null);
 
   const handleStatusChange = async (id, status) => {
     await updateItem(id, { status });
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Delete this enquiry?")) {
-      await deleteItem(id);
+  const handleConfirmDelete = async () => {
+    if (deleteTargetId) {
+      await deleteItem(deleteTargetId);
+      setDeleteTargetId(null);
     }
   };
 
@@ -125,7 +128,7 @@ const Enquiries = () => {
                           <Clock size={16} />
                         </button>
                         <div className="w-px h-4 bg-gray-200 mx-1"></div>
-                        <button onClick={() => handleDelete(enquiry.id)} className="p-2 text-gray-400 hover:text-red-600 bg-brand-white hover:bg-red-50 border border-transparent hover:border-red-100 rounded-lg transition-all" title="Delete">
+                        <button onClick={() => setDeleteTargetId(enquiry.id)} className="p-2 text-gray-400 hover:text-red-600 bg-brand-white hover:bg-red-50 border border-transparent hover:border-red-100 rounded-lg transition-all" title="Delete">
                           <Trash2 size={16} />
                         </button>
                       </div>
@@ -153,6 +156,17 @@ const Enquiries = () => {
           </div>
         )}
       </div>
+
+      {/* Luxury Confirmation Modal */}
+      <ConfirmModal 
+        isOpen={Boolean(deleteTargetId)}
+        onClose={() => setDeleteTargetId(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Customer Enquiry?"
+        message="Are you sure you want to delete this customer enquiry? This entry will be permanently removed from PostgreSQL."
+        confirmText="Delete Enquiry"
+        type="danger"
+      />
     </div>
   );
 };

@@ -30,7 +30,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     { name: 'Dashboard', path: '/admin', icon: <LayoutDashboard size={20} />, exact: true },
     { name: 'Categories', path: '/admin/categories', icon: <FolderOpen size={20} /> },
     { name: 'SubCategories', path: '/admin/subcategories', icon: <FolderTree size={20} /> },
-    { name: 'Tile Products', path: '/admin/tiles', icon: <Grid size={20} /> },
+    { name: 'Manage Products', path: '/admin/tiles', icon: <Grid size={20} /> },
     { name: 'Catalogues', path: '/admin/catalogues', icon: <BookOpen size={20} /> },
     { name: 'Enquiries', path: '/admin/enquiries', icon: <MessageSquare size={20} /> },
     { name: 'Settings', path: '/admin/settings', icon: <Settings size={20} /> },
