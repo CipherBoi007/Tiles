@@ -14,7 +14,7 @@ const Enquiries = () => {
 
   const handleDelete = async (id) => {
     if (window.confirm("Delete this enquiry?")) {
-      await deleteEnquiry(id);
+      await deleteItem(id);
     }
   };
 
