@@ -21,6 +21,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   const logoUrl = settings?.logoUrl || '/SL_LOGO_TRANS.png';
 
   const handleLogout = () => {
+    sessionStorage.removeItem('adminToken');
     localStorage.removeItem('adminToken');
     navigate('/admin/login');
   };

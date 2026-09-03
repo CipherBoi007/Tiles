@@ -2,7 +2,6 @@ import React from 'react';
 import Header from '../../components/Header';
 import Hero from '../../components/Hero';
 import PartnerBrands from '../../components/PartnerBrands';
-import ProductGrid from '../../components/ProductGrid';
 import CategoryGrid from '../../components/CategoryGrid';
 import InspirationGallery from '../../components/InspirationGallery';
 import WhyChooseUs from '../../components/WhyChooseUs';
@@ -113,7 +112,6 @@ const Home = () => {
       <Hero />
       <PartnerBrands />
       <CategoryGrid />
-      <ProductGrid />
       <OffersBanner />
       <InspirationGallery />
       <WhyChooseUs />

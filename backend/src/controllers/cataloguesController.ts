@@ -7,10 +7,7 @@ export const getCatalogues = async (req: Request, res: Response) => {
     const { page, limit, search, skip } = getPagination(req);
     
     const where = search ? {
-      OR: [
-        { title: { contains: search, mode: 'insensitive' as const } },
-        { desc: { contains: search, mode: 'insensitive' as const } },
-      ]
+      title: { contains: search, mode: 'insensitive' as const }
     } : {};
 
     const [catalogues, total] = await Promise.all([
@@ -32,20 +29,39 @@ export const getCatalogues = async (req: Request, res: Response) => {
 
 export const createCatalogue = async (req: Request, res: Response) => {
   try {
-    const { title, desc, fileUrl } = req.body;
-    const catalogueData = {
+    const { title, fileUrl, date } = req.body;
+    
+    if (!fileUrl) {
+      return res.status(400).json({ message: 'File URL is required.' });
+    }
+
+    const catalogueData: any = {
       title: title?.trim() || 'Untitled Catalogue',
-      desc: desc?.trim() || '',
-      fileUrl: fileUrl || '',
+      fileUrl: String(fileUrl).trim(),
     };
+
+    if (date) {
+      const parsedDate = new Date(date);
+      if (!isNaN(parsedDate.getTime())) {
+        catalogueData.date = parsedDate;
+      }
+    }
+
     const catalogue = await prisma.catalogue.create({ data: catalogueData });
-    await prisma.activity.create({
-      data: { type: 'catalogue', title: 'Catalogue uploaded', desc: `${catalogue.title} PDF published.` }
-    });
-    res.status(201).json(catalogue);
+    
+    try {
+      await prisma.activity.create({
+        data: { type: 'catalogue', title: 'Catalogue uploaded', desc: `${catalogue.title} PDF published.` }
+      });
+    } catch (actErr) {
+      console.warn('Activity log entry warning:', actErr);
+    }
+
+    return res.status(201).json(catalogue);
   } catch (error: any) {
     if (req.log) req.log.error(error);
-    res.status(500).json({ message: error?.message || 'Error creating catalogue', error });
+    console.error('Error in createCatalogue:', error);
+    return res.status(500).json({ message: error?.message || 'Error creating catalogue', error });
   }
 };
 

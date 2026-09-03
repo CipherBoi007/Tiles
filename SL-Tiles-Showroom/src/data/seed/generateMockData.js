@@ -62,7 +62,6 @@ export const generateCatalogues = (count = 100) => {
     catalogues.push({
       id: `catl-${i}`,
       title: title,
-      desc: `Download our comprehensive ${title} catalogue featuring all technical specifications and design inspirations.`,
       fileUrl: `/catalogues/mock-catalogue-${i}.pdf`,
       date: new Date(Date.now() - Math.floor(Math.random() * 10000000000)).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
       createdAt: new Date(Date.now() - Math.floor(Math.random() * 10000000000)).toISOString()

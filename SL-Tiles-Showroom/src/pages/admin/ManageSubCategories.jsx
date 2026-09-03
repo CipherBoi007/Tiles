@@ -6,9 +6,10 @@ import { Edit2, Trash2, Plus, Search } from 'lucide-react';
 import Drawer from '../../components/admin/Drawer';
 import Pagination from '../../components/Pagination';
 import SafeImage from '../../components/SafeImage';
+import FilterDropdown from '../../components/admin/FilterDropdown';
 
 const ManageSubCategories = () => {
-  const { data: subCategories, pagination, setPage, search, setSearch, createItem, updateItem, deleteItem } = useSubCategories(8);
+  const { data: subCategories, pagination, setPage, search, setSearch, filter, setFilter, createItem, updateItem, deleteItem } = useSubCategories(8);
   const { data: categories } = useCategories(100);
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -20,6 +21,7 @@ const ManageSubCategories = () => {
   });
 
   const categoryList = Array.isArray(categories) ? categories : (categories?.data || []);
+  const categoryFilterOptions = categoryList.map(cat => ({ label: cat.name, value: String(cat.id) }));
 
   const handleOpenAdd = () => {
     setEditingId(null);
@@ -76,7 +78,7 @@ const ManageSubCategories = () => {
 
         <button
           onClick={handleOpenAdd}
-          className="flex items-center gap-2 bg-brand-gold text-white px-5 py-2.5 rounded-xl hover:bg-yellow-600 transition-all shadow-md shadow-brand-gold/20 font-medium text-sm self-start md:self-auto shrink-0"
+          className="flex items-center gap-2 bg-brand-gold text-white px-5 py-2.5 rounded-xl hover:bg-yellow-600 transition-all shadow-md shadow-brand-gold/20 font-medium text-sm self-start md:self-auto shrink-0 cursor-pointer"
         >
           <Plus size={18} /> Add SubCategory
         </button>
@@ -90,15 +92,32 @@ const ManageSubCategories = () => {
             Existing SubCategories ({pagination.totalItems || (Array.isArray(subCategories) ? subCategories.length : 0)})
           </h2>
           
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-            <input 
-              type="text" 
-              placeholder="Search subcategories..." 
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-200 rounded-xl w-full md:w-64 focus:outline-none focus:border-brand-gold transition-colors text-sm"
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+            {/* Custom Luxury Filter Dropdown (Left to Search) */}
+            <FilterDropdown 
+              options={categoryFilterOptions}
+              value={filter.key === 'categoryId' ? String(filter.value) : ''}
+              onChange={(val) => {
+                if (val) {
+                  setFilter({ key: 'categoryId', value: val });
+                } else {
+                  setFilter({ key: '', value: '' });
+                }
+              }}
+              placeholder="All Categories"
             />
+
+            {/* Search Input */}
+            <div className="relative w-full sm:w-auto">
+              <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+              <input 
+                type="text" 
+                placeholder="Search subcategories..." 
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-9 pr-4 py-2 border border-gray-200 rounded-xl w-full sm:w-60 focus:outline-none focus:border-brand-gold transition-colors text-xs font-medium text-brand-text bg-white"
+              />
+            </div>
           </div>
         </div>
         
@@ -108,17 +127,23 @@ const ManageSubCategories = () => {
             <div key={sub.id} className="bg-brand-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow group flex flex-col">
               <div className="aspect-[4/3] overflow-hidden relative">
                 <SafeImage src={sub.image} alt={sub.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                {sub.category && (
-                  <span className="absolute top-3 left-3 bg-brand-gold text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm">
-                    {sub.category.name}
-                  </span>
-                )}
-                <span className="absolute top-3 right-3 bg-black/60 backdrop-blur text-white text-xs font-semibold px-2.5 py-1 rounded-full">
-                  {sub.tilesCount || 0} Tiles
-                </span>
               </div>
               <div className="p-5 flex-1 flex flex-col justify-between">
-                <h3 className="font-luxury font-semibold text-brand-text text-lg mb-4">{sub.name}</h3>
+                <div>
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <h3 className="font-luxury font-semibold text-brand-text text-lg leading-snug">{sub.name}</h3>
+                    <span className="bg-gray-100 text-brand-text text-xs font-semibold px-2.5 py-1 rounded-full shrink-0">
+                      {sub.tilesCount || 0} Tiles
+                    </span>
+                  </div>
+                  {sub.category && (
+                    <div className="mb-4">
+                      <span className="inline-block bg-[#FFF8E7] text-[#8c7028] text-xs font-medium px-2.5 py-1 rounded-md border border-brand-gold/20">
+                        {sub.category.name}
+                      </span>
+                    </div>
+                  )}
+                </div>
                 <div className="flex items-center gap-2 pt-4 border-t border-gray-100 mt-auto">
                   <button 
                     onClick={() => handleEdit(sub)}

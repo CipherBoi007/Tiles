@@ -6,6 +6,8 @@ import rateLimit from 'express-rate-limit';
 import pinoHttp from 'pino-http';
 import pino from 'pino';
 
+import path from 'path';
+
 import routes from './routes/index';
 import prisma from './lib/prisma';
 
@@ -16,7 +18,7 @@ const PORT = process.env.PORT || 5000;
 const logger = pino({ level: process.env.LOG_LEVEL || 'info' });
 
 app.use(pinoHttp({ logger }));
-app.use(helmet());
+app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 
 const allowedOrigins = [
   process.env.FRONTEND_URL,
@@ -44,6 +46,9 @@ const apiLimiter = rateLimit({
 app.use('/api', apiLimiter);
 app.use(express.json({ limit: '2mb' })); // Reduced from 10mb to prevent memory issues with JSON parsing
 app.use(express.urlencoded({ limit: '2mb', extended: true }));
+
+// Static route to serve local PDF catalogues directly
+app.use('/catalogues', express.static(path.join(__dirname, '../../SL-Tiles-Showroom/public/catalogues')));
 
 app.use('/api', routes);
 

@@ -1,7 +1,7 @@
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const getAuthHeaders = () => {
-  let token = localStorage.getItem('adminToken');
+  let token = sessionStorage.getItem('adminToken') || localStorage.getItem('adminToken');
   if (token === 'undefined' || token === 'null' || !token) {
     token = null;
   }
@@ -9,6 +9,14 @@ const getAuthHeaders = () => {
     'Content-Type': 'application/json',
     ...(token && { Authorization: `Bearer ${token}` })
   };
+};
+
+const handleRes = async (res) => {
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data?.message || `Request failed with status ${res.status}`);
+  }
+  return data;
 };
 
 export const mockDb = {
@@ -24,7 +32,7 @@ export const mockDb = {
       headers: getAuthHeaders(),
       body: JSON.stringify(category)
     });
-    return res.json();
+    return handleRes(res);
   },
   updateCategory: async (id, updates) => {
     const res = await fetch(`${API_URL}/categories/${id}`, {
@@ -32,20 +40,21 @@ export const mockDb = {
       headers: getAuthHeaders(),
       body: JSON.stringify(updates)
     });
-    return res.json();
+    return handleRes(res);
   },
   deleteCategory: async (id) => {
-    await fetch(`${API_URL}/categories/${id}`, {
+    const res = await fetch(`${API_URL}/categories/${id}`, {
       method: 'DELETE',
       headers: getAuthHeaders()
     });
+    return handleRes(res);
   },
 
   // SubCategories API
   getSubCategories: async (params = {}) => {
     const qs = new URLSearchParams(params).toString();
     const res = await fetch(`${API_URL}/subcategories?${qs}`);
-    return res.json();
+    return handleRes(res);
   },
   addSubCategory: async (subCategory) => {
     const res = await fetch(`${API_URL}/subcategories`, {
@@ -53,7 +62,7 @@ export const mockDb = {
       headers: getAuthHeaders(),
       body: JSON.stringify(subCategory)
     });
-    return res.json();
+    return handleRes(res);
   },
   updateSubCategory: async (id, updates) => {
     const res = await fetch(`${API_URL}/subcategories/${id}`, {
@@ -61,20 +70,21 @@ export const mockDb = {
       headers: getAuthHeaders(),
       body: JSON.stringify(updates)
     });
-    return res.json();
+    return handleRes(res);
   },
   deleteSubCategory: async (id) => {
-    await fetch(`${API_URL}/subcategories/${id}`, {
+    const res = await fetch(`${API_URL}/subcategories/${id}`, {
       method: 'DELETE',
       headers: getAuthHeaders()
     });
+    return handleRes(res);
   },
 
   // Tiles API
   getTiles: async (params = {}) => {
     const qs = new URLSearchParams(params).toString();
     const res = await fetch(`${API_URL}/tiles?${qs}`);
-    return res.json();
+    return handleRes(res);
   },
   addTile: async (tile) => {
     const res = await fetch(`${API_URL}/tiles`, {
@@ -82,7 +92,7 @@ export const mockDb = {
       headers: getAuthHeaders(),
       body: JSON.stringify(tile)
     });
-    return res.json();
+    return handleRes(res);
   },
   updateTile: async (id, updates) => {
     const res = await fetch(`${API_URL}/tiles/${id}`, {
@@ -90,20 +100,21 @@ export const mockDb = {
       headers: getAuthHeaders(),
       body: JSON.stringify(updates)
     });
-    return res.json();
+    return handleRes(res);
   },
   deleteTile: async (id) => {
-    await fetch(`${API_URL}/tiles/${id}`, {
+    const res = await fetch(`${API_URL}/tiles/${id}`, {
       method: 'DELETE',
       headers: getAuthHeaders()
     });
+    return handleRes(res);
   },
 
   // Backward compatibility alias for collections -> categories
   getCollections: async (params = {}) => {
     const qs = new URLSearchParams(params).toString();
     const res = await fetch(`${API_URL}/categories?${qs}`);
-    return res.json();
+    return handleRes(res);
   },
   addCollection: async (collection) => {
     const res = await fetch(`${API_URL}/categories`, {
@@ -111,7 +122,7 @@ export const mockDb = {
       headers: getAuthHeaders(),
       body: JSON.stringify(collection)
     });
-    return res.json();
+    return handleRes(res);
   },
   updateCollection: async (id, updates) => {
     const res = await fetch(`${API_URL}/categories/${id}`, {
@@ -119,20 +130,21 @@ export const mockDb = {
       headers: getAuthHeaders(),
       body: JSON.stringify(updates)
     });
-    return res.json();
+    return handleRes(res);
   },
   deleteCollection: async (id) => {
-    await fetch(`${API_URL}/categories/${id}`, {
+    const res = await fetch(`${API_URL}/categories/${id}`, {
       method: 'DELETE',
       headers: getAuthHeaders()
     });
+    return handleRes(res);
   },
 
   // Catalogues API
   getCatalogues: async (params = {}) => {
     const qs = new URLSearchParams(params).toString();
     const res = await fetch(`${API_URL}/catalogues?${qs}`);
-    return res.json();
+    return handleRes(res);
   },
   addCatalogue: async (catalogue) => {
     const res = await fetch(`${API_URL}/catalogues`, {
@@ -140,13 +152,14 @@ export const mockDb = {
       headers: getAuthHeaders(),
       body: JSON.stringify(catalogue)
     });
-    return res.json();
+    return handleRes(res);
   },
   deleteCatalogue: async (id) => {
-    await fetch(`${API_URL}/catalogues/${id}`, {
+    const res = await fetch(`${API_URL}/catalogues/${id}`, {
       method: 'DELETE',
       headers: getAuthHeaders()
     });
+    return handleRes(res);
   },
 
   // Enquiries API

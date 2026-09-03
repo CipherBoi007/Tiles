@@ -61,7 +61,6 @@ model Tile {
 model Catalogue {
   id      Int      @id @default(autoincrement())
   title   String
-  desc    String
   fileUrl String
   date    DateTime @default(now())
 }

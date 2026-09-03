@@ -7,9 +7,10 @@ import Drawer from '../../components/admin/Drawer';
 import Modal from '../../components/admin/Modal';
 import Pagination from '../../components/Pagination';
 import SafeImage from '../../components/SafeImage';
+import FilterDropdown from '../../components/admin/FilterDropdown';
 
 const Collections = () => {
-  const { data: tiles, pagination, setPage, search, setSearch, createItem, updateItem, deleteItem } = useTiles(12);
+  const { data: tiles, pagination, setPage, search, setSearch, filter, setFilter, createItem, updateItem, deleteItem } = useTiles(12);
   const { data: subCategories } = useSubCategories(100);
   const { data: categories } = useCategories(100);
 
@@ -30,6 +31,12 @@ const Collections = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [dropdownSearch, setDropdownSearch] = useState('');
   const selectRef = useRef(null);
+
+  // Options for FilterDropdown
+  const filterOptions = [
+    ...categoryList.map(cat => ({ label: cat.name, value: `categoryId:${cat.id}`, group: 'Categories' })),
+    ...subCategoryList.map(sub => ({ label: sub.name, value: `subCategoryId:${sub.id}`, group: 'SubCategories' }))
+  ];
 
   // Find selected subcategory object & its parent category
   const selectedSubCategoryObj = subCategoryList.find(s => s.id === parseInt(formData.subCategoryId, 10));
@@ -104,6 +111,18 @@ const Collections = () => {
     ? subCategoryList.filter(s => s.name.toLowerCase().includes(dropdownSearch.toLowerCase()))
     : subCategoryList;
 
+  // Filter select handler
+  const currentFilterVal = filter.key && filter.value ? `${filter.key}:${filter.value}` : '';
+
+  const handleFilterSelect = (val) => {
+    if (!val) {
+      setFilter({ key: '', value: '' });
+      return;
+    }
+    const [key, value] = val.split(':');
+    setFilter({ key, value });
+  };
+
   return (
     <div className="max-w-6xl mx-auto pb-12">
       {/* Top Header & Actions Bar */}
@@ -115,7 +134,7 @@ const Collections = () => {
 
         <button
           onClick={handleOpenAdd}
-          className="flex items-center gap-2 bg-brand-gold text-white px-5 py-2.5 rounded-xl hover:bg-yellow-600 transition-all shadow-md shadow-brand-gold/20 font-medium text-sm self-start md:self-auto shrink-0"
+          className="flex items-center gap-2 bg-brand-gold text-white px-5 py-2.5 rounded-xl hover:bg-yellow-600 transition-all shadow-md shadow-brand-gold/20 font-medium text-sm self-start md:self-auto shrink-0 cursor-pointer"
         >
           <Plus size={18} /> Add New Product
         </button>
@@ -129,15 +148,26 @@ const Collections = () => {
             Created Products ({pagination.totalItems || (Array.isArray(tiles) ? tiles.length : 0)})
           </h2>
           
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-            <input 
-              type="text" 
-              placeholder="Search products..." 
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-200 rounded-xl w-full md:w-64 focus:outline-none focus:border-brand-gold transition-colors text-sm"
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+            {/* Custom Luxury Filter Dropdown (Left to Search) */}
+            <FilterDropdown 
+              options={filterOptions}
+              value={currentFilterVal}
+              onChange={handleFilterSelect}
+              placeholder="All Categories & Subs"
             />
+
+            {/* Search Input */}
+            <div className="relative w-full sm:w-auto">
+              <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+              <input 
+                type="text" 
+                placeholder="Search products..." 
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-9 pr-4 py-2 border border-gray-200 rounded-xl w-full sm:w-60 focus:outline-none focus:border-brand-gold transition-colors text-xs font-medium text-brand-text bg-white"
+              />
+            </div>
           </div>
         </div>
         

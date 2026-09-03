@@ -9,11 +9,13 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check localStorage for auth token
-    const token = localStorage.getItem('adminToken');
+    // Check sessionStorage for auth token (Session only)
+    const token = sessionStorage.getItem('adminToken');
     if (token) {
       setIsAuthenticated(true);
     }
+    // Clean up legacy localStorage token if any exists
+    localStorage.removeItem('adminToken');
     setIsLoading(false);
   }, []);
 
@@ -27,7 +29,7 @@ export const AuthProvider = ({ children }) => {
       
       if (res.ok) {
         const data = await res.json();
-        localStorage.setItem('adminToken', data.token);
+        sessionStorage.setItem('adminToken', data.token);
         setIsAuthenticated(true);
         return true;
       }
@@ -39,6 +41,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    sessionStorage.removeItem('adminToken');
     localStorage.removeItem('adminToken');
     setIsAuthenticated(false);
   };

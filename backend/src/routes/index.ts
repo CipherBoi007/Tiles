@@ -11,7 +11,7 @@ import { uploadFile } from '../controllers/uploadController';
 import { protect } from '../middlewares/authMiddleware';
 import { upload } from '../middlewares/uploadMiddleware';
 import { validate } from '../middlewares/validateMiddleware';
-import { loginSchema, enquirySchema, tileSchema, categorySchema, subCategorySchema } from '../schemas';
+import { loginSchema, enquirySchema, tileSchema, categorySchema, subCategorySchema, catalogueSchema } from '../schemas';
 
 const router = Router();
 
@@ -44,7 +44,7 @@ router.delete('/tiles/:id', protect, deleteTile);
 
 // Catalogues
 router.get('/catalogues', getCatalogues);
-router.post('/catalogues', protect, createCatalogue);
+router.post('/catalogues', protect, validate(catalogueSchema), createCatalogue);
 router.delete('/catalogues/:id', protect, deleteCatalogue);
 
 // Enquiries

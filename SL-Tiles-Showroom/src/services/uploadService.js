@@ -6,7 +6,7 @@ export const uploadFile = async (file) => {
   const formData = new FormData();
   formData.append('file', file);
 
-  const token = localStorage.getItem('adminToken');
+  const token = sessionStorage.getItem('adminToken');
 
   const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/upload`, {
     method: 'POST',

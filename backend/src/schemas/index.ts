@@ -33,3 +33,10 @@ export const tileSchema = z.object({
   image: z.string().url().or(z.literal('')),
   subCategoryId: z.number().int().positive(),
 });
+
+export const catalogueSchema = z.object({
+  title: z.string().min(1).max(200),
+  fileUrl: z.string().min(1),
+  date: z.string().optional().nullable(),
+});
+

@@ -4,12 +4,11 @@ import Footer from '../../components/Footer';
 import WhatsAppFloat from '../../components/WhatsAppFloat';
 import SEO from '../../components/SEO';
 import ProductCard from '../../components/ProductCard';
-import TileModal from '../../components/TileModal';
 import Pagination from '../../components/Pagination';
 import SafeImage from '../../components/SafeImage';
 import { useCategories, useSubCategories, useTiles } from '../../hooks/useDataFetch';
 import { FadeUp, StaggerContainer, StaggerItem } from '../../components/animations/MotionWrappers';
-import { ArrowRight, Filter, X, Search, Layers, Grid, ArrowLeft, FolderOpen, FolderTree } from 'lucide-react';
+import { ChevronRight, Search, Home } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const PublicCollections = () => {
@@ -17,7 +16,6 @@ const PublicCollections = () => {
   const { data: subCategories } = useSubCategories(100);
   const { data: tiles, pagination, setPage, search, setSearch, setFilter, loading: tilesLoading } = useTiles(12);
   
-  const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
   const [viewMode, setViewMode] = useState('categories'); // 'categories' | 'subcategories' | 'tiles'
@@ -45,6 +43,10 @@ const PublicCollections = () => {
       const foundSub = subCategoryList.find(s => s.id === Number(subIdParam));
       if (foundSub) {
         setSelectedSubCategory(foundSub);
+        if (foundSub.categoryId) {
+          const parentCat = categoryList.find(c => c.id === foundSub.categoryId);
+          if (parentCat) setSelectedCategory(parentCat);
+        }
         setFilter({ key: 'subCategoryId', value: subIdParam });
         setViewMode('tiles');
       }
@@ -87,12 +89,16 @@ const PublicCollections = () => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   };
 
-  const handleSwitchView = (mode) => {
-    setViewMode(mode);
-    if (mode === 'categories') {
+  const handleBreadcrumbClick = (targetLevel) => {
+    if (targetLevel === 'categories') {
       setSelectedCategory(null);
       setSelectedSubCategory(null);
       setFilter({ key: '', value: '' });
+      setViewMode('categories');
+    } else if (targetLevel === 'subcategories') {
+      setSelectedSubCategory(null);
+      setFilter({ key: '', value: '' });
+      setViewMode('subcategories');
     }
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   };
@@ -100,140 +106,188 @@ const PublicCollections = () => {
   return (
     <div className="min-h-screen font-luxury bg-brand-lightBg flex flex-col">
       <SEO 
-        title="Tile Categories & Products Showcase | SRI LAKSHMI TILES" 
+        title="Tile Collections & Catalogue | SRI LAKSHMI TILES" 
         description="Explore luxury floor tiles, wall tiles, natural stone slabs, and exterior paver collections."
       />
       <Header />
       
       <main className="flex-1 pt-0 pb-16">
-        {/* Banner Header */}
+        {/* Simple & Elegant Breadcrumb Navigation Header */}
         <div className="bg-brand-white border-b border-gray-100 py-6 mb-8 shadow-sm">
-          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div>
-              <h1 className="text-3xl md:text-4xl font-semibold font-luxury text-brand-black mb-2">
-                {viewMode === 'categories' && 'Tile Categories'}
-                {viewMode === 'subcategories' && (selectedCategory ? selectedCategory.name : 'SubCategories')}
-                {viewMode === 'tiles' && (selectedSubCategory ? `${selectedSubCategory.name} Tiles` : 'All Tile Products')}
-              </h1>
-              <p className="text-brand-textMuted text-base max-w-2xl">
-                {viewMode === 'categories' && 'Select a main category to explore targeted series and collections.'}
-                {viewMode === 'subcategories' && 'Choose a subcategory to browse matching tile designs.'}
-                {viewMode === 'tiles' && `Showing ${pagination.totalItems || tiles.length} tiles in stock.`}
-              </p>
-            </div>
+          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 flex flex-col gap-3">
+            {/* Breadcrumb Bar */}
+            <nav className="flex items-center flex-wrap gap-2 text-xs sm:text-sm font-medium text-brand-textMuted">
+              <button 
+                onClick={() => handleBreadcrumbClick('categories')}
+                className={`hover:text-brand-gold transition-colors ${
+                  viewMode === 'categories' ? 'text-brand-black font-bold text-base sm:text-lg' : 'text-gray-500'
+                }`}
+              >
+                Categories
+              </button>
 
-            {/* View switcher tabs */}
-            <div className="w-full md:w-auto overflow-x-auto scrollbar-hide">
-              <div className="flex items-center gap-1 sm:gap-2 bg-brand-lightBg p-1 sm:p-1.5 rounded-xl border border-gray-200 min-w-max md:min-w-0">
-                <button
-                  onClick={() => handleSwitchView('categories')}
-                  className={`flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap flex-1 md:flex-initial ${
-                    viewMode === 'categories'
-                      ? 'bg-brand-white text-brand-gold shadow-sm font-semibold'
-                      : 'text-brand-textMuted hover:text-brand-black'
-                  }`}
-                >
-                  <FolderOpen className="w-4 h-4 shrink-0" />
-                  <span>Categories</span>
-                </button>
+              {(viewMode === 'subcategories' || viewMode === 'tiles') && (
+                <>
+                  <ChevronRight className="w-4 h-4 text-gray-400 shrink-0" />
+                  <button 
+                    onClick={() => handleBreadcrumbClick('subcategories')}
+                    className={`hover:text-brand-gold transition-colors ${
+                      viewMode === 'subcategories' ? 'text-brand-black font-bold text-base sm:text-lg' : 'text-gray-500'
+                    }`}
+                  >
+                    {selectedCategory ? selectedCategory.name : 'SubCategories'}
+                  </button>
+                </>
+              )}
 
-                <button
-                  onClick={() => handleSwitchView('subcategories')}
-                  className={`flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap flex-1 md:flex-initial ${
-                    viewMode === 'subcategories'
-                      ? 'bg-brand-white text-brand-gold shadow-sm font-semibold'
-                      : 'text-brand-textMuted hover:text-brand-black'
-                  }`}
-                >
-                  <FolderTree className="w-4 h-4 shrink-0" />
-                  <span>SubCategories</span>
-                </button>
+              {viewMode === 'tiles' && (
+                <>
+                  <ChevronRight className="w-4 h-4 text-gray-400 shrink-0" />
+                  <span className="text-brand-gold font-bold text-base sm:text-lg">
+                    {selectedSubCategory ? selectedSubCategory.name : 'Tiles'}
+                  </span>
+                </>
+              )}
+            </nav>
 
-                <button
-                  onClick={() => handleSwitchView('tiles')}
-                  className={`flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap flex-1 md:flex-initial ${
-                    viewMode === 'tiles'
-                      ? 'bg-brand-white text-brand-gold shadow-sm font-semibold'
-                      : 'text-brand-textMuted hover:text-brand-black'
-                  }`}
-                >
-                  <Grid className="w-4 h-4 shrink-0" />
-                  <span>All Tiles</span>
-                </button>
-              </div>
-            </div>
+            <p className="text-brand-textMuted text-xs sm:text-sm">
+              {viewMode === 'categories' && 'Select a main category to explore targeted subcategories.'}
+              {viewMode === 'subcategories' && 'Choose a subcategory to browse available tile designs.'}
+              {viewMode === 'tiles' && `Showing ${pagination.totalItems || tiles.length} tile products.`}
+            </p>
           </div>
         </div>
 
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
 
-          {/* LEVEL 1: CATEGORIES VIEW */}
+          {/* LEVEL 1: CATEGORIES VIEW (Vertical Column Alternating Stack) */}
           {viewMode === 'categories' && (
             <section>
-              <StaggerContainer className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-                {categoryList.map((cat) => (
-                  <StaggerItem key={cat.id}>
+              <StaggerContainer className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-5 items-stretch">
+                {categoryList.map((cat, idx) => {
+                  const isNameTop = idx % 2 === 0;
+
+                  const NameBox = (
                     <div 
+                      key={`cat-name-${cat.id}`}
                       onClick={() => handleCategorySelect(cat)}
-                      className="group relative overflow-hidden rounded-xl sm:rounded-2xl cursor-pointer bg-brand-black border border-gray-200/80 hover:border-brand-gold shadow-sm hover:shadow-xl hover:shadow-brand-gold/15 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-end h-[200px] sm:h-[280px]"
+                      className="group flex flex-col items-center justify-center p-3 sm:p-4 bg-brand-white border border-gray-200/80 rounded-xl cursor-pointer hover:border-brand-gold hover:shadow-lg transition-all duration-300 h-20 sm:h-24 md:h-28 text-center shrink-0"
                     >
-                      {/* Background Image & Multi-stop Luxury Gradient */}
-                      <div className="absolute inset-0 z-0 overflow-hidden">
-                        <SafeImage 
-                          src={cat.image} 
-                          alt={cat.name} 
-                          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" 
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-brand-black/65 to-black/15 group-hover:via-brand-black/50 transition-colors duration-300"></div>
-                      </div>
-                      
-                      {/* Bottom Content Area - Title Only */}
-                      <div className="relative z-10 p-4 sm:p-6 flex flex-col justify-end text-brand-white">
-                        <h3 className="text-base sm:text-2xl font-luxury font-bold text-white group-hover:text-brand-gold transition-colors duration-300 leading-snug">
-                          {cat.name}
-                        </h3>
-                      </div>
+                      <h3 className="text-xs sm:text-sm md:text-base font-luxury font-bold text-brand-black uppercase tracking-wider group-hover:text-brand-gold transition-colors leading-tight">
+                        {cat.name}
+                      </h3>
                     </div>
-                  </StaggerItem>
-                ))}
+                  );
+
+                  const ImageBox = (
+                    <div 
+                      key={`cat-img-${cat.id}`}
+                      onClick={() => handleCategorySelect(cat)}
+                      className="group relative overflow-hidden border border-gray-200/80 rounded-xl cursor-pointer bg-brand-black shadow-sm hover:shadow-xl transition-all duration-300 h-[240px] sm:h-[340px] md:h-[400px] flex-1"
+                    >
+                      <SafeImage 
+                        src={cat.image} 
+                        alt={cat.name} 
+                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" 
+                      />
+                      <div className="absolute inset-0 bg-brand-black/15 group-hover:bg-brand-black/0 transition-colors duration-300"></div>
+                    </div>
+                  );
+
+                  return (
+                    <StaggerItem key={cat.id} className="flex flex-col gap-3 sm:gap-4 h-full">
+                      {isNameTop ? (
+                        <>
+                          {NameBox}
+                          {ImageBox}
+                        </>
+                      ) : (
+                        <>
+                          {ImageBox}
+                          {NameBox}
+                        </>
+                      )}
+                    </StaggerItem>
+                  );
+                })}
               </StaggerContainer>
             </section>
           )}
 
-          {/* LEVEL 2: SUBCATEGORIES VIEW */}
+          {/* LEVEL 2: SUBCATEGORIES VIEW (Vertical Column Alternating Stack with Dynamic Container & Tall Height) */}
           {viewMode === 'subcategories' && (
             <section>
-              <StaggerContainer className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-                {filteredSubCategories.map((sub) => (
-                  <StaggerItem key={sub.id}>
-                    <div 
-                      onClick={() => handleSubCategorySelect(sub)}
-                      className="group relative overflow-hidden rounded-xl sm:rounded-2xl cursor-pointer bg-brand-black border border-gray-200/80 hover:border-brand-gold shadow-sm hover:shadow-xl hover:shadow-brand-gold/15 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-end h-[200px] sm:h-[280px]"
-                    >
-                      {/* Background Image & Multi-stop Luxury Gradient */}
-                      <div className="absolute inset-0 z-0 overflow-hidden">
-                        <SafeImage 
-                          src={sub.image} 
-                          alt={sub.name} 
-                          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" 
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-brand-black/65 to-black/15 group-hover:via-brand-black/50 transition-colors duration-300"></div>
-                      </div>
-                      
-                      {/* Bottom Content Area - Title Only */}
-                      <div className="relative z-10 p-4 sm:p-6 flex flex-col justify-end text-brand-white">
-                        <h3 className="text-base sm:text-2xl font-luxury font-bold text-white group-hover:text-brand-gold transition-colors duration-300 leading-snug">
+              {/* Dynamic width container based on item count so subcategory cards stay grand & perfectly proportioned */}
+              <div className={`mx-auto ${
+                filteredSubCategories.length <= 2 
+                  ? 'max-w-3xl sm:max-w-4xl' 
+                  : filteredSubCategories.length === 3 
+                  ? 'max-w-5xl' 
+                  : filteredSubCategories.length === 4 
+                  ? 'max-w-6xl' 
+                  : 'max-w-[1400px]'
+              }`}>
+                <StaggerContainer className={`grid gap-4 sm:gap-6 items-stretch ${
+                  filteredSubCategories.length <= 2 
+                    ? 'grid-cols-2' 
+                    : filteredSubCategories.length === 3 
+                    ? 'grid-cols-2 md:grid-cols-3' 
+                    : filteredSubCategories.length === 4 
+                    ? 'grid-cols-2 md:grid-cols-4' 
+                    : 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
+                }`}>
+                  {filteredSubCategories.map((sub, idx) => {
+                    const isNameTop = idx % 2 === 0;
+
+                    const NameBox = (
+                      <div 
+                        key={`sub-name-${sub.id}`}
+                        onClick={() => handleSubCategorySelect(sub)}
+                        className="group flex flex-col items-center justify-center p-3 sm:p-4 bg-brand-white border border-gray-200/80 rounded-2xl cursor-pointer hover:border-brand-gold hover:shadow-lg transition-all duration-300 h-16 sm:h-20 md:h-24 text-center shrink-0"
+                      >
+                        <h3 className="text-xs sm:text-sm md:text-base font-luxury font-bold text-brand-black uppercase tracking-wider group-hover:text-brand-gold transition-colors leading-snug">
                           {sub.name}
                         </h3>
                       </div>
-                    </div>
-                  </StaggerItem>
-                ))}
-              </StaggerContainer>
+                    );
+
+                    const ImageBox = (
+                      <div 
+                        key={`sub-img-${sub.id}`}
+                        onClick={() => handleSubCategorySelect(sub)}
+                        className="group relative overflow-hidden border border-gray-200/80 rounded-2xl cursor-pointer bg-brand-black shadow-sm hover:shadow-xl transition-all duration-300 h-[320px] sm:h-[440px] md:h-[500px] flex-1"
+                      >
+                        <SafeImage 
+                          src={sub.image} 
+                          alt={sub.name} 
+                          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" 
+                        />
+                        <div className="absolute inset-0 bg-brand-black/15 group-hover:bg-brand-black/0 transition-colors duration-300"></div>
+                      </div>
+                    );
+
+                    return (
+                      <StaggerItem key={sub.id} className="flex flex-col gap-3 sm:gap-4 h-full">
+                        {isNameTop ? (
+                          <>
+                            {NameBox}
+                            {ImageBox}
+                          </>
+                        ) : (
+                          <>
+                            {ImageBox}
+                            {NameBox}
+                          </>
+                        )}
+                      </StaggerItem>
+                    );
+                  })}
+                </StaggerContainer>
+              </div>
             </section>
           )}
 
-          {/* LEVEL 3: TILES VIEW */}
+          {/* LEVEL 3: TILES VIEW (Image + Name Alone) */}
           {viewMode === 'tiles' && (
             <section id="all-tiles-section">
               {/* Search Bar */}
@@ -250,21 +304,18 @@ const PublicCollections = () => {
                 </div>
               </div>
 
-              {/* Tile Cards Grid */}
-              <StaggerContainer className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+              {/* Ultra Narrow Tile Cards Grid */}
+              <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
                 {(Array.isArray(tiles) ? tiles : []).length > 0 ? (
                   tiles.map((product) => (
                     <StaggerItem key={product.id}>
-                      <ProductCard 
-                        product={product} 
-                        onQuickView={setSelectedProduct} 
-                      />
+                      <ProductCard product={product} />
                     </StaggerItem>
                   ))
                 ) : (
                   <div className="col-span-full py-16 text-center text-brand-textMuted bg-brand-white rounded-2xl border border-dashed border-gray-200">
                     <p className="text-lg font-medium mb-1">No tile products found</p>
-                    <p className="text-sm text-gray-400 mb-4">Try adjusting your filters or search terms.</p>
+                    <p className="text-sm text-gray-400 mb-4">Try adjusting your search terms.</p>
                     <button onClick={clearFilters} className="px-4 py-2 bg-brand-gold text-white text-xs rounded-lg font-medium">
                       Reset Filters
                     </button>
@@ -289,10 +340,6 @@ const PublicCollections = () => {
 
       <Footer />
       <WhatsAppFloat />
-
-      {selectedProduct && (
-        <TileModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />
-      )}
     </div>
   );
 };

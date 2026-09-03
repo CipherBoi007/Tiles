@@ -1,5 +1,7 @@
 import prisma from './lib/prisma';
 import bcrypt from 'bcryptjs';
+import fs from 'fs';
+import path from 'path';
 
 const categoriesData = [
   { name: 'Vitrified Floor Tiles', image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80', slug: 'vitrified-floor-tiles' },
@@ -82,12 +84,30 @@ const sampleTiles = [
   { subIndex: 11, name: 'European Cobble Terrace Tile', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80' }
 ];
 
-const cataloguesData = [
-  { title: 'Summer 2025 Master Catalogue', desc: 'Complete range of imported marble, vitrified, and ceramic floor and wall tiles.', fileUrl: '/catalogues/summer-2025.pdf' },
-  { title: 'Architectural & Commercial Series', desc: 'Technical specs, durability ratings, and slip resistance indices for commercial projects.', fileUrl: '/catalogues/arch-2025.pdf' },
-  { title: 'Luxury Villa Edition', desc: 'Curated premium collection of large-format slabs and book-matched marble designs.', fileUrl: '/catalogues/luxury-villa.pdf' },
-  { title: 'Outdoor Pavers & Facade Guide', desc: 'Comprehensive technical handbook for 12mm & 16mm heavy duty paver applications.', fileUrl: '/catalogues/pavers-guide-2025.pdf' }
-];
+// Dynamically scan public/catalogues directory to preserve all uploaded PDF catalogues
+const publicCataloguesDir = path.join(__dirname, '../../SL-Tiles-Showroom/public/catalogues');
+let cataloguesData: { title: string; fileUrl: string }[] = [];
+
+if (fs.existsSync(publicCataloguesDir)) {
+  const pdfFiles = fs.readdirSync(publicCataloguesDir).filter(f => f.toLowerCase().endsWith('.pdf'));
+  cataloguesData = pdfFiles.map(file => {
+    let cleanTitle = file.replace(/^\d+[-_]/, '').replace(/\.[^/.]+$/, '').replace(/[-_]+/g, ' ').trim();
+    if (!cleanTitle) cleanTitle = file;
+    return {
+      title: cleanTitle,
+      fileUrl: `/catalogues/${file}`
+    };
+  });
+}
+
+if (cataloguesData.length === 0) {
+  cataloguesData = [
+    { title: '12X24 Elevation Collection', fileUrl: '/catalogues/1788393420423-12X24_ELEVATION_COLLECTION.pdf' },
+    { title: 'Architectural & Commercial Series', fileUrl: '/catalogues/arch-2025.pdf' },
+    { title: 'Luxury Villa Edition', fileUrl: '/catalogues/luxury-villa.pdf' },
+    { title: 'Outdoor Pavers & Facade Guide', fileUrl: '/catalogues/pavers-guide-2025.pdf' }
+  ];
+}
 
 const enquiriesData = [
   { customer: 'Riya Sharma', phone: '+91 98765 43210', description: 'Interested in Carrara White PGVT for 1400 sq.ft living room floor.', status: 'New' },

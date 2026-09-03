@@ -68,12 +68,9 @@ const CatalogueDownload = ({ isStandalone = false }) => {
                   </div>
                   
                   <div className="flex-grow flex flex-col mb-6">
-                    <h3 className="text-xl font-luxury font-bold text-brand-text mb-2">
+                    <h3 className="text-xl font-luxury font-bold text-brand-text leading-snug">
                       {catalogue.title}
                     </h3>
-                    <p className="text-xs text-brand-textMuted line-clamp-3">
-                      {catalogue.desc || 'Complete range of imported marble, vitrified, and ceramic tiles.'}
-                    </p>
                   </div>
                   
                   <div className="flex flex-col sm:flex-row items-stretch gap-2.5 mt-auto">
