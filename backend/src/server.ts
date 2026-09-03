@@ -7,6 +7,7 @@ import pinoHttp from 'pino-http';
 import pino from 'pino';
 
 import path from 'path';
+import fs from 'fs';
 
 import routes from './routes/index';
 import prisma from './lib/prisma';
@@ -61,7 +62,7 @@ app.use('/catalogues', (req, res, next) => {
     // Try fuzzy match (e.g. spaces converted to hyphens or timestamp separators)
     const normalizedName = rawPath.replace(/^\//, '');
     const files = fs.readdirSync(publicCataloguesDir);
-    const matchedFile = files.find(f => 
+    const matchedFile = files.find((f: string) => 
       f.toLowerCase() === normalizedName.toLowerCase() ||
       f.replace(/[-_\s]+/g, '').toLowerCase() === normalizedName.replace(/[-_\s]+/g, '').toLowerCase()
     );
