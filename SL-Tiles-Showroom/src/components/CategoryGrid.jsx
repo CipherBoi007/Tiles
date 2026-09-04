@@ -57,13 +57,13 @@ const CategoryGrid = () => {
   const categoryList = Array.isArray(categories) ? categories : (categories?.data || []);
 
   // Dynamically Group & Limit Categories into Showroom Divisions for Landing Page Elegance
-  const tileCategories = categoryList.filter(cat => getCategoryDivision(cat) === 'tiles').slice(0, 6);
+  const tileCategories = categoryList.filter(cat => getCategoryDivision(cat) === 'tiles').slice(0, 3);
   const sanitaryCategories = categoryList.filter(cat => getCategoryDivision(cat) === 'sanitaryware').slice(0, 3);
   const kitchenCategories = categoryList.filter(cat => getCategoryDivision(cat) === 'kitchen').slice(0, 3);
   const plumbingCategories = categoryList.filter(cat => getCategoryDivision(cat) === 'plumbing').slice(0, 3);
 
   // Helper renderer for Alternating Column Cards
-  const renderCategoryGridItems = (items, colsClass = "grid-cols-2 md:grid-cols-3 lg:grid-cols-6") => {
+  const renderCategoryGridItems = (items, colsClass = "grid-cols-1 md:grid-cols-3 lg:grid-cols-3") => {
     return (
       <StaggerContainer className={`grid ${colsClass} gap-3 sm:gap-5 items-stretch`}>
         {items.map((cat, idx) => {
@@ -146,7 +146,7 @@ const CategoryGrid = () => {
               </p>
             </FadeUp>
 
-            {renderCategoryGridItems(tileCategories, "grid-cols-2 md:grid-cols-3 lg:grid-cols-6")}
+            {renderCategoryGridItems(tileCategories, "grid-cols-1 md:grid-cols-3 lg:grid-cols-3")}
           </div>
         )}
 
