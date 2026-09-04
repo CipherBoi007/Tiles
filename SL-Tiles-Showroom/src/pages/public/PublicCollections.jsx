@@ -103,7 +103,7 @@ const PublicCollections = () => {
   };
 
   // Helper renderer for Alternating Column Cards
-  const renderCategoryCards = (items, colsClass = "grid-cols-2 md:grid-cols-3 lg:grid-cols-6") => {
+  const renderCategoryCards = (items, colsClass = "grid-cols-1 md:grid-cols-3 lg:grid-cols-3") => {
     return (
       <StaggerContainer className={`grid ${colsClass} gap-3 sm:gap-5 items-stretch`}>
         {items.map((cat, idx) => {
@@ -282,7 +282,7 @@ const PublicCollections = () => {
                       Explore Vitrified floor tiles, ceramic wall elevation, imported Italian marble slabs, and granite.
                     </p>
                   </div>
-                  {renderCategoryCards(tileCategories, "grid-cols-2 md:grid-cols-3 lg:grid-cols-6")}
+                  {renderCategoryCards(tileCategories, "grid-cols-1 md:grid-cols-3 lg:grid-cols-3")}
                 </div>
               )}
 
