@@ -39,7 +39,7 @@ router.put('/tiles/:id', authMiddleware_1.protect, (0, validateMiddleware_1.vali
 router.delete('/tiles/:id', authMiddleware_1.protect, tilesController_1.deleteTile);
 // Catalogues
 router.get('/catalogues', cataloguesController_1.getCatalogues);
-router.post('/catalogues', authMiddleware_1.protect, cataloguesController_1.createCatalogue);
+router.post('/catalogues', authMiddleware_1.protect, (0, validateMiddleware_1.validate)(schemas_1.catalogueSchema), cataloguesController_1.createCatalogue);
 router.delete('/catalogues/:id', authMiddleware_1.protect, cataloguesController_1.deleteCatalogue);
 // Enquiries
 router.get('/enquiries', authMiddleware_1.protect, enquiriesController_1.getEnquiries);

@@ -10,6 +10,8 @@ const helmet_1 = __importDefault(require("helmet"));
 const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 const pino_http_1 = __importDefault(require("pino-http"));
 const pino_1 = __importDefault(require("pino"));
+const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
 const index_1 = __importDefault(require("./routes/index"));
 const prisma_1 = __importDefault(require("./lib/prisma"));
 dotenv_1.default.config();
@@ -17,7 +19,7 @@ const app = (0, express_1.default)();
 const PORT = process.env.PORT || 5000;
 const logger = (0, pino_1.default)({ level: process.env.LOG_LEVEL || 'info' });
 app.use((0, pino_http_1.default)({ logger }));
-app.use((0, helmet_1.default)());
+app.use((0, helmet_1.default)({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 const allowedOrigins = [
     process.env.FRONTEND_URL,
     'http://localhost:5173',
@@ -43,6 +45,29 @@ const apiLimiter = (0, express_rate_limit_1.default)({
 app.use('/api', apiLimiter);
 app.use(express_1.default.json({ limit: '2mb' })); // Reduced from 10mb to prevent memory issues with JSON parsing
 app.use(express_1.default.urlencoded({ limit: '2mb', extended: true }));
+// Static route to serve local PDF catalogues directly with space/hyphen fallback
+app.use('/catalogues', (req, res, next) => {
+    try {
+        const rawPath = decodeURIComponent(req.path);
+        const publicCataloguesDir = path_1.default.join(__dirname, '../../SL-Tiles-Showroom/public/catalogues');
+        const directFilePath = path_1.default.join(publicCataloguesDir, rawPath);
+        if (fs_1.default.existsSync(directFilePath) && fs_1.default.statSync(directFilePath).isFile()) {
+            return res.sendFile(directFilePath);
+        }
+        // Try fuzzy match (e.g. spaces converted to hyphens or timestamp separators)
+        const normalizedName = rawPath.replace(/^\//, '');
+        const files = fs_1.default.readdirSync(publicCataloguesDir);
+        const matchedFile = files.find((f) => f.toLowerCase() === normalizedName.toLowerCase() ||
+            f.replace(/[-_\s]+/g, '').toLowerCase() === normalizedName.replace(/[-_\s]+/g, '').toLowerCase());
+        if (matchedFile) {
+            return res.sendFile(path_1.default.join(publicCataloguesDir, matchedFile));
+        }
+    }
+    catch (err) {
+        // Fallback to default express static handler
+    }
+    next();
+}, express_1.default.static(path_1.default.join(__dirname, '../../SL-Tiles-Showroom/public/catalogues')));
 app.use('/api', index_1.default);
 app.get('/api/health', async (req, res) => {
     try {

@@ -12,7 +12,6 @@ const getCategories = async (req, res) => {
         const where = search ? {
             OR: [
                 { name: { contains: search, mode: 'insensitive' } },
-                { desc: { contains: search, mode: 'insensitive' } },
             ]
         } : {};
         const [categories, total] = await Promise.all([
@@ -51,12 +50,12 @@ const getCategories = async (req, res) => {
 exports.getCategories = getCategories;
 const createCategory = async (req, res) => {
     try {
-        const { name, desc, image, slug, status } = req.body;
+        const { name, image, slug, division, status } = req.body;
         const categoryData = {
             name: name?.trim() || 'Untitled Category',
-            desc: desc?.trim() || '',
             image: image || '',
             slug: slug?.trim() || name?.toLowerCase().replace(/\s+/g, '-'),
+            division: division || 'tiles',
             status: status || 'active'
         };
         const category = await prisma_1.default.category.create({ data: categoryData });
@@ -75,14 +74,18 @@ exports.createCategory = createCategory;
 const updateCategory = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, desc, image, slug, status } = req.body;
-        const categoryData = {
-            name: name?.trim(),
-            desc: desc?.trim(),
-            image,
-            slug: slug?.trim(),
-            status
-        };
+        const { name, image, slug, division, status } = req.body;
+        const categoryData = {};
+        if (name !== undefined)
+            categoryData.name = name?.trim();
+        if (image !== undefined)
+            categoryData.image = image;
+        if (slug !== undefined)
+            categoryData.slug = slug?.trim();
+        if (division !== undefined)
+            categoryData.division = division;
+        if (status !== undefined)
+            categoryData.status = status;
         const category = await prisma_1.default.category.update({ where: { id: Number(id) }, data: categoryData });
         res.json(category);
     }

@@ -10,10 +10,7 @@ const getCatalogues = async (req, res) => {
     try {
         const { page, limit, search, skip } = (0, pagination_1.getPagination)(req);
         const where = search ? {
-            OR: [
-                { title: { contains: search, mode: 'insensitive' } },
-                { desc: { contains: search, mode: 'insensitive' } },
-            ]
+            title: { contains: search, mode: 'insensitive' }
         } : {};
         const [catalogues, total] = await Promise.all([
             prisma_1.default.catalogue.findMany({
@@ -35,22 +32,36 @@ const getCatalogues = async (req, res) => {
 exports.getCatalogues = getCatalogues;
 const createCatalogue = async (req, res) => {
     try {
-        const { title, desc, fileUrl } = req.body;
+        const { title, fileUrl, date } = req.body;
+        if (!fileUrl) {
+            return res.status(400).json({ message: 'File URL is required.' });
+        }
         const catalogueData = {
             title: title?.trim() || 'Untitled Catalogue',
-            desc: desc?.trim() || '',
-            fileUrl: fileUrl || '',
+            fileUrl: String(fileUrl).trim(),
         };
+        if (date) {
+            const parsedDate = new Date(date);
+            if (!isNaN(parsedDate.getTime())) {
+                catalogueData.date = parsedDate;
+            }
+        }
         const catalogue = await prisma_1.default.catalogue.create({ data: catalogueData });
-        await prisma_1.default.activity.create({
-            data: { type: 'catalogue', title: 'Catalogue uploaded', desc: `${catalogue.title} PDF published.` }
-        });
-        res.status(201).json(catalogue);
+        try {
+            await prisma_1.default.activity.create({
+                data: { type: 'catalogue', title: 'Catalogue uploaded', desc: `${catalogue.title} PDF published.` }
+            });
+        }
+        catch (actErr) {
+            console.warn('Activity log entry warning:', actErr);
+        }
+        return res.status(201).json(catalogue);
     }
     catch (error) {
         if (req.log)
             req.log.error(error);
-        res.status(500).json({ message: error?.message || 'Error creating catalogue', error });
+        console.error('Error in createCatalogue:', error);
+        return res.status(500).json({ message: error?.message || 'Error creating catalogue', error });
     }
 };
 exports.createCatalogue = createCatalogue;

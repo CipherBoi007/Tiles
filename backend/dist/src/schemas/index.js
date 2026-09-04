@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.tileSchema = exports.subCategorySchema = exports.categorySchema = exports.enquirySchema = exports.loginSchema = void 0;
+exports.catalogueSchema = exports.tileSchema = exports.subCategorySchema = exports.categorySchema = exports.enquirySchema = exports.loginSchema = void 0;
 const zod_1 = require("zod");
 exports.loginSchema = zod_1.z.object({
     email: zod_1.z.string().email(),
@@ -16,14 +16,13 @@ exports.enquirySchema = zod_1.z.object({
 });
 exports.categorySchema = zod_1.z.object({
     name: zod_1.z.string().min(2).max(100),
-    desc: zod_1.z.string().optional().nullable(),
     image: zod_1.z.string().url().or(zod_1.z.literal('')).optional().nullable(),
     slug: zod_1.z.string().optional().nullable(),
+    division: zod_1.z.string().optional().nullable(),
     status: zod_1.z.string().optional().nullable(),
 });
 exports.subCategorySchema = zod_1.z.object({
     name: zod_1.z.string().min(2).max(100),
-    desc: zod_1.z.string().optional().nullable(),
     image: zod_1.z.string().url().or(zod_1.z.literal('')).optional().nullable(),
     slug: zod_1.z.string().optional().nullable(),
     categoryId: zod_1.z.number().int().positive(),
@@ -32,11 +31,9 @@ exports.tileSchema = zod_1.z.object({
     name: zod_1.z.string().min(2).max(100),
     image: zod_1.z.string().url().or(zod_1.z.literal('')),
     subCategoryId: zod_1.z.number().int().positive(),
-    size: zod_1.z.string().min(1).max(100).optional().nullable().or(zod_1.z.literal('')),
-    finish: zod_1.z.string().min(1).max(100).optional().nullable().or(zod_1.z.literal('')),
-    palette: zod_1.z.string().optional().nullable(),
-    thickness: zod_1.z.string().optional().nullable(),
-    desc: zod_1.z.string().optional().nullable(),
-    template: zod_1.z.string().optional().nullable(),
-    inStock: zod_1.z.boolean().optional(),
+});
+exports.catalogueSchema = zod_1.z.object({
+    title: zod_1.z.string().min(1).max(200),
+    fileUrl: zod_1.z.string().min(1),
+    date: zod_1.z.string().optional().nullable(),
 });

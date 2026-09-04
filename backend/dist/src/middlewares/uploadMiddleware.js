@@ -33,7 +33,7 @@ const fileFilter = (req, file, cb) => {
 exports.upload = (0, multer_1.default)({
     storage: storage,
     limits: {
-        fileSize: 10 * 1024 * 1024, // 10MB limit per file
+        fileSize: 120 * 1024 * 1024, // 50MB limit per file (allows large PDF catalogues)
     },
     fileFilter: fileFilter,
 });

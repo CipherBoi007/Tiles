@@ -5,104 +5,114 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const prisma_1 = __importDefault(require("./lib/prisma"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
 const categoriesData = [
-    {
-        name: 'Vitrified Floor Tiles',
-        desc: 'High durability, low-porosity vitrified tiles engineered for living rooms, halls, and commercial floors.',
-        image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80',
-        slug: 'vitrified-floor-tiles'
-    },
-    {
-        name: 'Wall & Elevation Tiles',
-        desc: 'Stunning decorative ceramic wall tiles, 3D exterior claddings, and bathroom highlight series.',
-        image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80',
-        slug: 'wall-elevation-tiles'
-    },
-    {
-        name: 'Imported Marble Slabs',
-        desc: 'Exquisite large-format book-matched marble slabs for luxury flooring and TV wall accents.',
-        image: 'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&w=800&q=80',
-        slug: 'imported-marble-slabs'
-    },
-    {
-        name: 'Wooden Planks & Decking',
-        desc: 'Natural hardwood and oak timber finish porcelain planks for cozy bedrooms and outdoor deckings.',
-        image: 'https://images.unsplash.com/photo-1505691938895-1758d7bef511?auto=format&fit=crop&w=800&q=80',
-        slug: 'wooden-planks-decking'
-    },
-    {
-        name: 'Granite & Natural Stone',
-        desc: 'Premium black galaxy granite, lapato stone slabs, and kitchen countertop granite slabs.',
-        image: 'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=800&q=80',
-        slug: 'granite-natural-stone'
-    },
-    {
-        name: 'Outdoor & Parking Heavy Duty',
-        desc: '12mm & 16mm anti-skid heavy-duty vitrified paver tiles built for driveways, ramps, and open terraces.',
-        image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80',
-        slug: 'outdoor-parking-heavy-duty'
-    }
+    { name: 'Vitrified Floor Tiles', image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80', slug: 'vitrified-floor-tiles' },
+    { name: 'Wall & Elevation Tiles', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80', slug: 'wall-elevation-tiles' },
+    { name: 'Imported Marble Slabs', image: 'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&w=800&q=80', slug: 'imported-marble-slabs' },
+    { name: 'Wooden Planks & Decking', image: 'https://images.unsplash.com/photo-1505691938895-1758d7bef511?auto=format&fit=crop&w=800&q=80', slug: 'wooden-planks-decking' },
+    { name: 'Granite & Natural Stone', image: 'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=800&q=80', slug: 'granite-natural-stone' },
+    { name: 'Outdoor & Parking Heavy Duty', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80', slug: 'outdoor-parking-heavy-duty' },
+    { name: 'Sanitaryware & Bathware', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80', slug: 'sanitaryware-bathware' },
+    { name: 'Kitchen Fittings & Sinks', image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80', slug: 'kitchen-fittings-sinks' },
+    { name: 'Plumbing & PVC Pipes', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80', slug: 'plumbing-pvc-pipes' }
 ];
 const subCategoriesData = [
     // Vitrified Floor Tiles (catIndex: 0)
-    { catIndex: 0, name: 'Glazed Vitrified (GVT/PGVT)', desc: 'High-gloss polished mirror surface tiles with rich digital marble patterns.', image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=600&q=80', slug: 'gvt-pgvt-floor' },
-    { catIndex: 0, name: 'Double Charge Vitrified', desc: 'Ultra-durable double layer pigment tiles built for high footfall spaces.', image: 'https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=600&q=80', slug: 'double-charge-vitrified' },
+    { catIndex: 0, name: 'Glazed Vitrified (GVT/PGVT)', image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=600&q=80', slug: 'gvt-pgvt-floor' },
+    { catIndex: 0, name: 'Double Charge Vitrified', image: 'https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=600&q=80', slug: 'double-charge-vitrified' },
     // Wall & Elevation Tiles (catIndex: 1)
-    { catIndex: 1, name: 'Bathroom & Kitchen Ceramic', desc: 'Waterproof ceramic wall tiles with matching glossy and matte highlight patterns.', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80', slug: 'bathroom-kitchen-ceramic' },
-    { catIndex: 1, name: '3D Stone Elevation', desc: 'Chiseled facade and pillar stone claddings for exterior wall accent design.', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80', slug: '3d-stone-elevation' },
+    { catIndex: 1, name: 'Bathroom & Kitchen Ceramic', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80', slug: 'bathroom-kitchen-ceramic' },
+    { catIndex: 1, name: '3D Stone Elevation', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80', slug: '3d-stone-elevation' },
     // Imported Marble Slabs (catIndex: 2)
-    { catIndex: 2, name: 'Italian Statuario Series', desc: 'Classic white Italian marble look with elegant silver & gray veining.', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80', slug: 'italian-statuario' },
-    { catIndex: 2, name: 'Royal Onyx Slabs', desc: 'Translucent crystal onyx look with opulent gold and honey crystal highlights.', image: 'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&w=600&q=80', slug: 'royal-onyx-slabs' },
+    { catIndex: 2, name: 'Italian Statuario Series', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80', slug: 'italian-statuario' },
+    { catIndex: 2, name: 'Royal Onyx Slabs', image: 'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&w=600&q=80', slug: 'royal-onyx-slabs' },
     // Wooden Planks & Decking (catIndex: 3)
-    { catIndex: 3, name: 'Oak & Teak Wood Planks', desc: 'Strip planks with authentic tactile wood grain textures.', image: 'https://images.unsplash.com/photo-1505691938895-1758d7bef511?auto=format&fit=crop&w=600&q=80', slug: 'oak-teak-planks' },
-    { catIndex: 3, name: 'Herringbone Wooden Parquet', desc: 'Designer wooden pattern layout tiles for vintage luxury interiors.', image: 'https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?auto=format&fit=crop&w=600&q=80', slug: 'herringbone-parquet' },
+    { catIndex: 3, name: 'Oak & Teak Wood Planks', image: 'https://images.unsplash.com/photo-1505691938895-1758d7bef511?auto=format&fit=crop&w=600&q=80', slug: 'oak-teak-planks' },
+    { catIndex: 3, name: 'Herringbone Wooden Parquet', image: 'https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?auto=format&fit=crop&w=600&q=80', slug: 'herringbone-parquet' },
     // Granite & Natural Stone (catIndex: 4)
-    { catIndex: 4, name: 'Black Galaxy Granite', desc: 'Deep black granite embedded with natural golden metallic specks.', image: 'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=600&q=80', slug: 'black-galaxy-granite' },
-    { catIndex: 4, name: 'Kashmir White Granite', desc: 'Exotic white stone slab with burgundy garnet crystals.', image: 'https://images.unsplash.com/photo-1588854337221-4cf9fa96059c?auto=format&fit=crop&w=600&q=80', slug: 'kashmir-white-granite' },
+    { catIndex: 4, name: 'Black Galaxy Granite', image: 'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=600&q=80', slug: 'black-galaxy-granite' },
+    { catIndex: 4, name: 'Kashmir White Granite', image: 'https://images.unsplash.com/photo-1588854337221-4cf9fa96059c?auto=format&fit=crop&w=600&q=80', slug: 'kashmir-white-granite' },
     // Outdoor & Parking Heavy Duty (catIndex: 5)
-    { catIndex: 5, name: 'Anti-Skid Parking Pavers', desc: 'Punch surface tiles with high slip resistance index (R11 rating).', image: 'https://images.unsplash.com/photo-1574362848149-11496d93a7c7?auto=format&fit=crop&w=600&q=80', slug: 'anti-skid-parking' },
-    { catIndex: 5, name: 'Cobblestone Terrace Pavers', desc: 'Rustic outdoor paving tiles inspired by European cobblestone walkways.', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80', slug: 'cobblestone-terrace' }
+    { catIndex: 5, name: 'Anti-Skid Parking Pavers', image: 'https://images.unsplash.com/photo-1574362848149-11496d93a7c7?auto=format&fit=crop&w=600&q=80', slug: 'anti-skid-parking' },
+    { catIndex: 5, name: 'Cobblestone Terrace Pavers', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80', slug: 'cobblestone-terrace' },
+    // Sanitaryware & Bathware (catIndex: 6)
+    { catIndex: 6, name: 'Designer Wash Basins', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80', slug: 'designer-wash-basins' },
+    { catIndex: 6, name: 'Wall Hung Water Closets', image: 'https://images.unsplash.com/photo-1585412727339-54e4ba3bbf92?auto=format&fit=crop&w=600&q=80', slug: 'wall-hung-water-closets' },
+    { catIndex: 6, name: 'Thermostatic Rain Showers & Faucets', image: 'https://images.unsplash.com/photo-1620626011761-996317b8d101?auto=format&fit=crop&w=600&q=80', slug: 'thermostatic-rain-showers' },
+    // Kitchen Fittings & Sinks (catIndex: 7)
+    { catIndex: 7, name: 'SS 304 & Quartz Kitchen Sinks', image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=600&q=80', slug: 'ss304-quartz-kitchen-sinks' },
+    { catIndex: 7, name: 'Pull-Out Kitchen Faucets & Mixers', image: 'https://images.unsplash.com/photo-1600585152220-90363fe7e115?auto=format&fit=crop&w=600&q=80', slug: 'pull-out-kitchen-faucets' },
+    // Plumbing & PVC Pipes (catIndex: 8)
+    { catIndex: 8, name: 'Heavy Duty CPVC & UPVC Pipes', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80', slug: 'cpvc-upvc-pipes' },
+    { catIndex: 8, name: 'Brass Valves & Water Storage Tanks', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=600&q=80', slug: 'valves-water-tanks' }
 ];
 const sampleTiles = [
-    // Sub 0: Glazed Vitrified
-    { subIndex: 0, name: 'Carrara White PGVT', image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=600&q=80', size: '600x1200 mm', finish: 'Mirror Gloss', palette: 'White, Gray', thickness: '9mm', desc: 'Pure white Italian Carrara marble texture with subtle gray veining.' },
-    { subIndex: 0, name: 'Armani Bronze Vitrified', image: 'https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=600&q=80', size: '800x1600 mm', finish: 'High Gloss', palette: 'Bronze, Brown', thickness: '9mm', desc: 'Deep earthy bronze shade with metallic vein highlights.' },
+    // Sub 0: GVT/PGVT
+    { subIndex: 0, name: 'Carrara White PGVT Slab 800x1600 mm', image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=600&q=80' },
+    { subIndex: 0, name: 'Honey Onyx Translucent PGVT Slab', image: 'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&w=600&q=80' },
     // Sub 1: Double Charge
-    { subIndex: 1, name: 'Crema Marfil Double Charge', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80', size: '800x800 mm', finish: 'Super Glossy', palette: 'Beige, Cream', thickness: '10mm', desc: 'Classic warm beige double-layer vitrified tile for living rooms.' },
-    { subIndex: 1, name: 'Super White Nano Vitrified', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80', size: '600x600 mm', finish: 'Nano Polish', palette: 'Pure White', thickness: '10mm', desc: 'Stain-resistant nano polished immaculate white floor tile.' },
-    // Sub 2: Bathroom & Kitchen Ceramic
-    { subIndex: 2, name: 'Azure Floral Bathroom Highlight', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80', size: '300x600 mm', finish: 'Glossy Glaze', palette: 'Blue, White', thickness: '8mm', desc: 'Vibrant ceramic wall highlighter tile tailored for vanity backdrops.' },
-    { subIndex: 2, name: 'Spanish Subway Gloss White', image: 'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=600&q=80', size: '100x300 mm', finish: 'Beveled Gloss', palette: 'White', thickness: '7.5mm', desc: 'Classic Spanish bevel-edge subway tile for modern kitchen splashbacks.' },
+    { subIndex: 1, name: 'Tropico Beige Double Charge 600x600 mm', image: 'https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=600&q=80' },
+    // Sub 2: Bathroom Ceramic
+    { subIndex: 2, name: 'Spanish Subway Glossy White Wall Tile 300x600 mm', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80' },
     // Sub 3: 3D Stone Elevation
-    { subIndex: 3, name: 'Rustic Charcoal Stone Elevation', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80', size: '300x450 mm', finish: 'Textured Matt', palette: 'Charcoal, Slate', thickness: '11mm', desc: 'Chiseled stone 3D elevation tiles for pillar & balcony facade cladding.' },
-    { subIndex: 3, name: 'Sandstone Ledge Facade Tile', image: 'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&w=600&q=80', size: '300x600 mm', finish: 'Rock Surface', palette: 'Terracotta, Sand', thickness: '12mm', desc: 'Natural stacked sandstone look wall tile for exterior compound walls.' },
-    // Sub 4: Italian Statuario Series
-    { subIndex: 4, name: 'Statuario Supreme Book-Matched Slab', image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=600&q=80', size: '1200x2400 mm', finish: 'Book-Matched Gloss', palette: 'White, Silver', thickness: '15mm', desc: 'Grand scale Statuario white marble slab ideal for hall floorings & feature walls.' },
-    { subIndex: 4, name: 'Calacatta Gold Porcelain Slab', image: 'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&w=600&q=80', size: '1200x1800 mm', finish: 'Silk Matte', palette: 'White, Gold', thickness: '12mm', desc: 'Calacatta marble design enriched with dramatic gold veining.' },
-    // Sub 5: Royal Onyx Slabs
-    { subIndex: 5, name: 'Honey Onyx Translucent Slab', image: 'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&w=600&q=80', size: '800x1600 mm', finish: 'High Gloss', palette: 'Honey, Gold', thickness: '12mm', desc: 'Translucent onyx marble look with opulent gold crystal accents.' },
-    { subIndex: 5, name: 'Emerald Green Onyx Slab', image: 'https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=600&q=80', size: '1200x2400 mm', finish: 'Polished Gloss', palette: 'Emerald, Jade', thickness: '15mm', desc: 'Exotic deep green onyx porcelain slab for luxury hotel lobbies.' },
-    // Sub 6: Oak & Teak Wood Planks
-    { subIndex: 6, name: 'Teakwood Oak Plank', image: 'https://images.unsplash.com/photo-1505691938895-1758d7bef511?auto=format&fit=crop&w=600&q=80', size: '200x1200 mm', finish: 'Matte Wood Grain', palette: 'Brown, Amber', thickness: '10mm', desc: 'Authentic oak wood grain finish with anti-skid surface texture.' },
-    { subIndex: 6, name: 'Nordic Ash White Wood Plank', image: 'https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?auto=format&fit=crop&w=600&q=80', size: '200x1000 mm', finish: 'Satin Touch', palette: 'White Ash', thickness: '9.5mm', desc: 'Scandinavian whitewashed ash wood plank for modern cozy bedrooms.' },
-    // Sub 7: Herringbone Wooden Parquet
-    { subIndex: 7, name: 'Walnut Herringbone Parquet Tile', image: 'https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?auto=format&fit=crop&w=600&q=80', size: '600x600 mm', finish: 'Matte Carving', palette: 'Walnut Brown', thickness: '10mm', desc: 'Pre-patterned herringbone parquet layout tile for easy installation.' },
+    { subIndex: 3, name: 'Slate Charcoal 3D Cladding Tile', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80' },
+    // Sub 4: Italian Statuario
+    { subIndex: 4, name: 'Statuario Extra Bookmatch Slab 1200x2400 mm', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80' },
+    // Sub 5: Royal Onyx
+    { subIndex: 5, name: 'Emerald Jade Onyx Polished Slab', image: 'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&w=600&q=80' },
+    // Sub 6: Wooden Planks
+    { subIndex: 6, name: 'Teakwood Oak Plank Tile 200x1200 mm', image: 'https://images.unsplash.com/photo-1505691938895-1758d7bef511?auto=format&fit=crop&w=600&q=80' },
+    // Sub 7: Herringbone Parquet
+    { subIndex: 7, name: 'Smoked Walnut Parquet Tile', image: 'https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?auto=format&fit=crop&w=600&q=80' },
     // Sub 8: Black Galaxy Granite
-    { subIndex: 8, name: 'Star Galaxy Black Granite Slab', image: 'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=600&q=80', size: '800x2400 mm', finish: 'Mirror Polish', palette: 'Jet Black, Gold Flecks', thickness: '18mm', desc: 'Premium Indian Black Galaxy granite with dense golden copper crystals.' },
+    { subIndex: 8, name: 'Premium Gold Fleck Black Galaxy Slab', image: 'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=600&q=80' },
     // Sub 9: Kashmir White Granite
-    { subIndex: 9, name: 'Kashmir White Granite Countertop', image: 'https://images.unsplash.com/photo-1588854337221-4cf9fa96059c?auto=format&fit=crop&w=600&q=80', size: '600x1800 mm', finish: 'Polished', palette: 'White, Burgundy', thickness: '18mm', desc: 'Natural white granite with garnet flecks suitable for kitchen counters.' },
-    // Sub 10: Anti-Skid Parking Pavers
-    { subIndex: 10, name: 'Heavy Duty Checkered Paver', image: 'https://images.unsplash.com/photo-1574362848149-11496d93a7c7?auto=format&fit=crop&w=600&q=80', size: '400x400 mm', finish: 'Anti-Skid Punch', palette: 'Terracotta, Slate', thickness: '16mm', desc: '16mm ultra-thick vitrified paver designed for heavy car parking driveways.' },
-    { subIndex: 10, name: 'Industrial Stone Grip Paver', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80', size: '300x300 mm', finish: 'Matt Rock', palette: 'Grey, Charcoal', thickness: '12mm', desc: 'High traction anti-slip tile for ramp ways and wet outdoor pathways.' },
+    { subIndex: 9, name: 'Kashmir White Countertop Granite', image: 'https://images.unsplash.com/photo-1588854337221-4cf9fa96059c?auto=format&fit=crop&w=600&q=80' },
+    // Sub 10: Anti-Skid Pavers
+    { subIndex: 10, name: 'Heavy Duty Checkered Paver', image: 'https://images.unsplash.com/photo-1574362848149-11496d93a7c7?auto=format&fit=crop&w=600&q=80' },
     // Sub 11: Cobblestone Terrace Pavers
-    { subIndex: 11, name: 'European Cobble Terrace Tile', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80', size: '400x400 mm', finish: 'Textured Cobble', palette: 'Multi-Color Stone', thickness: '12mm', desc: 'Rustic cobblestone grid tile for garden patios and open rooftop terraces.' }
+    { subIndex: 11, name: 'European Cobble Terrace Tile', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80' },
+    // Sub 12: Designer Wash Basins
+    { subIndex: 12, name: 'Royal Gold Rim Table Top Wash Basin', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80' },
+    { subIndex: 12, name: 'Matte Black Oval Ceramic Vessel Sink', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80' },
+    // Sub 13: Wall Hung Water Closets
+    { subIndex: 13, name: 'Rimless Wall-Hung Closet with Soft-Close Seat', image: 'https://images.unsplash.com/photo-1585412727339-54e4ba3bbf92?auto=format&fit=crop&w=600&q=80' },
+    // Sub 14: Thermostatic Rain Showers & Faucets
+    { subIndex: 14, name: 'Brushed Gold Thermostatic Concealed Diverter Shower Set', image: 'https://images.unsplash.com/photo-1620626011761-996317b8d101?auto=format&fit=crop&w=600&q=80' },
+    // Sub 15: SS 304 & Quartz Kitchen Sinks
+    { subIndex: 15, name: 'Handmade Black Quartz Double Bowl Kitchen Sink', image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=600&q=80' },
+    // Sub 16: Pull-Out Kitchen Faucets & Mixers
+    { subIndex: 16, name: '360° Flexible Pull-Out Commercial Kitchen Mixer Faucet', image: 'https://images.unsplash.com/photo-1600585152220-90363fe7e115?auto=format&fit=crop&w=600&q=80' },
+    // Sub 17: Heavy Duty CPVC & UPVC Pipes
+    { subIndex: 17, name: 'High-Pressure Schedule 80 CPVC Plumbing Pipe (1 inch)', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80' },
+    // Sub 18: Brass Valves & Water Storage Tanks
+    { subIndex: 18, name: 'Triple Layer UV Protected Overhead Water Storage Tank (1000L)', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=600&q=80' }
 ];
-const cataloguesData = [
-    { title: 'Summer 2025 Master Catalogue', desc: 'Complete range of imported marble, vitrified, and ceramic floor and wall tiles.', fileUrl: '/catalogues/summer-2025.pdf' },
-    { title: 'Architectural & Commercial Series', desc: 'Technical specs, durability ratings, and slip resistance indices for commercial projects.', fileUrl: '/catalogues/arch-2025.pdf' },
-    { title: 'Luxury Villa Edition', desc: 'Curated premium collection of large-format slabs and book-matched marble designs.', fileUrl: '/catalogues/luxury-villa.pdf' },
-    { title: 'Outdoor Pavers & Facade Guide', desc: 'Comprehensive technical handbook for 12mm & 16mm heavy duty paver applications.', fileUrl: '/catalogues/pavers-guide-2025.pdf' }
-];
+// Dynamically scan public/catalogues directory to preserve all uploaded PDF catalogues
+const publicCataloguesDir = path_1.default.join(__dirname, '../../SL-Tiles-Showroom/public/catalogues');
+let cataloguesData = [];
+if (fs_1.default.existsSync(publicCataloguesDir)) {
+    const pdfFiles = fs_1.default.readdirSync(publicCataloguesDir).filter(f => f.toLowerCase().endsWith('.pdf'));
+    cataloguesData = pdfFiles.map(file => {
+        let cleanTitle = file.replace(/^\d+[-_]/, '').replace(/\.[^/.]+$/, '').replace(/[-_]+/g, ' ').trim();
+        if (!cleanTitle)
+            cleanTitle = file;
+        return {
+            title: cleanTitle,
+            fileUrl: `/catalogues/${file}`
+        };
+    });
+}
+if (cataloguesData.length === 0) {
+    cataloguesData = [
+        { title: '12X24 Elevation Collection', fileUrl: '/catalogues/1788393420423-12X24_ELEVATION_COLLECTION.pdf' },
+        { title: 'Architectural & Commercial Series', fileUrl: '/catalogues/arch-2025.pdf' },
+        { title: 'Luxury Villa Edition', fileUrl: '/catalogues/luxury-villa.pdf' },
+        { title: 'Outdoor Pavers & Facade Guide', fileUrl: '/catalogues/pavers-guide-2025.pdf' }
+    ];
+}
 const enquiriesData = [
     { customer: 'Riya Sharma', phone: '+91 98765 43210', description: 'Interested in Carrara White PGVT for 1400 sq.ft living room floor.', status: 'New' },
     { customer: 'Amit Patel', phone: '+91 87654 32109', description: 'Needs quote for Honey Onyx Translucent Slab 800x1600 mm for lobby wall.', status: 'Contacted' },
@@ -136,7 +146,6 @@ async function main() {
         const created = await prisma_1.default.subCategory.create({
             data: {
                 name: sub.name,
-                desc: sub.desc,
                 image: sub.image,
                 slug: sub.slug,
                 categoryId: parentCat.id
@@ -153,14 +162,7 @@ async function main() {
             data: {
                 name: t.name,
                 image: t.image,
-                size: t.size,
-                finish: t.finish,
-                palette: t.palette,
-                thickness: t.thickness,
-                desc: t.desc,
-                subCategoryId: parentSub.id,
-                inStock: true,
-                template: 'template1'
+                subCategoryId: parentSub.id
             }
         });
         tileCount++;

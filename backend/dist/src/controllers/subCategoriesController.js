@@ -14,7 +14,6 @@ const getSubCategories = async (req, res) => {
         if (search) {
             where.OR = [
                 { name: { contains: search, mode: 'insensitive' } },
-                { desc: { contains: search, mode: 'insensitive' } },
             ];
         }
         if (categoryId) {
@@ -48,10 +47,9 @@ const getSubCategories = async (req, res) => {
 exports.getSubCategories = getSubCategories;
 const createSubCategory = async (req, res) => {
     try {
-        const { name, desc, image, slug, categoryId } = req.body;
+        const { name, image, slug, categoryId } = req.body;
         const subCategoryData = {
             name: name?.trim() || 'Untitled Subcategory',
-            desc: desc?.trim() || '',
             image: image || '',
             slug: slug?.trim() || name?.toLowerCase().replace(/\s+/g, '-'),
             categoryId: Number(categoryId)
@@ -75,10 +73,9 @@ exports.createSubCategory = createSubCategory;
 const updateSubCategory = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, desc, image, slug, categoryId } = req.body;
+        const { name, image, slug, categoryId } = req.body;
         const subCategoryData = {
             name: name?.trim(),
-            desc: desc?.trim(),
             image,
             slug: slug?.trim(),
         };
