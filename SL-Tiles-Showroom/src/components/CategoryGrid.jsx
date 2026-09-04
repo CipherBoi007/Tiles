@@ -56,11 +56,11 @@ const CategoryGrid = () => {
   const navigate = useNavigate();
   const categoryList = Array.isArray(categories) ? categories : (categories?.data || []);
 
-  // Dynamically Group Categories into Showroom Divisions
-  const tileCategories = categoryList.filter(cat => getCategoryDivision(cat) === 'tiles');
-  const sanitaryCategories = categoryList.filter(cat => getCategoryDivision(cat) === 'sanitaryware');
-  const kitchenCategories = categoryList.filter(cat => getCategoryDivision(cat) === 'kitchen');
-  const plumbingCategories = categoryList.filter(cat => getCategoryDivision(cat) === 'plumbing');
+  // Dynamically Group & Limit Categories into Showroom Divisions for Landing Page Elegance
+  const tileCategories = categoryList.filter(cat => getCategoryDivision(cat) === 'tiles').slice(0, 6);
+  const sanitaryCategories = categoryList.filter(cat => getCategoryDivision(cat) === 'sanitaryware').slice(0, 3);
+  const kitchenCategories = categoryList.filter(cat => getCategoryDivision(cat) === 'kitchen').slice(0, 3);
+  const plumbingCategories = categoryList.filter(cat => getCategoryDivision(cat) === 'plumbing').slice(0, 3);
 
   // Helper renderer for Alternating Column Cards
   const renderCategoryGridItems = (items, colsClass = "grid-cols-2 md:grid-cols-3 lg:grid-cols-6") => {
