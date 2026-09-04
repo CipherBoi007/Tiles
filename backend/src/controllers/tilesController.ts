@@ -52,18 +52,11 @@ export const getTiles = async (req: Request, res: Response) => {
 
 export const createTile = async (req: Request, res: Response) => {
   try {
-    const { name, image, subCategoryId, size, finish, palette, thickness, desc, template, inStock } = req.body;
+    const { name, image, subCategoryId } = req.body;
     const tileData = {
       name: name?.trim(),
       image: image || '',
       subCategoryId: Number(subCategoryId),
-      size: size?.trim() || '',
-      finish: finish?.trim() || palette?.trim() || '',
-      palette: palette?.trim() || null,
-      thickness: thickness?.trim() || null,
-      desc: desc?.trim() || null,
-      template: template || 'template1',
-      inStock: inStock !== undefined ? Boolean(inStock) : true,
     };
     const tile = await prisma.tile.create({ 
       data: tileData,
@@ -86,22 +79,13 @@ export const createTile = async (req: Request, res: Response) => {
 export const updateTile = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { name, image, subCategoryId, size, finish, palette, thickness, desc, template, inStock } = req.body;
+    const { name, image, subCategoryId } = req.body;
     const tileData: any = {
       name: name?.trim(),
       image,
-      size: size?.trim(),
-      finish: finish?.trim() || palette?.trim(),
-      palette: palette?.trim() || null,
-      thickness: thickness?.trim() || null,
-      desc: desc?.trim() || null,
-      template: template || 'template1',
     };
     if (subCategoryId) {
       tileData.subCategoryId = Number(subCategoryId);
-    }
-    if (inStock !== undefined) {
-      tileData.inStock = Boolean(inStock);
     }
     const tile = await prisma.tile.update({ 
       where: { id: Number(id) }, 

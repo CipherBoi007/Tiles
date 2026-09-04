@@ -9,7 +9,6 @@ export const getCategories = async (req: Request, res: Response) => {
     const where = search ? {
       OR: [
         { name: { contains: search, mode: 'insensitive' as const } },
-        { desc: { contains: search, mode: 'insensitive' as const } },
       ]
     } : {};
 
@@ -49,7 +48,7 @@ export const getCategories = async (req: Request, res: Response) => {
 
 export const createCategory = async (req: Request, res: Response) => {
   try {
-    const { name, desc, image, slug, division, status } = req.body;
+    const { name, image, slug, division, status } = req.body;
     const categoryData = {
       name: name?.trim() || 'Untitled Category',
       image: image || '',
@@ -71,7 +70,7 @@ export const createCategory = async (req: Request, res: Response) => {
 export const updateCategory = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { name, desc, image, slug, division, status } = req.body;
+    const { name, image, slug, division, status } = req.body;
     const categoryData: any = {};
     if (name !== undefined) categoryData.name = name?.trim();
     if (image !== undefined) categoryData.image = image;
