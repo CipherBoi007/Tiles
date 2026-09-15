@@ -39,11 +39,11 @@ const OffersBanner = () => {
               <span>For Builders & Contractors</span>
             </div>
             
-            <h2 className="text-3xl md:text-4xl xl:text-5xl font-luxury font-semibold text-brand-black mb-8 leading-tight">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl xl:text-5xl font-luxury font-semibold text-brand-black mb-4 sm:mb-6 leading-tight">
               Bulk Orders for Builders
             </h2>
             
-            <p className="text-brand-textMuted text-xl md:text-2xl mb-12 leading-relaxed max-w-2xl">
+            <p className="text-brand-textMuted text-sm sm:text-base md:text-xl mb-8 sm:mb-10 leading-relaxed max-w-2xl">
               Special pricing and dedicated support for construction professionals. Partner with us for your next project.
             </p>
             
