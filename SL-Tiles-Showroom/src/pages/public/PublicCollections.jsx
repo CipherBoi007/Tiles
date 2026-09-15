@@ -8,7 +8,7 @@ import Pagination from '../../components/Pagination';
 import SafeImage from '../../components/SafeImage';
 import { useCategories, useSubCategories, useTiles } from '../../hooks/useDataFetch';
 import { FadeUp, StaggerContainer, StaggerItem } from '../../components/animations/MotionWrappers';
-import { ChevronRight, Search, Filter, Layers, Bath, UtensilsCrossed, Wrench } from 'lucide-react';
+import { ChevronRight, Search, Filter, Layers, Bath, UtensilsCrossed, Wrench, ArrowRight } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getCategoryDivision } from '../../components/CategoryGrid';
 
@@ -102,53 +102,113 @@ const PublicCollections = () => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   };
 
-  // Helper renderer for Alternating Column Cards
-  const renderCategoryCards = (items, colsClass = "grid-cols-1 md:grid-cols-3 lg:grid-cols-3") => {
+  // Helper renderer for Category Cards
+  const renderCategoryCards = (items) => {
     return (
-      <StaggerContainer className={`grid ${colsClass} gap-3 sm:gap-5 items-stretch`}>
+      <StaggerContainer className="flex flex-col gap-4 md:grid md:grid-cols-3 md:gap-5 items-stretch">
         {items.map((cat, idx) => {
-          const isNameTop = idx % 2 === 0;
-
-          const NameBox = (
-            <div 
-              key={`cat-name-${cat.id}`}
-              onClick={() => handleCategorySelect(cat)}
-              className="group flex flex-col items-center justify-center p-3 sm:p-4 bg-brand-white border border-gray-200/80 rounded-xl cursor-pointer hover:border-brand-gold hover:shadow-lg transition-all duration-300 h-20 sm:h-24 md:h-28 text-center shrink-0"
-            >
-              <h3 className="text-xs sm:text-sm md:text-base font-luxury font-bold text-brand-black uppercase tracking-wider group-hover:text-brand-gold transition-colors leading-tight">
-                {cat.name}
-              </h3>
-            </div>
-          );
-
-          const ImageBox = (
-            <div 
-              key={`cat-img-${cat.id}`}
-              onClick={() => handleCategorySelect(cat)}
-              className="group relative overflow-hidden border border-gray-200/80 rounded-xl cursor-pointer bg-brand-black shadow-sm hover:shadow-xl transition-all duration-300 h-[240px] sm:h-[340px] md:h-[380px] flex-1"
-            >
-              <SafeImage 
-                src={cat.image} 
-                alt={cat.name} 
-                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" 
-              />
-              <div className="absolute inset-0 bg-brand-black/15 group-hover:bg-brand-black/0 transition-colors duration-300"></div>
-            </div>
-          );
+          const isEven = idx % 2 === 0;
 
           return (
-            <StaggerItem key={cat.id} className="flex flex-col gap-3 sm:gap-4 h-full">
-              {isNameTop ? (
-                <>
-                  {NameBox}
-                  {ImageBox}
-                </>
-              ) : (
-                <>
-                  {ImageBox}
-                  {NameBox}
-                </>
-              )}
+            <StaggerItem key={cat.id} className="w-full h-full">
+              
+              {/* MOBILE VIEW (< md): Alternating Left/Right Zigzag Cards */}
+              <div 
+                onClick={() => handleCategorySelect(cat)}
+                className={`md:hidden group flex ${
+                  isEven ? 'flex-row' : 'flex-row-reverse'
+                } items-center bg-brand-white border border-gray-200/90 rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:border-brand-gold/60 transition-all duration-300 h-36 active:scale-[0.98] cursor-pointer relative`}
+              >
+                {/* Image Section (42% width) */}
+                <div className="w-[42%] h-full relative overflow-hidden shrink-0 bg-brand-black">
+                  <SafeImage 
+                    src={cat.image} 
+                    alt={cat.name} 
+                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60"></div>
+                </div>
+
+                {/* Content Section (58% width) */}
+                <div className={`w-[58%] p-4 flex flex-col justify-between h-full bg-brand-white ${
+                  isEven ? 'text-left pl-4 pr-3' : 'text-left pr-4 pl-3'
+                }`}>
+                  <div className="my-auto">
+                    <h3 className="text-sm sm:text-base font-luxury font-bold text-brand-black uppercase tracking-wide group-hover:text-brand-gold transition-colors leading-snug line-clamp-2">
+                      {cat.name}
+                    </h3>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-brand-gold group-hover:text-yellow-600 transition-colors mt-2">
+                    <span>Explore Series</span>
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-200" />
+                  </div>
+                </div>
+              </div>
+
+              {/* DESKTOP VIEW (>= md): Staggered Column Layout */}
+              <div className="hidden md:flex flex-col gap-4 h-full">
+                {isEven ? (
+                  <>
+                    {/* Name Box */}
+                    <div 
+                      onClick={() => handleCategorySelect(cat)}
+                      className="group flex flex-col items-center justify-center p-4 bg-brand-white border border-gray-200/80 rounded-xl cursor-pointer hover:border-brand-gold hover:shadow-lg transition-all duration-300 h-24 text-center shrink-0"
+                    >
+                      <h3 className="text-sm md:text-base font-luxury font-bold text-brand-black uppercase tracking-wider group-hover:text-brand-gold transition-colors leading-tight">
+                        {cat.name}
+                      </h3>
+                    </div>
+
+                    {/* Image Box */}
+                    <div 
+                      onClick={() => handleCategorySelect(cat)}
+                      className="group relative overflow-hidden border border-gray-200/80 rounded-xl cursor-pointer bg-brand-black shadow-sm hover:shadow-xl transition-all duration-300 h-[340px] flex-1"
+                    >
+                      <SafeImage 
+                        src={cat.image} 
+                        alt={cat.name} 
+                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" 
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 group-hover:opacity-40 transition-opacity"></div>
+                      <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white text-xs font-semibold">
+                        <span>View Series</span>
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {/* Image Box */}
+                    <div 
+                      onClick={() => handleCategorySelect(cat)}
+                      className="group relative overflow-hidden border border-gray-200/80 rounded-xl cursor-pointer bg-brand-black shadow-sm hover:shadow-xl transition-all duration-300 h-[340px] flex-1"
+                    >
+                      <SafeImage 
+                        src={cat.image} 
+                        alt={cat.name} 
+                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" 
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 group-hover:opacity-40 transition-opacity"></div>
+                      <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white text-xs font-semibold">
+                        <span>View Series</span>
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </div>
+
+                    {/* Name Box */}
+                    <div 
+                      onClick={() => handleCategorySelect(cat)}
+                      className="group flex flex-col items-center justify-center p-4 bg-brand-white border border-gray-200/80 rounded-xl cursor-pointer hover:border-brand-gold hover:shadow-lg transition-all duration-300 h-24 text-center shrink-0"
+                    >
+                      <h3 className="text-sm md:text-base font-luxury font-bold text-brand-black uppercase tracking-wider group-hover:text-brand-gold transition-colors leading-tight">
+                        {cat.name}
+                      </h3>
+                    </div>
+                  </>
+                )}
+              </div>
+
             </StaggerItem>
           );
         })}
@@ -339,67 +399,107 @@ const PublicCollections = () => {
           {/* LEVEL 2: SUBCATEGORIES VIEW */}
           {viewMode === 'subcategories' && (
             <section>
-              <div className={`mx-auto ${
-                filteredSubCategories.length <= 2 
-                  ? 'max-w-3xl sm:max-w-4xl' 
-                  : filteredSubCategories.length === 3 
-                  ? 'max-w-5xl' 
-                  : filteredSubCategories.length === 4 
-                  ? 'max-w-6xl' 
-                  : 'max-w-[1400px]'
-              }`}>
-                <StaggerContainer className={`grid gap-4 sm:gap-6 items-stretch ${
-                  filteredSubCategories.length <= 2 
-                    ? 'grid-cols-2' 
-                    : filteredSubCategories.length === 3 
-                    ? 'grid-cols-2 md:grid-cols-3' 
-                    : filteredSubCategories.length === 4 
-                    ? 'grid-cols-2 md:grid-cols-4' 
-                    : 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
-                }`}>
+              <div className="max-w-[1400px] mx-auto">
+                <StaggerContainer className="flex flex-col gap-4 md:grid md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 items-stretch">
                   {filteredSubCategories.map((sub, idx) => {
-                    const isNameTop = idx % 2 === 0;
-
-                    const NameBox = (
-                      <div 
-                        key={`sub-name-${sub.id}`}
-                        onClick={() => handleSubCategorySelect(sub)}
-                        className="group flex flex-col items-center justify-center p-3 sm:p-4 bg-brand-white border border-gray-200/80 rounded-2xl cursor-pointer hover:border-brand-gold hover:shadow-lg transition-all duration-300 h-16 sm:h-20 md:h-24 text-center shrink-0"
-                      >
-                        <h3 className="text-xs sm:text-sm md:text-base font-luxury font-bold text-brand-black uppercase tracking-wider group-hover:text-brand-gold transition-colors leading-snug">
-                          {sub.name}
-                        </h3>
-                      </div>
-                    );
-
-                    const ImageBox = (
-                      <div 
-                        key={`sub-img-${sub.id}`}
-                        onClick={() => handleSubCategorySelect(sub)}
-                        className="group relative overflow-hidden border border-gray-200/80 rounded-2xl cursor-pointer bg-brand-black shadow-sm hover:shadow-xl transition-all duration-300 h-[260px] sm:h-[360px] md:h-[440px] flex-1"
-                      >
-                        <SafeImage 
-                          src={sub.image} 
-                          alt={sub.name} 
-                          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" 
-                        />
-                        <div className="absolute inset-0 bg-brand-black/15 group-hover:bg-brand-black/0 transition-colors duration-300"></div>
-                      </div>
-                    );
+                    const isEven = idx % 2 === 0;
 
                     return (
-                      <StaggerItem key={sub.id} className="flex flex-col gap-3 sm:gap-4 h-full">
-                        {isNameTop ? (
-                          <>
-                            {NameBox}
-                            {ImageBox}
-                          </>
-                        ) : (
-                          <>
-                            {ImageBox}
-                            {NameBox}
-                          </>
-                        )}
+                      <StaggerItem key={sub.id} className="w-full h-full">
+                        
+                        {/* MOBILE VIEW (< md): Alternating Left/Right Zigzag Cards */}
+                        <div 
+                          onClick={() => handleSubCategorySelect(sub)}
+                          className={`md:hidden group flex ${
+                            isEven ? 'flex-row' : 'flex-row-reverse'
+                          } items-center bg-brand-white border border-gray-200/90 rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:border-brand-gold/60 transition-all duration-300 h-36 active:scale-[0.98] cursor-pointer relative`}
+                        >
+                          {/* Image Section (42% width) */}
+                          <div className="w-[42%] h-full relative overflow-hidden shrink-0 bg-brand-black">
+                            <SafeImage 
+                              src={sub.image} 
+                              alt={sub.name} 
+                              className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" 
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60"></div>
+                          </div>
+
+                          {/* Content Section (58% width) */}
+                          <div className={`w-[58%] p-4 flex flex-col justify-between h-full bg-brand-white ${
+                            isEven ? 'text-left pl-4 pr-3' : 'text-left pr-4 pl-3'
+                          }`}>
+                            <div className="my-auto">
+                              <h3 className="text-sm sm:text-base font-luxury font-bold text-brand-black uppercase tracking-wide group-hover:text-brand-gold transition-colors leading-snug line-clamp-2">
+                                {sub.name}
+                              </h3>
+                            </div>
+
+                            <div className="flex items-center gap-1.5 text-xs font-semibold text-brand-gold group-hover:text-yellow-600 transition-colors mt-2">
+                              <span>View Products</span>
+                              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-200" />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* DESKTOP VIEW (>= md): Staggered Column Layout */}
+                        <div className="hidden md:flex flex-col gap-4 h-full">
+                          {isEven ? (
+                            <>
+                              <div 
+                                onClick={() => handleSubCategorySelect(sub)}
+                                className="group flex flex-col items-center justify-center p-4 bg-brand-white border border-gray-200/80 rounded-xl cursor-pointer hover:border-brand-gold hover:shadow-lg transition-all duration-300 h-20 text-center shrink-0"
+                              >
+                                <h3 className="text-sm font-luxury font-bold text-brand-black uppercase tracking-wider group-hover:text-brand-gold transition-colors leading-tight">
+                                  {sub.name}
+                                </h3>
+                              </div>
+
+                              <div 
+                                onClick={() => handleSubCategorySelect(sub)}
+                                className="group relative overflow-hidden border border-gray-200/80 rounded-xl cursor-pointer bg-brand-black shadow-sm hover:shadow-xl transition-all duration-300 h-[300px] flex-1"
+                              >
+                                <SafeImage 
+                                  src={sub.image} 
+                                  alt={sub.name} 
+                                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" 
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 group-hover:opacity-40 transition-opacity"></div>
+                                <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white text-xs font-semibold">
+                                  <span>Browse Products</span>
+                                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                </div>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div 
+                                onClick={() => handleSubCategorySelect(sub)}
+                                className="group relative overflow-hidden border border-gray-200/80 rounded-xl cursor-pointer bg-brand-black shadow-sm hover:shadow-xl transition-all duration-300 h-[300px] flex-1"
+                              >
+                                <SafeImage 
+                                  src={sub.image} 
+                                  alt={sub.name} 
+                                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" 
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 group-hover:opacity-40 transition-opacity"></div>
+                                <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white text-xs font-semibold">
+                                  <span>Browse Products</span>
+                                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                </div>
+                              </div>
+
+                              <div 
+                                onClick={() => handleSubCategorySelect(sub)}
+                                className="group flex flex-col items-center justify-center p-4 bg-brand-white border border-gray-200/80 rounded-xl cursor-pointer hover:border-brand-gold hover:shadow-lg transition-all duration-300 h-20 text-center shrink-0"
+                              >
+                                <h3 className="text-sm font-luxury font-bold text-brand-black uppercase tracking-wider group-hover:text-brand-gold transition-colors leading-tight">
+                                  {sub.name}
+                                </h3>
+                              </div>
+                            </>
+                          )}
+                        </div>
+
                       </StaggerItem>
                     );
                   })}

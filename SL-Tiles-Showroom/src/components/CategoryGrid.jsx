@@ -62,23 +62,12 @@ const CategoryGrid = () => {
   const kitchenCategories = categoryList.filter(cat => getCategoryDivision(cat) === 'kitchen').slice(0, 3);
   const plumbingCategories = categoryList.filter(cat => getCategoryDivision(cat) === 'plumbing').slice(0, 3);
 
-  // Helper division badge tag renderer
-  const getDivisionBadge = (cat) => {
-    const div = getCategoryDivision(cat);
-    if (div === 'tiles') return 'Tiles & Marble';
-    if (div === 'sanitaryware') return 'Sanitaryware';
-    if (div === 'kitchen') return 'Kitchen Sinks';
-    if (div === 'plumbing') return 'Plumbing & PVC';
-    return 'Showroom Collection';
-  };
-
   // Helper renderer for Alternating Column Cards
   const renderCategoryGridItems = (items) => {
     return (
       <StaggerContainer className="flex flex-col gap-4 md:grid md:grid-cols-3 md:gap-5 items-stretch">
         {items.map((cat, idx) => {
           const isEven = idx % 2 === 0;
-          const divisionLabel = getDivisionBadge(cat);
 
           return (
             <StaggerItem key={cat.id} className="w-full h-full">
@@ -104,11 +93,8 @@ const CategoryGrid = () => {
                 <div className={`w-[58%] p-4 flex flex-col justify-between h-full bg-brand-white ${
                   isEven ? 'text-left pl-4 pr-3' : 'text-left pr-4 pl-3'
                 }`}>
-                  <div>
-                    <span className="inline-block text-[10px] font-bold uppercase tracking-widest text-brand-gold bg-brand-gold/10 px-2 py-0.5 rounded-full mb-1">
-                      {divisionLabel}
-                    </span>
-                    <h3 className="text-sm font-luxury font-bold text-brand-black uppercase tracking-wide group-hover:text-brand-gold transition-colors leading-tight line-clamp-2">
+                  <div className="my-auto">
+                    <h3 className="text-sm sm:text-base font-luxury font-bold text-brand-black uppercase tracking-wide group-hover:text-brand-gold transition-colors leading-snug line-clamp-2">
                       {cat.name}
                     </h3>
                   </div>
@@ -129,9 +115,6 @@ const CategoryGrid = () => {
                       onClick={() => navigate(`/collections?categoryId=${cat.id}`)}
                       className="group flex flex-col items-center justify-center p-4 bg-brand-white border border-gray-200/80 rounded-xl cursor-pointer hover:border-brand-gold hover:shadow-lg transition-all duration-300 h-24 text-center shrink-0"
                     >
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-brand-gold mb-1">
-                        {divisionLabel}
-                      </span>
                       <h3 className="text-sm md:text-base font-luxury font-bold text-brand-black uppercase tracking-wider group-hover:text-brand-gold transition-colors leading-tight">
                         {cat.name}
                       </h3>
@@ -178,9 +161,6 @@ const CategoryGrid = () => {
                       onClick={() => navigate(`/collections?categoryId=${cat.id}`)}
                       className="group flex flex-col items-center justify-center p-4 bg-brand-white border border-gray-200/80 rounded-xl cursor-pointer hover:border-brand-gold hover:shadow-lg transition-all duration-300 h-24 text-center shrink-0"
                     >
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-brand-gold mb-1">
-                        {divisionLabel}
-                      </span>
                       <h3 className="text-sm md:text-base font-luxury font-bold text-brand-black uppercase tracking-wider group-hover:text-brand-gold transition-colors leading-tight">
                         {cat.name}
                       </h3>
