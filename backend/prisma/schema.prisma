@@ -51,6 +51,12 @@ model Tile {
   image         String
   subCategoryId Int
   subCategory   SubCategory @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
+  productCode   String?
+  manufacturer  String?
+  collection    String?
+  size          String?
+  finish        String?
+  sourceUrl     String?
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 
@@ -101,3 +107,57 @@ model Activity {
 
   @@index([time])
 }
+
+// Catalogue Import Staging
+model ExtractedProduct {
+  id                    Int      @id @default(autoincrement())
+  importId              String   @unique
+  jobId                 String?
+  manufacturer          String
+  sourceUrl             String
+  productCode           String?
+  name                  String
+  collection            String?
+  size                  String?
+  finish                String?
+  material              String?
+  color                 String?
+  suggestedCategory     String?
+  suggestedSubCategory  String?
+  targetCategoryId      Int?
+  targetSubCategoryId   Int?
+  primaryImageUrl       String
+  galleryImages         String?  // JSON string array
+  imageStatus           String   @default("valid") // "valid" | "invalid" | "pending"
+  imageError            String?
+  duplicateStatus       String   @default("unique") // "unique" | "exact_duplicate" | "potential_duplicate"
+  reviewStatus          String   @default("pending_review") // "pending_review" | "approved" | "rejected" | "imported"
+  validationWarnings    String?  // JSON string array
+  importedTileId        Int?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([manufacturer])
+  @@index([reviewStatus])
+  @@index([jobId])
+}
+
+// Extraction Jobs Tracking
+model ImportJob {
+  id              String    @id @default(uuid())
+  manufacturer    String    // "Italake" | "Itaca" | "both"
+  status          String    @default("pending") // "pending" | "running" | "completed" | "failed" | "cancelled"
+  pagesDiscovered Int       @default(0)
+  pagesProcessed  Int       @default(0)
+  productsFound   Int       @default(0)
+  validImages     Int       @default(0)
+  invalidImages   Int       @default(0)
+  duplicateCount  Int       @default(0)
+  errorDetails    String?
+  startedAt       DateTime?
+  completedAt     DateTime?
+  createdAt       DateTime  @default(now())
+
+  @@index([status])
+}
+

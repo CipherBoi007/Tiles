@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.catalogueSchema = exports.tileSchema = exports.subCategorySchema = exports.categorySchema = exports.enquirySchema = exports.loginSchema = void 0;
+exports.importExecutionSchema = exports.batchReviewSchema = exports.updateCandidateSchema = exports.startImportJobSchema = exports.catalogueSchema = exports.tileSchema = exports.subCategorySchema = exports.categorySchema = exports.enquirySchema = exports.loginSchema = void 0;
 const zod_1 = require("zod");
 exports.loginSchema = zod_1.z.object({
     email: zod_1.z.string().email(),
@@ -36,4 +36,26 @@ exports.catalogueSchema = zod_1.z.object({
     title: zod_1.z.string().min(1).max(200),
     fileUrl: zod_1.z.string().min(1),
     date: zod_1.z.string().optional().nullable(),
+});
+exports.startImportJobSchema = zod_1.z.object({
+    manufacturer: zod_1.z.enum(['Italake', 'Itaca', 'both']),
+    maxProducts: zod_1.z.number().int().min(1).max(500).optional(),
+    delayMs: zod_1.z.number().int().min(100).max(5000).optional(),
+    validateImages: zod_1.z.boolean().optional(),
+});
+exports.updateCandidateSchema = zod_1.z.object({
+    name: zod_1.z.string().min(1).max(200).optional(),
+    targetCategoryId: zod_1.z.number().int().positive().optional().nullable(),
+    targetSubCategoryId: zod_1.z.number().int().positive().optional().nullable(),
+    reviewStatus: zod_1.z.enum(['pending_review', 'approved', 'rejected', 'imported']).optional(),
+});
+exports.batchReviewSchema = zod_1.z.object({
+    productIds: zod_1.z.array(zod_1.z.number().int().positive()).min(1),
+    reviewStatus: zod_1.z.enum(['pending_review', 'approved', 'rejected']),
+});
+exports.importExecutionSchema = zod_1.z.object({
+    manufacturer: zod_1.z.enum(['Italake', 'Itaca', 'both']).optional(),
+    skipDuplicates: zod_1.z.boolean().optional(),
+    updateExisting: zod_1.z.boolean().optional(),
+    productIds: zod_1.z.array(zod_1.z.number().int().positive()).optional(),
 });

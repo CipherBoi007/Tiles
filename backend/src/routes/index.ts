@@ -11,7 +11,14 @@ import { uploadFile } from '../controllers/uploadController';
 import { protect } from '../middlewares/authMiddleware';
 import { upload } from '../middlewares/uploadMiddleware';
 import { validate } from '../middlewares/validateMiddleware';
-import { loginSchema, enquirySchema, tileSchema, categorySchema, subCategorySchema, catalogueSchema } from '../schemas';
+import {
+  loginSchema,
+  enquirySchema,
+  tileSchema,
+  categorySchema,
+  subCategorySchema,
+  catalogueSchema,
+} from '../schemas';
 
 const router = Router();
 
@@ -65,3 +72,5 @@ router.get('/activity', protect, getRecentActivity);
 router.post('/upload', protect, upload.single('file'), uploadFile);
 
 export default router;
+
+

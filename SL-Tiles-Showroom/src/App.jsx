@@ -13,6 +13,7 @@ const Collections = React.lazy(() => import('./pages/admin/Collections')); // Ti
 const Catalogues = React.lazy(() => import('./pages/admin/Catalogues'));
 const Enquiries = React.lazy(() => import('./pages/admin/Enquiries'));
 const Settings = React.lazy(() => import('./pages/admin/Settings'));
+
 import ProtectedRoute from './routes/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 import { LeadCaptureProvider } from './context/LeadCaptureContext';
@@ -54,6 +55,7 @@ function App() {
           <Route path="catalogues" element={<Catalogues />} />
           <Route path="enquiries" element={<Enquiries />} />
           <Route path="settings" element={<Settings />} />
+
           <Route path="*" element={<Navigate to="/admin" replace />} />
           </Route>
           

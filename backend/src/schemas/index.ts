@@ -41,3 +41,7 @@ export const catalogueSchema = z.object({
   date: z.string().optional().nullable(),
 });
 
+
+
+
+

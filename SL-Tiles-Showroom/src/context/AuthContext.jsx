@@ -31,12 +31,13 @@ export const AuthProvider = ({ children }) => {
         const data = await res.json();
         sessionStorage.setItem('adminToken', data.token);
         setIsAuthenticated(true);
-        return true;
+        return { success: true };
       }
-      return false;
+      const errData = await res.json().catch(() => ({}));
+      return { success: false, message: errData.message || 'Invalid email or password' };
     } catch (error) {
       console.error("Login failed", error);
-      return false;
+      return { success: false, message: 'Backend server connection error. Please ensure the backend is running on port 5000.' };
     }
   };
 

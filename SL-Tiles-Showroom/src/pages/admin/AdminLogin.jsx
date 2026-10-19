@@ -15,11 +15,11 @@ const AdminLogin = () => {
     e.preventDefault();
     setError('');
 
-    const success = await login(email, password);
-    if (success) {
+    const result = await login(email, password);
+    if (result === true || result?.success) {
       navigate('/admin');
     } else {
-      setError('Invalid email or password');
+      setError(result?.message || 'Invalid email or password');
     }
   };
 

@@ -6,5 +6,6 @@ module.exports = {
   roots: ['<rootDir>', '<rootDir>/../test'],
   moduleDirectories: ['node_modules', '<rootDir>/node_modules'],
   modulePathIgnorePatterns: ['<rootDir>/dist/'],
+  testPathIgnorePatterns: ['/node_modules/', '/playwright/'],
   setupFilesAfterEnv: ['<rootDir>/src/lib/__mocks__/prisma.ts'],
 };

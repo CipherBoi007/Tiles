@@ -10,6 +10,7 @@ const enquiriesController_1 = require("../controllers/enquiriesController");
 const settingsController_1 = require("../controllers/settingsController");
 const statsController_1 = require("../controllers/statsController");
 const uploadController_1 = require("../controllers/uploadController");
+const catalogueImportController_1 = require("../controllers/catalogueImportController");
 const authMiddleware_1 = require("../middlewares/authMiddleware");
 const uploadMiddleware_1 = require("../middlewares/uploadMiddleware");
 const validateMiddleware_1 = require("../middlewares/validateMiddleware");
@@ -54,4 +55,16 @@ router.get('/stats', authMiddleware_1.protect, statsController_1.getDashboardSta
 router.get('/activity', authMiddleware_1.protect, statsController_1.getRecentActivity);
 // Uploads
 router.post('/upload', authMiddleware_1.protect, uploadMiddleware_1.upload.single('file'), uploadController_1.uploadFile);
+// Catalogue Import & Scraper
+router.post('/catalogue-import/jobs', authMiddleware_1.protect, (0, validateMiddleware_1.validate)(schemas_1.startImportJobSchema), catalogueImportController_1.startExtractionJob);
+router.get('/catalogue-import/jobs/latest', authMiddleware_1.protect, catalogueImportController_1.getLatestJob);
+router.get('/catalogue-import/jobs/:id', authMiddleware_1.protect, catalogueImportController_1.getJobStatus);
+router.post('/catalogue-import/jobs/:id/cancel', authMiddleware_1.protect, catalogueImportController_1.cancelJob);
+router.get('/catalogue-import/products', authMiddleware_1.protect, catalogueImportController_1.getCandidates);
+router.patch('/catalogue-import/products/:id', authMiddleware_1.protect, (0, validateMiddleware_1.validate)(schemas_1.updateCandidateSchema), catalogueImportController_1.updateCandidate);
+router.post('/catalogue-import/products/batch-review', authMiddleware_1.protect, (0, validateMiddleware_1.validate)(schemas_1.batchReviewSchema), catalogueImportController_1.batchReviewCandidates);
+router.post('/catalogue-import/dry-run', authMiddleware_1.protect, (0, validateMiddleware_1.validate)(schemas_1.importExecutionSchema), catalogueImportController_1.runDryRun);
+router.post('/catalogue-import/import', authMiddleware_1.protect, (0, validateMiddleware_1.validate)(schemas_1.importExecutionSchema), catalogueImportController_1.executeImport);
+router.get('/catalogue-import/stats', authMiddleware_1.protect, catalogueImportController_1.getImportStats);
+router.get('/catalogue-import/export/:type', authMiddleware_1.protect, catalogueImportController_1.downloadReviewFile);
 exports.default = router;
