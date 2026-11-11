@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
     cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
+    cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}`);
   }
 });
 
@@ -30,7 +30,7 @@ const fileFilter = (req: any, file: any, cb: any) => {
 export const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 120 * 1024 * 1024, // 120MB per file (large PDF catalogues)
+    fileSize: 50 * 1024 * 1024, // 50MB: Supabase Storage free-tier per-file maximum
   },
   fileFilter: fileFilter,
 });

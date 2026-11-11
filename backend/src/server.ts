@@ -6,9 +6,6 @@ import rateLimit from 'express-rate-limit';
 import pinoHttp from 'pino-http';
 import pino from 'pino';
 
-import path from 'path';
-import fs from 'fs';
-
 import routes from './routes/index';
 import prisma from './lib/prisma';
 
@@ -69,34 +66,6 @@ const apiLimiter = rateLimit({
 app.use('/api', apiLimiter);
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ limit: '2mb', extended: true }));
-
-// Static route to serve local PDF catalogues directly with space/hyphen fallback
-app.use('/catalogues', (req, res, next) => {
-  try {
-    const rawPath = decodeURIComponent(req.path);
-    const publicCataloguesDir = path.join(__dirname, '../../SL-Tiles-Showroom/public/catalogues');
-    const directFilePath = path.join(publicCataloguesDir, rawPath);
-
-    if (fs.existsSync(directFilePath) && fs.statSync(directFilePath).isFile()) {
-      return res.sendFile(directFilePath);
-    }
-
-    // Try fuzzy match (e.g. spaces converted to hyphens or timestamp separators)
-    const normalizedName = rawPath.replace(/^\//, '');
-    const files = fs.readdirSync(publicCataloguesDir);
-    const matchedFile = files.find((f: string) => 
-      f.toLowerCase() === normalizedName.toLowerCase() ||
-      f.replace(/[-_\s]+/g, '').toLowerCase() === normalizedName.replace(/[-_\s]+/g, '').toLowerCase()
-    );
-
-    if (matchedFile) {
-      return res.sendFile(path.join(publicCataloguesDir, matchedFile));
-    }
-  } catch {
-    // Fall through to the static handler below
-  }
-  next();
-}, express.static(path.join(__dirname, '../../SL-Tiles-Showroom/public/catalogues')));
 
 app.use('/api', routes);
 

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import prisma from '../lib/prisma';
 import { getPagination, formatPagination } from '../utils/pagination';
+import { deleteCataloguePdf } from '../utils/supabaseStorage';
 
 export const getCatalogues = async (req: Request, res: Response) => {
   try {
@@ -67,10 +68,18 @@ export const createCatalogue = async (req: Request, res: Response) => {
 
 export const deleteCatalogue = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    await prisma.catalogue.delete({ where: { id: Number(id) } });
+    const catalogue = await prisma.catalogue.delete({ where: { id: Number(req.params.id) } });
+
+    // Best effort: the DB row is gone either way, so a storage hiccup only leaves an orphaned file.
+    try {
+      await deleteCataloguePdf(catalogue.fileUrl);
+    } catch (storageError) {
+      if (req.log) req.log.warn({ err: storageError }, 'Failed to remove catalogue PDF from storage');
+    }
+
     res.json({ message: 'Catalogue deleted' });
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting catalogue', error });
+    if (req.log) req.log.error(error);
+    res.status(500).json({ message: 'Error deleting catalogue' });
   }
 };

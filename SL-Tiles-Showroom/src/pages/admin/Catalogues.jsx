@@ -7,6 +7,11 @@ import Drawer from '../../components/admin/Drawer';
 import FormInput from '../../components/admin/FormInput';
 import ConfirmModal from '../../components/admin/ConfirmModal';
 
+const MAX_PDF_BYTES = 50 * 1024 * 1024; // Supabase Storage free-tier per-file limit
+
+// Uploaded PDFs have absolute Supabase URLs; PDFs bundled with the site are relative paths.
+const toAbsoluteUrl = (url) => (/^https?:\/\//i.test(url) ? url : window.location.origin + url);
+
 const Catalogues = () => {
   const { data: catalogues, pagination, setPage, search, setSearch, createItem, deleteItem, loading } = useCatalogues(30);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -37,6 +42,10 @@ const Catalogues = () => {
       alert("Catalogue Title and PDF file are required.");
       return;
     }
+    if (file.size > MAX_PDF_BYTES) {
+      alert("PDF is larger than 50MB. Please compress it and try again.");
+      return;
+    }
 
     setIsUploading(true);
     try {
@@ -62,7 +71,7 @@ const Catalogues = () => {
   };
 
   const handleCopyLink = (catalogue) => {
-    const fullUrl = window.location.origin + catalogue.fileUrl;
+    const fullUrl = toAbsoluteUrl(catalogue.fileUrl);
     navigator.clipboard.writeText(fullUrl);
     setCopiedId(catalogue.id);
     setTimeout(() => setCopiedId(null), 2000);

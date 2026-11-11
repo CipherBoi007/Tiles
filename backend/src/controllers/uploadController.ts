@@ -1,55 +1,49 @@
 import { Request, Response } from 'express';
-import cloudinary from '../utils/cloudinary';
 import fs from 'fs';
-import path from 'path';
+import cloudinary from '../utils/cloudinary';
+import { uploadCataloguePdf } from '../utils/supabaseStorage';
 
-export const uploadFile = (req: Request, res: Response): void => {
-  if (!req.file) {
+const removeTempFile = (filePath: string) => {
+  fs.unlink(filePath, (err) => {
+    // A temp file that is already gone is harmless; anything else is worth logging.
+    if (err && err.code !== 'ENOENT') console.error('Failed to delete temp file:', err);
+  });
+};
+
+const isPdf = (file: Express.Multer.File) =>
+  file.mimetype === 'application/pdf' || file.originalname.toLowerCase().endsWith('.pdf');
+
+export const uploadFile = async (req: Request, res: Response): Promise<void> => {
+  const file = req.file;
+  if (!file) {
     res.status(400).json({ message: 'No file uploaded' });
     return;
   }
 
-  // Handle PDF Catalogues locally (No Cloudinary)
-  if (req.file.mimetype === 'application/pdf' || req.file.originalname.toLowerCase().endsWith('.pdf')) {
-    const publicCataloguesDir = path.join(__dirname, '../../../SL-Tiles-Showroom/public/catalogues');
-    if (!fs.existsSync(publicCataloguesDir)) {
-      fs.mkdirSync(publicCataloguesDir, { recursive: true });
+  // PDF catalogues -> Supabase Storage (persistent, unlike the host's local disk)
+  if (isPdf(file)) {
+    try {
+      const url = await uploadCataloguePdf(file.path, file.originalname);
+      res.json({ url });
+    } catch (error: any) {
+      if (req.log) req.log.error(error);
+      res.status(500).json({ message: error?.message || 'PDF upload failed' });
+    } finally {
+      removeTempFile(file.path);
     }
-
-    const safeFilename = `${Date.now()}-${req.file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-    const destinationPath = path.join(publicCataloguesDir, safeFilename);
-
-    fs.copyFile(req.file.path, destinationPath, (copyErr) => {
-      // Clean up temp file
-      fs.unlink(req.file!.path, () => {});
-
-      if (copyErr) {
-        console.error("Failed to save local PDF file:", copyErr);
-        return res.status(500).json({ message: 'Failed to save PDF locally', error: copyErr });
-      }
-
-      // Return local static URL
-      res.json({ url: `/catalogues/${safeFilename}` });
-    });
     return;
   }
 
-  // Handle Images via Cloudinary ONLY
-  const uploadStream = cloudinary.uploader.upload_stream(
-    { folder: 'tiles-showroom' },
-    (error, result) => {
-      // Clean up the temp file
-      fs.unlink(req.file!.path, (err) => {
-        if (err) console.error("Failed to delete temp file:", err);
-      });
-
-      if (error) {
-        console.error("Cloudinary upload error:", error);
-        return res.status(500).json({ message: error.message || 'Upload failed', error });
-      }
-      res.json({ url: result?.secure_url });
+  // Images -> Cloudinary
+  const uploadStream = cloudinary.uploader.upload_stream({ folder: 'tiles-showroom' }, (error, result) => {
+    removeTempFile(file.path);
+    if (error) {
+      if (req.log) req.log.error(error);
+      res.status(500).json({ message: error.message || 'Upload failed' });
+      return;
     }
-  );
+    res.json({ url: result?.secure_url });
+  });
 
-  fs.createReadStream(req.file.path).pipe(uploadStream);
+  fs.createReadStream(file.path).pipe(uploadStream);
 };
