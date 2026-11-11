@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { UploadCloud, FileText, Download, Trash2, Link, Search, Plus, Eye, Check } from 'lucide-react';
 import { useCatalogues } from '../../hooks/useDataFetch';
-import { uploadFile } from '../../services/uploadService';
+import { uploadFile } from '../../services';
 import Pagination from '../../components/Pagination';
 import Drawer from '../../components/admin/Drawer';
 import FormInput from '../../components/admin/FormInput';

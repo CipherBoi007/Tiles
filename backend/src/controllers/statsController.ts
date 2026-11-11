@@ -1,27 +1,35 @@
 import { Request, Response } from 'express';
 import prisma from '../lib/prisma';
 
+const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+
 export const getDashboardStats = async (req: Request, res: Response) => {
   try {
-    const totalTiles = await prisma.tile.count();
-    const categoriesCount = await prisma.category.count();
-    const subCategoriesCount = await prisma.subCategory.count();
-    const newEnquiries = await prisma.enquiry.count({ where: { status: 'New' } });
-    const cataloguesCount = await prisma.catalogue.count();
-    const latestCatalogue = await prisma.catalogue.findFirst({ orderBy: { date: 'desc' } });
+    const weekAgo = new Date(Date.now() - ONE_WEEK_MS);
+
+    const [totalTiles, tilesAddedThisWeek, categories, subCategories, newEnquiries, catalogues, latestCatalogue] =
+      await Promise.all([
+        prisma.tile.count(),
+        prisma.tile.count({ where: { createdAt: { gte: weekAgo } } }),
+        prisma.category.count(),
+        prisma.subCategory.count(),
+        prisma.enquiry.count({ where: { status: 'New' } }),
+        prisma.catalogue.count(),
+        prisma.catalogue.findFirst({ orderBy: { date: 'desc' }, select: { title: true } }),
+      ]);
 
     res.json({
       totalTiles,
-      tilesAddedThisWeek: 4,
-      categories: categoriesCount,
-      subCategories: subCategoriesCount,
-      collections: categoriesCount, // fallback for backward compatibility
+      tilesAddedThisWeek,
+      categories,
+      subCategories,
       newEnquiries,
-      catalogues: cataloguesCount,
-      latestCatalogue: latestCatalogue ? latestCatalogue.title : 'None'
+      catalogues,
+      latestCatalogue: latestCatalogue?.title ?? 'None',
     });
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching stats', error });
+    if (req.log) req.log.error(error);
+    res.status(500).json({ message: 'Error fetching stats' });
   }
 };
 
@@ -30,6 +38,7 @@ export const getRecentActivity = async (req: Request, res: Response) => {
     const activity = await prisma.activity.findMany({ orderBy: { time: 'desc' }, take: 5 });
     res.json(activity);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching activity', error });
+    if (req.log) req.log.error(error);
+    res.status(500).json({ message: 'Error fetching activity' });
   }
 };

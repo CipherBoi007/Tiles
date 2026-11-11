@@ -20,7 +20,7 @@ const homeSchemas = [
     "@id": "https://srilakshmitiles.com/#store",
     "name": "SRI LAKSHMI TILES AND GRANITES",
     "legalName": "Sri Lakshmi Tiles and Granites",
-    "image": "https://srilakshmitiles.com/SL_LOGO.png",
+    "image": "https://srilakshmitiles.com/SL_LOGO_TRANS.png",
     "url": "https://srilakshmitiles.com",
     "telephone": "+91-9876543210",
     "email": "srilakshimitilesandgranite@gmail.com",

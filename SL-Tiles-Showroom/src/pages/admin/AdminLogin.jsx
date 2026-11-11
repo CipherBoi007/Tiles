@@ -16,10 +16,10 @@ const AdminLogin = () => {
     setError('');
 
     const result = await login(email, password);
-    if (result === true || result?.success) {
+    if (result.success) {
       navigate('/admin');
     } else {
-      setError(result?.message || 'Invalid email or password');
+      setError(result.message);
     }
   };
 

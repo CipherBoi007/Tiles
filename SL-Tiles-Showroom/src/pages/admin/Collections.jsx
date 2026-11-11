@@ -356,8 +356,7 @@ const Collections = () => {
           <div className="flex flex-col md:flex-row gap-6">
             <SafeImage src={previewTile.image} alt="Preview" className="w-full md:w-1/2 aspect-square object-cover rounded-xl" />
             <div>
-              <h2 className="text-2xl font-luxury font-bold text-brand-text mb-4">{previewTile.name}</h2>
-              <p className="text-brand-textMuted mb-6 text-sm">{previewTile.desc || 'No description'}</p>
+              <h2 className="text-2xl font-luxury font-bold text-brand-text mb-6">{previewTile.name}</h2>
               
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between py-2 border-b border-gray-100">
@@ -367,18 +366,6 @@ const Collections = () => {
                 <div className="flex justify-between py-2 border-b border-gray-100">
                   <span className="text-gray-500">Category</span>
                   <span className="font-medium text-brand-gold">{previewTile.subCategory?.category?.name || 'N/A'}</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-gray-100">
-                  <span className="text-gray-500">Dimensions</span>
-                  <span className="font-medium">{previewTile.size || 'N/A'}</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-gray-100">
-                  <span className="text-gray-500">Finish</span>
-                  <span className="font-medium">{previewTile.finish || 'N/A'}</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-gray-100">
-                  <span className="text-gray-500">Color Palette</span>
-                  <span className="font-medium">{previewTile.palette || 'N/A'}</span>
                 </div>
               </div>
             </div>

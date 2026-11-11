@@ -40,8 +40,3 @@ export const catalogueSchema = z.object({
   fileUrl: z.string().min(1),
   date: z.string().optional().nullable(),
 });
-
-
-
-
-

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { API_URL } from '../services';
 
 const AuthContext = createContext();
 
@@ -21,7 +22,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/auth/login`, {
+      const res = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -37,7 +38,7 @@ export const AuthProvider = ({ children }) => {
       return { success: false, message: errData.message || 'Invalid email or password' };
     } catch (error) {
       console.error("Login failed", error);
-      return { success: false, message: 'Backend server connection error. Please ensure the backend is running on port 5000.' };
+      return { success: false, message: 'Unable to reach the server. Please try again in a moment.' };
     }
   };
 

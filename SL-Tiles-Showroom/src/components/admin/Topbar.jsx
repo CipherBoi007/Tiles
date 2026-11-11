@@ -1,44 +1,44 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, Bell, User, Menu, X, FolderOpen, FolderTree, Grid, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useData } from '../../context/DataContext';
+import { categoryService, subCategoryService, tileService } from '../../services';
 import SafeImage from '../SafeImage';
+
+const EMPTY_RESULTS = { categories: [], subCategories: [], tiles: [] };
 
 const Topbar = ({ onMenuClick }) => {
   const navigate = useNavigate();
-  const { categories, subCategories, tiles, settings } = useData();
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
+  const [results, setResults] = useState(EMPTY_RESULTS);
   const dropdownRef = useRef(null);
 
-  const categoryList = Array.isArray(categories) ? categories : (categories?.data || []);
-  const subCategoryList = Array.isArray(subCategories) ? subCategories : (subCategories?.data || []);
-  const tileList = Array.isArray(tiles) ? tiles : (tiles?.data || []);
+  const trimmed = query.trim();
 
-  // Filter matching items
-  const trimmed = query.trim().toLowerCase();
-  const matchedCategories = trimmed 
-    ? categoryList.filter(c => c.name?.toLowerCase().includes(trimmed) || c.desc?.toLowerCase().includes(trimmed)) 
-    : [];
+  // Debounced server-side search across categories, subcategories and tiles
+  useEffect(() => {
+    if (!trimmed) {
+      setResults(EMPTY_RESULTS);
+      return;
+    }
+    let cancelled = false;
+    const handler = setTimeout(async () => {
+      const [categories, subCategories, tiles] = await Promise.all([
+        categoryService.paginate({ limit: 3, search: trimmed }),
+        subCategoryService.paginate({ limit: 3, search: trimmed }),
+        tileService.paginate({ limit: 4, search: trimmed }),
+      ]);
+      if (!cancelled) {
+        setResults({ categories: categories.data, subCategories: subCategories.data, tiles: tiles.data });
+      }
+    }, 300);
+    return () => {
+      cancelled = true;
+      clearTimeout(handler);
+    };
+  }, [trimmed]);
 
-  const matchedSubCategories = trimmed 
-    ? subCategoryList.filter(s => 
-        s.name?.toLowerCase().includes(trimmed) || 
-        s.desc?.toLowerCase().includes(trimmed) ||
-        s.category?.name?.toLowerCase().includes(trimmed)
-      ) 
-    : [];
-
-  const matchedTiles = trimmed 
-    ? tileList.filter(t => 
-        t.name?.toLowerCase().includes(trimmed) || 
-        t.size?.toLowerCase().includes(trimmed) || 
-        t.finish?.toLowerCase().includes(trimmed) ||
-        t.palette?.toLowerCase().includes(trimmed) ||
-        t.subCategory?.name?.toLowerCase().includes(trimmed)
-      ) 
-    : [];
-
+  const { categories: matchedCategories, subCategories: matchedSubCategories, tiles: matchedTiles } = results;
   const totalResults = matchedCategories.length + matchedSubCategories.length + matchedTiles.length;
 
   // Close dropdown on click outside or escape key
@@ -128,7 +128,7 @@ const Topbar = ({ onMenuClick }) => {
                           <SafeImage src={cat.image} alt={cat.name} className="w-8 h-8 rounded-lg object-cover shrink-0" />
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-brand-text group-hover:text-brand-gold truncate">{cat.name}</p>
-                            <p className="text-xs text-gray-400 truncate">{cat.desc || 'Category'}</p>
+                            <p className="text-xs text-gray-400 truncate">Category</p>
                           </div>
                           <ArrowRight size={14} className="text-gray-300 group-hover:text-brand-gold shrink-0" />
                         </div>
@@ -181,7 +181,7 @@ const Topbar = ({ onMenuClick }) => {
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-brand-text group-hover:text-green-600 truncate">{tile.name}</p>
                             <p className="text-xs text-gray-400 truncate">
-                              {tile.size ? `${tile.size} • ` : ''}{tile.finish || tile.subCategory?.name || 'Tile Product'}
+                              {tile.subCategory?.name || 'Tile Product'}
                             </p>
                           </div>
                           <ArrowRight size={14} className="text-gray-300 group-hover:text-green-600 shrink-0" />

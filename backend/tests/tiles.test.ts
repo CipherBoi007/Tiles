@@ -6,8 +6,8 @@ describe('Tiles API', () => {
   describe('GET /api/tiles', () => {
     it('should return a list of tiles', async () => {
       const mockTiles = [
-        { id: 1, name: 'Marble Tile', image: 'marble.jpg', subCategoryId: 1, size: '60x60', finish: 'glossy' },
-        { id: 2, name: 'Wood Tile', image: 'wood.jpg', subCategoryId: 1, size: '30x60', finish: 'matte' },
+        { id: 1, name: 'Marble Tile', image: 'marble.jpg', subCategoryId: 1 },
+        { id: 2, name: 'Wood Tile', image: 'wood.jpg', subCategoryId: 1 },
       ];
       
       // @ts-ignore

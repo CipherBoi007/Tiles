@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import { login } from '../controllers/authController';
 import { getTiles, createTile, updateTile, deleteTile } from '../controllers/tilesController';
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../controllers/categoriesController';
@@ -22,8 +23,26 @@ import {
 
 const router = Router();
 
+// Brute-force protection for admin login
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: 'Too many login attempts. Please try again in 15 minutes.' },
+});
+
+// Spam protection for the public enquiry / lead forms
+const enquiryLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: 'Too many enquiries submitted. Please try again later.' },
+});
+
 // Auth
-router.post('/auth/login', validate(loginSchema), login);
+router.post('/auth/login', loginLimiter, validate(loginSchema), login);
 
 // Categories
 router.get('/categories', getCategories);
@@ -36,12 +55,6 @@ router.get('/subcategories', getSubCategories);
 router.post('/subcategories', protect, validate(subCategorySchema), createSubCategory);
 router.put('/subcategories/:id', protect, validate(subCategorySchema), updateSubCategory);
 router.delete('/subcategories/:id', protect, deleteSubCategory);
-
-// Backward Compatibility for Collections -> Categories
-router.get('/collections', getCategories);
-router.post('/collections', protect, validate(categorySchema), createCategory);
-router.put('/collections/:id', protect, validate(categorySchema), updateCategory);
-router.delete('/collections/:id', protect, deleteCategory);
 
 // Tiles
 router.get('/tiles', getTiles);
@@ -56,7 +69,7 @@ router.delete('/catalogues/:id', protect, deleteCatalogue);
 
 // Enquiries
 router.get('/enquiries', protect, getEnquiries);
-router.post('/enquiries', validate(enquirySchema), createEnquiry);
+router.post('/enquiries', enquiryLimiter, validate(enquirySchema), createEnquiry);
 router.put('/enquiries/:id', protect, updateEnquiryStatus);
 router.delete('/enquiries/:id', protect, deleteEnquiry);
 
@@ -72,5 +85,3 @@ router.get('/activity', protect, getRecentActivity);
 router.post('/upload', protect, upload.single('file'), uploadFile);
 
 export default router;
-
-

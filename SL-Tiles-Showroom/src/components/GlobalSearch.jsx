@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, X } from 'lucide-react';
-import { collectionService } from '../services';
+import { categoryService } from '../services';
 import SafeImage from './SafeImage';
 import { useNavigate } from 'react-router-dom';
 
@@ -33,7 +33,7 @@ const GlobalSearch = ({ isTransparent = false }) => {
     const delayDebounceFn = setTimeout(async () => {
       setIsSearching(true);
       try {
-        const result = await collectionService.paginate({ page: 1, limit: 5, search: searchQuery });
+        const result = await categoryService.paginate({ page: 1, limit: 5, search: searchQuery });
         setSuggestions(result.data);
       } catch (error) {
         console.error("Search error", error);
@@ -115,7 +115,7 @@ const GlobalSearch = ({ isTransparent = false }) => {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="font-luxury font-bold text-brand-text text-base truncate mb-1">{item.name}</h4>
-                      <p className="text-sm text-brand-textMuted truncate">{item.palette || item.size || 'Premium Tile'}</p>
+                      <p className="text-sm text-brand-textMuted truncate">Category</p>
                     </div>
                   </div>
                 ))}

@@ -17,7 +17,7 @@ const SEO = ({
   const defaultTitle = `${siteName} | Premium Vitrified Tiles, Marble & Granites in Ramanathapuram & Madurai`;
   const defaultDesc = "Sri Lakshmi Tiles and Granites is Tamil Nadu's premier luxury showroom for imported marble, vitrified floor tiles, ceramic wall tiles, granite slabs, and sanitaryware. Located on Madurai - Rameswaram Hwy, Ramanathapuram.";
   const defaultKeywords = "SRI LAKSHMI TILES AND GRANITES, luxury tiles Ramanathapuram, vitrified tiles Madurai, marble slabs Rameswaram, granite tiles Tamil Nadu, floor tiles showroom, ceramic wall tiles, bathroom tiles, outdoor parking tiles, 600x600 tiles";
-  const defaultImage = "https://srilakshmitiles.com/SL_LOGO.png";
+  const defaultImage = "https://srilakshmitiles.com/SL_LOGO_TRANS.png";
   
   const finalTitle = title ? `${title} | ${siteName}` : defaultTitle;
   const finalDesc = description || defaultDesc;

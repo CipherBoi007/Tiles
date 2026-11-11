@@ -13,8 +13,6 @@ export const getTiles = async (req: Request, res: Response) => {
     if (search) {
       where.OR = [
         { name: { contains: search, mode: 'insensitive' as const } },
-        { finish: { contains: search, mode: 'insensitive' as const } },
-        { size: { contains: search, mode: 'insensitive' as const } },
         { subCategory: { name: { contains: search, mode: 'insensitive' as const } } },
         { subCategory: { category: { name: { contains: search, mode: 'insensitive' as const } } } }
       ];

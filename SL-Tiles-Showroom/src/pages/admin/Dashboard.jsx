@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { mockDb } from '../../data/mockDb';
+import { dashboardService } from '../../services';
 import { Grid, FolderOpen, FolderTree, MessageSquare, BookOpen, Plus, Upload, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+
+const EMPTY_STATS = {
+  totalTiles: 0,
+  tilesAddedThisWeek: 0,
+  categories: 0,
+  subCategories: 0,
+  newEnquiries: 0,
+  catalogues: 0,
+  latestCatalogue: 'N/A',
+};
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -12,29 +22,15 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const dbStats = await mockDb.getDashboardStats();
-        const dbActivity = await mockDb.getRecentActivity();
-        setStats(dbStats?.totalTiles !== undefined ? dbStats : {
-          totalTiles: 0,
-          tilesAddedThisWeek: 0,
-          categories: 0,
-          subCategories: 0,
-          newEnquiries: 0,
-          catalogues: 0,
-          latestCatalogue: 'N/A'
-        });
+        const [dbStats, dbActivity] = await Promise.all([
+          dashboardService.getStats(),
+          dashboardService.getRecentActivity(),
+        ]);
+        setStats(dbStats);
         setActivity(Array.isArray(dbActivity) ? dbActivity : []);
       } catch (err) {
-        console.error("Failed to load dashboard data:", err);
-        setStats({
-          totalTiles: 0,
-          tilesAddedThisWeek: 0,
-          categories: 0,
-          subCategories: 0,
-          newEnquiries: 0,
-          catalogues: 0,
-          latestCatalogue: 'N/A'
-        });
+        console.error('Failed to load dashboard data:', err);
+        setStats(EMPTY_STATS);
         setActivity([]);
       } finally {
         setLoading(false);
@@ -57,7 +53,7 @@ const Dashboard = () => {
         <StatCard 
           icon={<FolderOpen className="text-brand-gold" size={24} />} 
           title="CATEGORIES" 
-          value={stats.categories || stats.collections || 0} 
+          value={stats.categories || 0} 
           subtitle="Top Level"
           subtitleColor="text-gray-500"
         />

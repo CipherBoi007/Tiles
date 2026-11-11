@@ -1,0 +1,59 @@
+name: Keep Alive
+
+# Prevents free-tier idling:
+#   - Render spins the backend down after 15 minutes without traffic.
+#   - Supabase pauses the project after a period of database inactivity.
+#
+# Required repository secret:
+#   BACKEND_URL      e.g. https://your-service.onrender.com  (no trailing slash)
+# Optional repository secret (pings the database directly, even if Render is down):
+#   SUPABASE_DB_URL  Supabase connection string (Settings -> Database -> Connection string)
+#
+# Note: GitHub runs scheduled workflows on a best-effort basis and they can be
+# delayed during busy periods, so keep an external cron on /api/health as well.
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: keep-alive
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Ping backend health (also runs a DB query)
+        env:
+          BACKEND_URL: ${{ secrets.BACKEND_URL }}
+        run: |
+          if [ -z "$BACKEND_URL" ]; then
+            echo "::error::BACKEND_URL secret is not set"
+            exit 1
+          fi
+          # Render cold starts can take ~1 minute, so allow generous timeouts and retries.
+          status=$(curl --silent --show-error --output response.json --write-out '%{http_code}' \
+            --max-time 120 --retry 3 --retry-delay 15 --retry-all-errors \
+            "$BACKEND_URL/api/health")
+          echo "HTTP $status"
+          cat response.json; echo
+          if [ "$status" != "200" ]; then
+            echo "::error::Health check returned HTTP $status"
+            exit 1
+          fi
+
+      - name: Ping Supabase database directly
+        if: ${{ always() }}
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          if [ -z "$SUPABASE_DB_URL" ]; then
+            echo "SUPABASE_DB_URL not set; relying on the backend health check for DB activity."
+            exit 0
+          fi
+          psql "$SUPABASE_DB_URL" --no-psqlrc --quiet --tuples-only --command "SELECT now();"

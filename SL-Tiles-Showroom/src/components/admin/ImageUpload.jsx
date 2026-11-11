@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { UploadCloud, Image as ImageIcon, X } from 'lucide-react';
-import { uploadFile } from '../../services/uploadService';
+import { uploadFile } from '../../services';
 
 const ImageUpload = ({ value, onChange, label = "Upload Image" }) => {
   const [isUploading, setIsUploading] = useState(false);

@@ -15,8 +15,12 @@ import prisma from './lib/prisma';
 dotenv.config();
 
 const app = express();
+// Render (and most hosts) sit behind one reverse proxy; trust it so rate limiting sees real client IPs.
+app.set('trust proxy', 1);
 const PORT = process.env.PORT || 5000;
-const logger = pino({ level: process.env.LOG_LEVEL || 'info' });
+const logger = pino({
+  level: process.env.NODE_ENV === 'test' ? 'silent' : process.env.LOG_LEVEL || 'info',
+});
 
 app.use(pinoHttp({ logger }));
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
@@ -30,7 +34,7 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin) || (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL)) {
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS policy'));
@@ -39,13 +43,31 @@ app.use(cors({
   credentials: true,
 }));
 
+// Health probes sit outside the main API limiter so uptime pings never consume its quota.
+// /api/health also touches the database, which keeps the Supabase project active.
+const healthLimiter = rateLimit({ windowMs: 60 * 1000, max: 30 });
+
+app.get('/api/health', healthLimiter, async (req, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({ status: 'ok', message: 'Backend is healthy and connected to DB' });
+  } catch (error) {
+    logger.error(error as Error, 'Health check failed');
+    res.status(503).json({ status: 'error', message: 'Database disconnected' });
+  }
+});
+
+app.get('/api/ready', healthLimiter, (req, res) => {
+  res.json({ status: 'ok', message: 'Ready to accept traffic' });
+});
+
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 1000, // Increased to 1000 to prevent admin panel lockouts
+  max: 1000,
   message: 'Too many requests from this IP, please try again after 15 minutes',
 });
 app.use('/api', apiLimiter);
-app.use(express.json({ limit: '2mb' })); // Reduced from 10mb to prevent memory issues with JSON parsing
+app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ limit: '2mb', extended: true }));
 
 // Static route to serve local PDF catalogues directly with space/hyphen fallback
@@ -70,27 +92,13 @@ app.use('/catalogues', (req, res, next) => {
     if (matchedFile) {
       return res.sendFile(path.join(publicCataloguesDir, matchedFile));
     }
-  } catch (err) {
-    // Fallback to default express static handler
+  } catch {
+    // Fall through to the static handler below
   }
   next();
 }, express.static(path.join(__dirname, '../../SL-Tiles-Showroom/public/catalogues')));
 
 app.use('/api', routes);
-
-app.get('/api/health', async (req, res) => {
-  try {
-    await prisma.$queryRaw`SELECT 1`;
-    res.json({ status: 'ok', message: 'Backend is healthy and connected to DB' });
-  } catch (error) {
-    logger.error(error as Error, 'Health check failed');
-    res.status(503).json({ status: 'error', message: 'Database disconnected' });
-  }
-});
-
-app.get('/api/ready', (req, res) => {
-  res.json({ status: 'ok', message: 'Ready to accept traffic' });
-});
 
 // Global error handler
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
